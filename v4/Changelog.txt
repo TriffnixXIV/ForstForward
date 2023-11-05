@@ -1,0 +1,17 @@
+Mechanics:
+	- actions now scale with rounds instead of druids
+	- "Sprout" scales way better (+1 every 10 rounds instead of every 5 druids)
+	- max druid spawn count now increases by 1 every 20 rounds
+	- villager pathfinding is better (and more performant again)
+	- reworked druid pathing
+	- added a new action: "Spawn a treant"
+		a treant will trample houses. Action starts occuring when Horst becomes too powerful
+	- added a new action: "Plant N, then Sprout M", which starts occuring later on
+
+Bug fixes & QoL:
+	- cursor highlight now updates properly after successfully performing an action
+	- there's now a mute button (you may also press "M" to mute the game)
+	- VFX are now clipped to the map properly (preventing out-of-bounds druid circle and lightning visuals)
+	- press "S" to skip your turn
+	- press "ESC" to return to the *new* menu
+	- records can now be reset
