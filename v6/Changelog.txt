@@ -1,0 +1,34 @@
+Mechanics:
+	- forests now grow all at the same time, instead one after another, during a growth stage
+		- this removes some unintuitive and unintended growth behaviour
+	- the spread action was reworked:
+		- now scales linearly instead of quadratically
+		- now tries to plant a specific number of trees instead of planting trees in a range-based pattern
+			- this way, spreading is more efficient on edges than before
+			- starts at a forest cell, moving away from there
+			- tries to distribute the remaining trees equally among the cells at the current distance
+				- uses manhattan distance, starting at 1, increnting by 1 if there are trees left to distribute
+				- when equal distribution isn't possible, a bit of randomness is used
+					- example: spread 7 with 3 adjacent sufficiently growable cells will lead to a 3-2-2, 2-3-2 or 2-2-3 distribution
+			- every checked cell that cannot be grown costs 1 tree anyways (also counting invalid ones)
+				- this way, spreading in the middle of a vast forest does not necessarily lead to trees being planted on it's edges
+	- beer was nerfed:
+		- beer level is now subtracted from the villagers amount of actions instead of being calculated into a multiplier
+		- beer now scales with time
+			- starts at 6, increases by 1 every 12 rounds (reminder: a villager typically has 15 actions)
+		- beer still decays exponentially (halfed and rounded down after every round, similar to growth stages)
+	- small druid rework:
+		- druids now evaluate targets a little differently, so they're ready to move more to get to better spots
+			- tiles that aren't forests are valued more highly (+3 instead of the previous +1)
+			- tiles that have at least one non-forest directly adjacent to it are valued more highly (+1.5)
+		- druids now need at least one forest in their direct vicinity to plant any trees
+			- the forest must be within a 3x3 square centered on the druid
+			- more mechanical complexity and interplay, yay
+
+Bug fixes & QoL:
+	- pressing ESC in the main menu will close the game
+
+UI:
+	- introduced some slick level transitions
+	- added a main menu that includes a quit button
+	- added a proper victory and loss screen, including run stats
