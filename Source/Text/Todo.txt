@@ -8,11 +8,19 @@ Mechanics:
 			- life altar: unlocking treants & druid & treant upgrades
 			- growth altar: growth, plant & spread upgrades
 		- action upgrades through forest enhancements turning into upgrade drops after a delay
-	- maybe replace weight-based random action generation with deck-like drawable actions
+	- replace beer with more local snowstorms and/or blizzards (high prio)
+		- removes actions or increases action cost within a certain area
+		- also slows growth (maybe?)
+		- more thematic
+		- more skill expression through having to position it
+		- less of a universal solver
+		- can backfire when placed badly
 	- add level-specific features to make maps stand out more (high prio)
 	- remove skip round, because it trivializes some records (mid prio)
 	- overgrowing houses instead of de-building them (low prio)
 		overgrown houses count as forest and need less steps to recover than currently
+	- maybe replace weight-based random action generation with deck-like drawable actions (low prio)
+		- not that much of a difference at this point?
 
 Bug fixes & QoL:
 	-
