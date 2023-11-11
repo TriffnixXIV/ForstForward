@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://d1y37533nos6r"]
+
+[ext_resource type="Script" path="res://Code/Lightning.gd" id="1_nhhbt"]
+[ext_resource type="Texture2D" uid="uid://dfc2iodbfvvan" path="res://Images/Lightning.png" id="1_x630t"]
+[ext_resource type="AudioStream" uid="uid://ixef3fqo5dhl" path="res://Sounds/Lightning1.wav" id="3_onmja"]
+[ext_resource type="AudioStream" uid="uid://dix1e6pqjwx8h" path="res://Sounds/Lightning2.wav" id="4_rq5we"]
+[ext_resource type="AudioStream" uid="uid://bs2ht03dmrdmw" path="res://Sounds/Lightning3.wav" id="5_xfqrm"]
+
+[node name="Lightning" type="Node2D"]
+script = ExtResource("1_nhhbt")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(10, -50)
+texture = ExtResource("1_x630t")
+
+[node name="Sound1" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_onmja")
+
+[node name="Sound2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_rq5we")
+
+[node name="Sound3" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_xfqrm")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
+
+[connection signal="finished" from="Sound1" to="." method="_on_sound_finished"]
+[connection signal="finished" from="Sound2" to="." method="_on_sound_finished"]
+[connection signal="finished" from="Sound3" to="." method="_on_sound_finished"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

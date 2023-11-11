@@ -1,0 +1,1032 @@
+[gd_scene load_steps=90 format=3 uid="uid://dd6kw8u6mewcl"]
+
+[ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
+[ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
+[ext_resource type="AudioStream" uid="uid://cirec0r0bglc2" path="res://Sounds/DownDing.wav" id="3_av3ok"]
+[ext_resource type="AudioStream" uid="uid://bbvef82qjdjxv" path="res://Sounds/HighWood.wav" id="4_a7wmd"]
+[ext_resource type="PackedScene" path="res://Scenes/ForestEdge.tscn" id="5_4pb2x"]
+[ext_resource type="AudioStream" uid="uid://dsqtm2uwekqqh" path="res://Sounds/Mid.wav" id="5_o16hq"]
+[ext_resource type="AudioStream" uid="uid://id7di46s4g3d" path="res://Sounds/LowWood.wav" id="6_ybxwl"]
+[ext_resource type="Texture2D" uid="uid://dqiy4yeveobu2" path="res://Images/Tiles/Plains.png" id="7_gswc0"]
+[ext_resource type="PackedScene" uid="uid://204iv18oep35" path="res://Scenes/Villager.tscn" id="8_kr2na"]
+[ext_resource type="Texture2D" uid="uid://c2kj8qomwkvw8" path="res://Images/Tiles/Growth.png" id="8_rvm20"]
+[ext_resource type="Texture2D" uid="uid://d1qg7dksiud0w" path="res://Images/Tiles/Forest.png" id="9_s63f6"]
+[ext_resource type="PackedScene" uid="uid://c7tt164thkk3e" path="res://Scenes/Druid.tscn" id="9_y30ib"]
+[ext_resource type="Texture2D" uid="uid://c03kav2gapnit" path="res://Images/Tiles/BuildSite.png" id="10_qgaew"]
+[ext_resource type="Texture2D" uid="uid://ch8m0ppg72bx2" path="res://Images/Tiles/House.png" id="11_3i2bg"]
+[ext_resource type="Script" path="res://Code/Map.gd" id="12_6qirj"]
+[ext_resource type="PackedScene" path="res://Scenes/Levels/Level1.tscn" id="15_407iu"]
+[ext_resource type="PackedScene" uid="uid://brer30o71215h" path="res://Scenes/Levels/Level2.tscn" id="16_6jsyv"]
+[ext_resource type="PackedScene" path="res://Scenes/Levels/Level3.tscn" id="17_qqkob"]
+[ext_resource type="PackedScene" uid="uid://bx13d72r8gahd" path="res://Scenes/Treant.tscn" id="17_rglu0"]
+[ext_resource type="PackedScene" path="res://Scenes/Levels/Level4.tscn" id="18_ngmoe"]
+[ext_resource type="PackedScene" path="res://Scenes/Levels/Level5.tscn" id="19_qo6jg"]
+[ext_resource type="Texture2D" uid="uid://bpo1h2fjic7l2" path="res://Images/BeerOverlay.png" id="22_3h8j0"]
+[ext_resource type="Texture2D" uid="uid://c56838mmyrs1r" path="res://Images/RainOverlay.png" id="23_deieb"]
+[ext_resource type="PackedScene" uid="uid://bmrv7mgrpf6mp" path="res://Scenes/Blast.tscn" id="23_fm4bp"]
+[ext_resource type="PackedScene" uid="uid://cpcurlk3kc20s" path="res://Scenes/GrowthEffect.tscn" id="24_hbdlb"]
+[ext_resource type="AudioStream" uid="uid://dy6gtytfq6mgv" path="res://Sounds/DruidStart.wav" id="24_p5qfq"]
+[ext_resource type="AudioStream" uid="uid://che0eaqbg2uh1" path="res://Sounds/DruidAdvance.wav" id="25_ayc6w"]
+[ext_resource type="PackedScene" uid="uid://d1y37533nos6r" path="res://Scenes/Lightning.tscn" id="25_g2uic"]
+[ext_resource type="AudioStream" uid="uid://cvk8hri2tua3k" path="res://Sounds/GrowthStart.wav" id="26_e3qfq"]
+[ext_resource type="Texture2D" uid="uid://cow75qgx5a5g1" path="res://Images/BorderBackground.png" id="27_7p77l"]
+[ext_resource type="AudioStream" uid="uid://c8tjmfesx640a" path="res://Sounds/GrowthAdvance.wav" id="27_f1rrp"]
+[ext_resource type="AudioStream" uid="uid://ejnsnl7o54hb" path="res://Sounds/HorstStart.wav" id="28_hswee"]
+[ext_resource type="AudioStream" uid="uid://ivwiikmisbdp" path="res://Sounds/HorstAdvance.wav" id="29_opsn4"]
+[ext_resource type="Texture2D" uid="uid://dyeqdeiowhliu" path="res://Images/Middle.png" id="30_voj48"]
+[ext_resource type="Texture2D" uid="uid://ix3c2ehb5410" path="res://Images/Highlights/Highlight.png" id="31_3mgxn"]
+[ext_resource type="Texture2D" uid="uid://bjggyugi4001j" path="res://Images/Beer.png" id="31_r1sps"]
+[ext_resource type="Texture2D" uid="uid://b56tnpemcrfjy" path="res://Images/RainDrop.png" id="32_xa7xr"]
+[ext_resource type="Script" path="res://Code/CellHighlight.gd" id="33_013ga"]
+[ext_resource type="Texture2D" uid="uid://bbnperurcnlc8" path="res://Images/Leaf.png" id="33_erdad"]
+[ext_resource type="Texture2D" uid="uid://htocvri6t264" path="res://Images/Highlights/GreenHighlight.png" id="33_yyet2"]
+[ext_resource type="Texture2D" uid="uid://dnsatdhdbguxs" path="res://Images/Highlights/RedHighlight.png" id="34_70uow"]
+[ext_resource type="Texture2D" uid="uid://xk3vg20yrq4e" path="res://Images/Highlights/LargeGreenHighlight.png" id="35_3tfe7"]
+[ext_resource type="Texture2D" uid="uid://cqu2nut45lepw" path="res://Images/Highlights/LargeHighlight.png" id="36_1cjcc"]
+[ext_resource type="Texture2D" uid="uid://c7ix3anx83jq7" path="res://Images/Highlights/LargeRedHighlight.png" id="37_k0mh1"]
+[ext_resource type="Texture2D" uid="uid://1t3o6p2kvsui" path="res://Images/Treant.png" id="42_e0d5f"]
+[ext_resource type="Texture2D" uid="uid://cl1yuroqhceca" path="res://Images/Arrows/ArrowLeft.png" id="47_1d738"]
+[ext_resource type="Texture2D" uid="uid://cnu7bccn28j4s" path="res://Images/Arrows/ArrowLeftPressed.png" id="48_2quy7"]
+[ext_resource type="Texture2D" uid="uid://d2kalc6w76eii" path="res://Images/Separator.png" id="48_ciuft"]
+[ext_resource type="LabelSettings" uid="uid://bcx0dufx4gceb" path="res://Text/StatLabelSettings.tres" id="48_sowv6"]
+[ext_resource type="Texture2D" uid="uid://cniwp3qlod5sy" path="res://Images/Arrows/ArrowLeftHover.png" id="49_blmtu"]
+[ext_resource type="Texture2D" uid="uid://snhsydc6sbec" path="res://Images/OptionButton/ButtonNormal.png" id="50_6voxv"]
+[ext_resource type="Texture2D" uid="uid://be2wlg0tx77t0" path="res://Images/OptionButton/ButtonPressed.png" id="51_bldow"]
+[ext_resource type="Texture2D" uid="uid://c78y4f10kqh5d" path="res://Images/OptionButton/ButtonHover.png" id="52_bcv0s"]
+[ext_resource type="Texture2D" uid="uid://jyd1d7c52kov" path="res://Images/OptionButton/ButtonDisabled.png" id="53_g8171"]
+[ext_resource type="Texture2D" uid="uid://dbyt1ovuq165m" path="res://Images/OptionButton/ButtonFocused.png" id="54_ndqc2"]
+[ext_resource type="Texture2D" uid="uid://44xu7o7cs15s" path="res://Images/Arrows/ArrowRight.png" id="55_nk0ko"]
+[ext_resource type="Texture2D" uid="uid://bwnkvgrepin5w" path="res://Images/Arrows/ArrowRightPressed.png" id="56_cgvs5"]
+[ext_resource type="Texture2D" uid="uid://cenp0qegus1al" path="res://Images/VillagerStuff/Horst.png" id="56_w2pu1"]
+[ext_resource type="Texture2D" uid="uid://cifp3h3pq8ndu" path="res://Images/Exit/XNormal.png" id="57_bn3s8"]
+[ext_resource type="Texture2D" uid="uid://86ldk7gv0ryc" path="res://Images/Arrows/ArrowRightHover.png" id="57_plwts"]
+[ext_resource type="Texture2D" uid="uid://boxj06aryddeq" path="res://Images/Exit/XPressed.png" id="58_6p8y3"]
+[ext_resource type="Texture2D" uid="uid://celwycvrm7wv" path="res://Images/Exit/XHovered.png" id="59_s61jp"]
+[ext_resource type="Texture2D" uid="uid://sw1gahi5bvs0" path="res://Images/DruidStuff/Druid.png" id="60_bhp0q"]
+[ext_resource type="Texture2D" uid="uid://ds1gxf71eg7jm" path="res://Images/MuteButton/MuteButton.png" id="62_y5gb0"]
+[ext_resource type="Texture2D" uid="uid://cyjstqtiplehm" path="res://Images/MuteButton/MuteButtonPressed.png" id="63_hkoqk"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ufopn"]
+texture = ExtResource("7_gswc0")
+texture_region_size = Vector2i(20, 20)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_slf6v"]
+texture = ExtResource("8_rvm20")
+texture_region_size = Vector2i(20, 20)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a5qt2"]
+texture = ExtResource("9_s63f6")
+texture_region_size = Vector2i(20, 20)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dg5t2"]
+texture = ExtResource("10_qgaew")
+texture_region_size = Vector2i(20, 20)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jxo8u"]
+texture = ExtResource("11_3i2bg")
+texture_region_size = Vector2i(20, 20)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_un1ao"]
+tile_size = Vector2i(20, 20)
+sources/0 = SubResource("TileSetAtlasSource_ufopn")
+sources/2 = SubResource("TileSetAtlasSource_a5qt2")
+sources/1 = SubResource("TileSetAtlasSource_slf6v")
+sources/3 = SubResource("TileSetAtlasSource_dg5t2")
+sources/4 = SubResource("TileSetAtlasSource_jxo8u")
+
+[sub_resource type="LabelSettings" id="LabelSettings_o3tlm"]
+line_spacing = 0.0
+font_size = 8
+font_color = Color(1, 1, 1, 0.376471)
+
+[sub_resource type="LabelSettings" id="LabelSettings_w1idl"]
+line_spacing = -36.0
+font_size = 48
+outline_color = Color(0, 1, 0, 1)
+shadow_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qybfk"]
+font_size = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_3gau4"]
+font_size = 24
+shadow_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qn1q4"]
+font_size = 24
+shadow_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_7pre4"]
+shadow_color = Color(1, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_37y5s"]
+shadow_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_n5omy"]
+font_size = 24
+shadow_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_5digx"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7hbf2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6ir0u"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_g37cd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_yjfy3"]
+line_spacing = 0.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_8p3eh"]
+line_spacing = 0.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_2bde0"]
+line_spacing = 0.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_rgpb0"]
+line_spacing = 0.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_wxrb3"]
+line_spacing = 0.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_3woos"]
+line_spacing = 0.0
+
+[node name="ForstForward" type="Node2D"]
+script = ExtResource("1_7u1db")
+
+[node name="VictorySound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_dfqyl")
+
+[node name="LoseSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_av3ok")
+
+[node name="HighPlantSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_a7wmd")
+
+[node name="MidPlantSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_o16hq")
+
+[node name="LowPlantSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_ybxwl")
+
+[node name="Map" type="TileMap" parent="."]
+position = Vector2(5, 5)
+tile_set = SubResource("TileSet_un1ao")
+format = 2
+layer_0/tile_data = PackedInt32Array(65540, 2, 0, 65541, 2, 0, 65542, 2, 0, 65543, 2, 0, 65544, 2, 0, 65545, 2, 0, 65546, 2, 0, 131075, 2, 0, 131076, 2, 0, 131077, 2, 0, 131078, 2, 0, 131079, 2, 0, 131080, 2, 0, 131081, 2, 0, 131082, 2, 0, 458762, 2, 0, 458761, 2, 0, 458760, 2, 0, 393223, 2, 0, 393222, 2, 0, 393221, 2, 0, 393220, 2, 0, 393219, 2, 0, 458755, 2, 0, 458756, 2, 0, 458757, 2, 0, 458758, 2, 0, 458759, 2, 0, 196618, 2, 0, 196617, 2, 0, 196616, 2, 0, 196615, 2, 0, 196614, 2, 0, 196613, 2, 0, 196612, 2, 0, 196611, 2, 0, 262147, 2, 0, 327683, 2, 0, 327684, 2, 0, 262149, 2, 0, 262150, 2, 0, 262151, 2, 0, 262152, 2, 0, 262153, 2, 0, 262154, 2, 0, 327690, 2, 0, 393225, 2, 0, 393224, 2, 0, 327686, 2, 0, 327685, 2, 0, 262148, 2, 0, 327688, 2, 0, 327689, 2, 0, 393226, 2, 0, 65539, 2, 0, 393218, 2, 0, 327682, 2, 0, 262146, 2, 0, 196610, 2, 0, 131074, 2, 0, 65538, 2, 0, 65537, 2, 0, 131073, 2, 0, 196609, 2, 0, 262145, 2, 0, 327681, 2, 0, 393217, 2, 0, 458753, 2, 0, 458754, 2, 0, 0, 2, 0, 1, 2, 0, 2, 2, 0, 65536, 2, 0, 131072, 2, 0, 196608, 2, 0, 262144, 2, 0, 327680, 2, 0, 393216, 2, 0, 458752, 2, 0, 524288, 2, 0, 524289, 2, 0, 524290, 2, 0, 524291, 2, 0, 524296, 2, 0, 524297, 2, 0, 524298, 2, 0, 10, 2, 0, 9, 2, 0, 8, 2, 0, 3, 2, 0, 4, 2, 0, 5, 2, 0, 6, 2, 0, 7, 2, 0, 524293, 2, 0, 524294, 2, 0, 524295, 2, 0, 524292, 2, 0, 589825, 2, 0, 655361, 2, 0, 720897, 2, 0, 786433, 2, 0, 851969, 2, 0, 589824, 2, 0, 655360, 2, 0, 720896, 2, 0, 786432, 2, 0, 851968, 2, 0, 917504, 2, 0, 983040, 2, 0, 1048576, 2, 0, 1114112, 2, 0, 1179648, 2, 0, 1179649, 2, 0, 1179650, 2, 0, 1179651, 2, 0, 1179652, 2, 0, 1245188, 2, 0, 1245189, 2, 0, 1245190, 2, 0, 1245191, 2, 0, 1245192, 2, 0, 1245187, 2, 0, 1245186, 2, 0, 1245185, 2, 0, 1245184, 2, 0, 1310720, 2, 0, 1310721, 2, 0, 1310722, 2, 0, 1310723, 2, 0, 1310724, 2, 0, 1310725, 2, 0, 1310726, 2, 0, 1310727, 2, 0, 1376257, 2, 0, 1376258, 2, 0, 1376259, 2, 0, 1376260, 2, 0, 1376261, 2, 0, 1376262, 2, 0, 1376263, 2, 0, 1376264, 2, 0, 1376265, 2, 0, 1376266, 2, 0, 1376267, 2, 0, 1376268, 2, 0, 1376256, 2, 0, 1376269, 2, 0, 1310733, 2, 0, 1310734, 2, 0, 1310735, 2, 0, 1245200, 2, 0, 1179665, 2, 0, 1114130, 2, 0, 1114131, 2, 0, 1048595, 2, 0, 851983, 2, 0, 917519, 2, 0, 983055, 2, 0, 1048591, 2, 0, 1114127, 2, 0, 1179663, 2, 0, 1245199, 2, 0, 851984, 2, 0, 917520, 2, 0, 983056, 2, 0, 1048592, 2, 0, 1114128, 2, 0, 1179664, 2, 0, 1310736, 2, 0, 851985, 2, 0, 917521, 2, 0, 983057, 2, 0, 1048593, 2, 0, 1114129, 2, 0, 1245201, 2, 0, 1310737, 2, 0, 851986, 2, 0, 917522, 2, 0, 983058, 2, 0, 1048594, 2, 0, 1179666, 2, 0, 1245202, 2, 0, 1310738, 2, 0, 851987, 2, 0, 917523, 2, 0, 983059, 2, 0, 1179667, 2, 0, 1245203, 2, 0, 1310739, 2, 0, 851988, 2, 0, 917524, 2, 0, 983060, 2, 0, 1048596, 2, 0, 1114132, 2, 0, 1179668, 2, 0, 1245204, 2, 0, 1310740, 2, 0, 851989, 2, 0, 917525, 2, 0, 983061, 2, 0, 1048597, 2, 0, 1114133, 2, 0, 1179669, 2, 0, 1245205, 2, 0, 1310741, 2, 0, 851990, 2, 0, 917526, 2, 0, 983062, 2, 0, 1048598, 2, 0, 1114134, 2, 0, 1179670, 2, 0, 1245206, 2, 0, 1310742, 2, 0, 851991, 2, 0, 917527, 2, 0, 983063, 2, 0, 1048599, 2, 0, 1114135, 2, 0, 1179671, 2, 0, 1245207, 2, 0, 1310743, 2, 0, 851992, 2, 0, 917528, 2, 0, 983064, 2, 0, 1048600, 2, 0, 1114136, 2, 0, 1179672, 2, 0, 1245208, 2, 0, 1310744, 2, 0, 851993, 2, 0, 917529, 2, 0, 983065, 2, 0, 1048601, 2, 0, 1114137, 2, 0, 1179673, 2, 0, 1245209, 2, 0, 1310745, 2, 0, 851994, 2, 0, 917530, 2, 0, 983066, 2, 0, 1048602, 2, 0, 1114138, 2, 0, 1179674, 2, 0, 1245210, 2, 0, 1310746, 2, 0, 917505, 2, 0, 983041, 2, 0, 1048577, 2, 0, 1114113, 2, 0, 589826, 2, 0, 655362, 2, 0, 720898, 2, 0, 786434, 2, 0, 851970, 2, 0, 917506, 2, 0, 983042, 2, 0, 1048578, 2, 0, 1114114, 2, 0, 589827, 2, 0, 655363, 2, 0, 720899, 2, 0, 786435, 2, 0, 851971, 2, 0, 917507, 2, 0, 983043, 2, 0, 1048579, 2, 0, 1114115, 2, 0, 589828, 2, 0, 655364, 2, 0, 720900, 2, 0, 786436, 2, 0, 851972, 2, 0, 917508, 2, 0, 983044, 2, 0, 1048580, 2, 0, 1114116, 2, 0, 589829, 2, 0, 655365, 2, 0, 720901, 2, 0, 786437, 2, 0, 851973, 2, 0, 917509, 2, 0, 983045, 2, 0, 1048581, 2, 0, 1114117, 2, 0, 1179653, 2, 0, 589830, 2, 0, 655366, 2, 0, 720902, 2, 0, 786438, 2, 0, 851974, 2, 0, 917510, 2, 0, 983046, 2, 0, 1048582, 2, 0, 1114118, 2, 0, 1179654, 2, 0, 589831, 2, 0, 655367, 2, 0, 720903, 2, 0, 786439, 2, 0, 851975, 2, 0, 917511, 2, 0, 983047, 2, 0, 1048583, 2, 0, 1114119, 2, 0, 1179655, 2, 0, 589832, 2, 0, 655368, 2, 0, 720904, 2, 0, 786440, 2, 0, 851976, 2, 0, 917512, 2, 0, 983048, 2, 0, 1048584, 2, 0, 1114120, 2, 0, 1179656, 2, 0, 1310728, 2, 0, 589833, 2, 0, 655369, 2, 0, 720905, 2, 0, 786441, 2, 0, 851977, 2, 0, 917513, 2, 0, 983049, 2, 0, 1048585, 2, 0, 1114121, 2, 0, 1179657, 2, 0, 1245193, 2, 0, 1310729, 2, 0, 589834, 2, 0, 655370, 2, 0, 720906, 2, 0, 786442, 2, 0, 851978, 2, 0, 917514, 2, 0, 983050, 2, 0, 1048586, 2, 0, 1114122, 2, 0, 1179658, 2, 0, 1245194, 2, 0, 1310730, 2, 0, 65547, 2, 0, 131083, 2, 0, 196619, 2, 0, 262155, 2, 0, 327691, 2, 0, 393227, 2, 0, 458763, 2, 0, 524299, 2, 0, 589835, 2, 0, 655371, 2, 0, 720907, 2, 0, 786443, 2, 0, 851979, 2, 0, 917515, 2, 0, 983051, 2, 0, 1048587, 2, 0, 1114123, 2, 0, 1179659, 2, 0, 1245195, 2, 0, 1310731, 2, 0, 65548, 2, 0, 131084, 2, 0, 196620, 2, 0, 262156, 2, 0, 327692, 2, 0, 393228, 2, 0, 458764, 2, 0, 524300, 2, 0, 655372, 2, 0, 720908, 2, 0, 786444, 2, 0, 851980, 2, 0, 917516, 2, 0, 983052, 2, 0, 1048588, 2, 0, 1114124, 2, 0, 1179660, 2, 0, 1245196, 2, 0, 1310732, 2, 0, 65549, 2, 0, 131085, 2, 0, 196621, 2, 0, 262157, 2, 0, 327693, 2, 0, 393229, 2, 0, 458765, 2, 0, 524301, 2, 0, 589837, 2, 0, 655373, 2, 0, 720909, 2, 0, 786445, 2, 0, 851981, 2, 0, 917517, 2, 0, 983053, 2, 0, 1048589, 2, 0, 1114125, 2, 0, 1179661, 2, 0, 1245197, 2, 0, 65550, 2, 0, 131086, 2, 0, 196622, 2, 0, 262158, 2, 0, 327694, 2, 0, 393230, 2, 0, 458766, 2, 0, 524302, 2, 0, 589838, 2, 0, 655374, 2, 0, 720910, 2, 0, 786446, 2, 0, 851982, 2, 0, 917518, 2, 0, 983054, 2, 0, 1048590, 2, 0, 1114126, 2, 0, 1179662, 2, 0, 1245198, 2, 0, 1376270, 2, 0, 65551, 2, 0, 131087, 2, 0, 196623, 2, 0, 262159, 2, 0, 327695, 2, 0, 393231, 2, 0, 458767, 2, 0, 524303, 2, 0, 589839, 2, 0, 720911, 2, 0, 786447, 2, 0, 1376271, 2, 0, 65552, 2, 0, 131088, 2, 0, 196624, 2, 0, 262160, 2, 0, 327696, 2, 0, 393232, 2, 0, 458768, 2, 0, 524304, 2, 0, 589840, 2, 0, 655376, 2, 0, 720912, 2, 0, 786448, 2, 0, 1376272, 2, 0, 65553, 2, 0, 131089, 2, 0, 196625, 2, 0, 262161, 2, 0, 327697, 2, 0, 393233, 2, 0, 458769, 2, 0, 524305, 2, 0, 589841, 2, 0, 655377, 2, 0, 720913, 2, 0, 786449, 2, 0, 1376273, 2, 0, 65554, 2, 0, 131090, 2, 0, 196626, 2, 0, 262162, 2, 0, 327698, 2, 0, 393234, 2, 0, 458770, 2, 0, 524306, 2, 0, 589842, 2, 0, 655378, 2, 0, 720914, 2, 0, 786450, 2, 0, 1376274, 2, 0, 65555, 2, 0, 131091, 2, 0, 196627, 2, 0, 262163, 2, 0, 327699, 2, 0, 393235, 2, 0, 458771, 2, 0, 524307, 2, 0, 589843, 2, 0, 655379, 2, 0, 720915, 2, 0, 786451, 2, 0, 1376275, 2, 0, 65556, 2, 0, 131092, 2, 0, 196628, 2, 0, 262164, 2, 0, 327700, 2, 0, 393236, 2, 0, 458772, 2, 0, 524308, 2, 0, 589844, 2, 0, 655380, 2, 0, 720916, 2, 0, 786452, 2, 0, 1376276, 2, 0, 65557, 2, 0, 131093, 2, 0, 196629, 2, 0, 262165, 2, 0, 327701, 2, 0, 393237, 2, 0, 458773, 2, 0, 524309, 2, 0, 589845, 2, 0, 655381, 2, 0, 720917, 2, 0, 786453, 2, 0, 1376277, 2, 0, 65558, 2, 0, 131094, 2, 0, 196630, 2, 0, 262166, 2, 0, 327702, 2, 0, 393238, 2, 0, 458774, 2, 0, 524310, 2, 0, 589846, 2, 0, 655382, 2, 0, 720918, 2, 0, 786454, 2, 0, 1376278, 2, 0, 65559, 2, 0, 131095, 2, 0, 196631, 2, 0, 262167, 2, 0, 327703, 2, 0, 393239, 2, 0, 458775, 2, 0, 524311, 2, 0, 589847, 2, 0, 655383, 2, 0, 720919, 2, 0, 786455, 2, 0, 1376279, 2, 0, 65560, 2, 0, 131096, 2, 0, 196632, 2, 0, 262168, 2, 0, 327704, 2, 0, 393240, 2, 0, 458776, 2, 0, 524312, 2, 0, 589848, 2, 0, 655384, 2, 0, 720920, 2, 0, 786456, 2, 0, 1376280, 2, 0, 65561, 2, 0, 131097, 2, 0, 196633, 2, 0, 262169, 2, 0, 327705, 2, 0, 393241, 2, 0, 458777, 2, 0, 524313, 2, 0, 589849, 2, 0, 655385, 2, 0, 720921, 2, 0, 786457, 2, 0, 1376281, 2, 0, 65562, 2, 0, 131098, 2, 0, 196634, 2, 0, 262170, 2, 0, 327706, 2, 0, 393242, 2, 0, 458778, 2, 0, 524314, 2, 0, 589850, 2, 0, 655386, 2, 0, 720922, 2, 0, 786458, 2, 0, 1376282, 2, 0, 65563, 2, 0, 131099, 2, 0, 196635, 2, 0, 262171, 2, 0, 327707, 2, 0, 393243, 2, 0, 458779, 2, 0, 524315, 2, 0, 589851, 2, 0, 655387, 2, 0, 720923, 2, 0, 786459, 2, 0, 851995, 2, 0, 917531, 2, 0, 983067, 2, 0, 1048603, 2, 0, 1114139, 2, 0, 1179675, 2, 0, 1245211, 2, 0, 1310747, 2, 0, 1376283, 2, 0, 65564, 2, 0, 131100, 2, 0, 196636, 2, 0, 262172, 2, 0, 327708, 2, 0, 393244, 2, 0, 458780, 2, 0, 524316, 2, 0, 589852, 2, 0, 655388, 2, 0, 720924, 2, 0, 786460, 2, 0, 851996, 2, 0, 917532, 2, 0, 983068, 2, 0, 1048604, 2, 0, 1114140, 2, 0, 1179676, 2, 0, 1245212, 2, 0, 1310748, 2, 0, 1376284, 2, 0, 327687, 2, 0, 11, 2, 0, 589836, 2, 0, 12, 2, 0, 13, 2, 0, 14, 2, 0, 15, 2, 0, 16, 2, 0, 17, 2, 0, 18, 2, 0, 19, 2, 0, 20, 2, 0, 21, 2, 0, 22, 2, 0, 23, 2, 0, 24, 2, 0, 25, 2, 0, 26, 2, 0, 27, 2, 0, 28, 2, 0, 655375, 2, 0)
+script = ExtResource("12_6qirj")
+levels = Array[PackedScene]([ExtResource("15_407iu"), ExtResource("16_6jsyv"), ExtResource("17_qqkob"), ExtResource("18_ngmoe"), ExtResource("19_qo6jg")])
+Villager = ExtResource("8_kr2na")
+Druid = ExtResource("9_y30ib")
+Treant = ExtResource("17_rglu0")
+ForestEdge = ExtResource("5_4pb2x")
+LightningStrike = ExtResource("25_g2uic")
+Blast = ExtResource("23_fm4bp")
+GrowthEffect = ExtResource("24_hbdlb")
+
+[node name="Timer" type="Timer" parent="Map"]
+wait_time = 0.25
+one_shot = true
+
+[node name="AdvancementStart" type="AudioStreamPlayer" parent="Map"]
+stream = ExtResource("4_a7wmd")
+
+[node name="DruidStart" type="AudioStreamPlayer" parent="Map"]
+stream = ExtResource("24_p5qfq")
+
+[node name="DruidAdvance" type="AudioStreamPlayer" parent="Map"]
+stream = ExtResource("25_ayc6w")
+volume_db = -5.0
+
+[node name="GrowthStart" type="AudioStreamPlayer" parent="Map"]
+stream = ExtResource("26_e3qfq")
+
+[node name="GrowthAdvance" type="AudioStreamPlayer" parent="Map"]
+stream = ExtResource("27_f1rrp")
+volume_db = -5.0
+
+[node name="HorstStart" type="AudioStreamPlayer" parent="Map"]
+stream = ExtResource("28_hswee")
+
+[node name="HorstAdvance" type="AudioStreamPlayer" parent="Map"]
+stream = ExtResource("29_opsn4")
+volume_db = -7.0
+
+[node name="BeerOverlay" type="Sprite2D" parent="Map"]
+visible = false
+z_index = 2
+texture = ExtResource("22_3h8j0")
+centered = false
+
+[node name="RainOverlay" type="Sprite2D" parent="Map"]
+visible = false
+z_index = 3
+texture = ExtResource("23_deieb")
+centered = false
+
+[node name="CellHighlight" type="Sprite2D" parent="Map"]
+visible = false
+z_index = 4
+texture = ExtResource("31_3mgxn")
+centered = false
+script = ExtResource("33_013ga")
+positive_highlight = ExtResource("33_yyet2")
+neutral_highlight = ExtResource("31_3mgxn")
+negative_highlight = ExtResource("34_70uow")
+large_positive_highlight = ExtResource("35_3tfe7")
+large_neutral_highlight = ExtResource("36_1cjcc")
+large_negative_highlight = ExtResource("37_k0mh1")
+
+[node name="MaskedBackground" type="Sprite2D" parent="."]
+z_index = 1
+texture = ExtResource("27_7p77l")
+centered = false
+
+[node name="MapOverlay" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 585.0
+offset_bottom = 445.0
+
+[node name="Version" type="Label" parent="MapOverlay"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+offset_right = 132.0
+grow_vertical = 0
+size_flags_vertical = 8
+text = "version"
+label_settings = SubResource("LabelSettings_o3tlm")
+vertical_alignment = 2
+max_lines_visible = 1
+
+[node name="MainMenu" type="Control" parent="MapOverlay"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -285.0
+offset_top = -215.0
+offset_right = 285.0
+offset_bottom = 215.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="MapOverlay/MainMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -97.0
+offset_top = -72.5
+offset_right = 97.0
+offset_bottom = 72.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Forst
+Forward"
+label_settings = SubResource("LabelSettings_w1idl")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Instructions" type="Label" parent="MapOverlay/MainMenu"]
+modulate = Color(1, 1, 1, 0.376471)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -83.0
+offset_top = -215.0
+offset_right = 83.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "press anything
+"
+label_settings = SubResource("LabelSettings_qybfk")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToLevelSelection" type="TextureButton" parent="MapOverlay/MainMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+action_mode = 0
+
+[node name="Exit" type="TextureButton" parent="MapOverlay/MainMenu"]
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture_normal = ExtResource("57_bn3s8")
+texture_pressed = ExtResource("58_6p8y3")
+texture_hover = ExtResource("59_s61jp")
+stretch_mode = 3
+
+[node name="LevelSelection" type="Control" parent="MapOverlay"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -285.0
+offset_top = -215.0
+offset_right = 285.0
+offset_bottom = 215.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LevelName" type="Label" parent="MapOverlay/LevelSelection"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -65.5
+offset_right = 65.5
+offset_bottom = 37.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+text = "LevelName"
+label_settings = SubResource("LabelSettings_3gau4")
+
+[node name="Instructions" type="Label" parent="MapOverlay/LevelSelection"]
+modulate = Color(1, 1, 1, 0.376471)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -83.0
+offset_top = 155.0
+offset_right = 83.0
+offset_bottom = 181.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "press anything to start
+"
+label_settings = SubResource("LabelSettings_qybfk")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Message" type="Label" parent="MapOverlay/LevelSelection"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -101.0
+offset_top = -37.0
+offset_right = 101.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 6
+text = "welcome, woody!"
+label_settings = SubResource("LabelSettings_qn1q4")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartGame" type="TextureButton" parent="MapOverlay/LevelSelection"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+action_mode = 0
+
+[node name="ToMain" type="TextureButton" parent="MapOverlay/LevelSelection"]
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture_normal = ExtResource("57_bn3s8")
+texture_pressed = ExtResource("58_6p8y3")
+texture_hover = ExtResource("59_s61jp")
+stretch_mode = 3
+
+[node name="PrevLevelButton" type="TextureButton" parent="MapOverlay/LevelSelection"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -10.0
+offset_right = 20.0
+offset_bottom = 10.0
+grow_vertical = 2
+texture_normal = ExtResource("47_1d738")
+texture_pressed = ExtResource("48_2quy7")
+texture_hover = ExtResource("49_blmtu")
+stretch_mode = 3
+
+[node name="NextLevelButton" type="TextureButton" parent="MapOverlay/LevelSelection"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -10.0
+offset_bottom = 10.0
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("55_nk0ko")
+texture_pressed = ExtResource("56_cgvs5")
+texture_hover = ExtResource("57_plwts")
+stretch_mode = 3
+
+[node name="PostGame" type="Control" parent="MapOverlay"]
+visible = false
+z_index = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -285.0
+offset_top = -215.0
+offset_right = 285.0
+offset_bottom = 215.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="MapOverlay/PostGame"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "who took over who"
+label_settings = SubResource("LabelSettings_qn1q4")
+
+[node name="Stats" type="Control" parent="MapOverlay/PostGame"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -170.0
+offset_right = 250.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Horst" type="VBoxContainer" parent="MapOverlay/PostGame/Stats"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -150.0
+offset_right = 240.0
+offset_bottom = 150.0
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "Horst stats"
+label_settings = SubResource("LabelSettings_7pre4")
+
+[node name="TreesFelled" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X trees taken"
+label_settings = ExtResource("48_sowv6")
+
+[node name="MaxHorsts" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X villagers at one point"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Births" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X newborns"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Deaths" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X deaths"
+label_settings = ExtResource("48_sowv6")
+
+[node name="DeathsTreant" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X deaths to treants"
+label_settings = ExtResource("48_sowv6")
+
+[node name="DeathsLightning" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X deaths to lightning"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Beer" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X total beer level"
+label_settings = ExtResource("48_sowv6")
+
+[node name="BeerActions" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X actions lost to beer"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Separator" type="TextureRect" parent="MapOverlay/PostGame/Stats"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = -150.0
+offset_right = 2.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("48_ciuft")
+
+[node name="Forst" type="VBoxContainer" parent="MapOverlay/PostGame/Stats"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -150.0
+offset_bottom = 150.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "forest stats"
+label_settings = SubResource("LabelSettings_37y5s")
+
+[node name="Trees" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X trees grown"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Plant" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X trees planted"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Spread" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X trees spread"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Druids" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X druids"
+label_settings = ExtResource("48_sowv6")
+
+[node name="DruidTrees" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X druid trees"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Treants" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X treants"
+label_settings = ExtResource("48_sowv6")
+
+[node name="TreantTrees" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X treant trees"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Growth" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X growth stages"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Rain" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X rounds of rain"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Lightning" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X lightning strikes called"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Instructions" type="Label" parent="MapOverlay/PostGame"]
+modulate = Color(1, 1, 1, 0.376471)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -83.0
+offset_top = 155.0
+offset_right = 83.0
+offset_bottom = 181.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "press anything to continue
+"
+label_settings = SubResource("LabelSettings_qybfk")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Message" type="Label" parent="MapOverlay/PostGame"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -101.0
+offset_top = -37.0
+offset_right = 101.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 6
+text = "post game message"
+label_settings = SubResource("LabelSettings_qn1q4")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToLevelSelection" type="TextureButton" parent="MapOverlay/PostGame"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+action_mode = 0
+
+[node name="Sidebar" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 595.0
+offset_top = 5.0
+offset_right = 795.0
+offset_bottom = 445.0
+
+[node name="Records" type="VBoxContainer" parent="Sidebar"]
+visible = false
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Sidebar/Records"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "records"
+label_settings = SubResource("LabelSettings_n5omy")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FastestWin" type="Label" parent="Sidebar/Records"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "fastest win"
+label_settings = SubResource("LabelSettings_5digx")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlowestWin" type="Label" parent="Sidebar/Records"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "slowest win"
+label_settings = SubResource("LabelSettings_7hbf2")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlowestLoss" type="Label" parent="Sidebar/Records"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "slowest loss"
+label_settings = SubResource("LabelSettings_6ir0u")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FastestLoss" type="Label" parent="Sidebar/Records"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "fastest loss"
+label_settings = SubResource("LabelSettings_g37cd")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Reset" type="Button" parent="Sidebar/Records"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "reset records"
+
+[node name="InGameUI" type="VBoxContainer" parent="Sidebar"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopContainer" type="HBoxContainer" parent="Sidebar/InGameUI"]
+layout_mode = 2
+
+[node name="RoundLabel" type="Label" parent="Sidebar/InGameUI/TopContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Round 1"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="Sidebar/InGameUI/TopContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0 trees"
+horizontal_alignment = 1
+
+[node name="TopOption" type="Control" parent="Sidebar/InGameUI"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button" type="TextureButton" parent="Sidebar/InGameUI/TopOption"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -102.5
+offset_top = -67.5
+offset_right = 102.5
+offset_bottom = 67.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("50_6voxv")
+texture_pressed = ExtResource("51_bldow")
+texture_hover = ExtResource("52_bcv0s")
+texture_disabled = ExtResource("53_g8171")
+texture_focused = ExtResource("54_ndqc2")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/TopOption/Button"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Top Option"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Sidebar/InGameUI"]
+layout_mode = 2
+texture = ExtResource("30_voj48")
+
+[node name="Numbers" type="HBoxContainer" parent="Sidebar/InGameUI/TextureRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Villagers" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Villagers"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("56_w2pu1")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Villagers"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yjfy3")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Beer" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Beer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("31_r1sps")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Beer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_8p3eh")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Rain" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Rain"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("32_xa7xr")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Rain"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_2bde0")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Growth" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Growth"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("33_erdad")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Growth"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_rgpb0")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Druids" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Druids"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("60_bhp0q")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Druids"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_wxrb3")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Treants" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Treants"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("42_e0d5f")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Treants"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_3woos")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="BottomOption" type="Control" parent="Sidebar/InGameUI"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button" type="TextureButton" parent="Sidebar/InGameUI/BottomOption"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -102.5
+offset_top = -62.0
+offset_right = 102.5
+offset_bottom = 62.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("50_6voxv")
+texture_pressed = ExtResource("51_bldow")
+texture_hover = ExtResource("52_bcv0s")
+texture_disabled = ExtResource("53_g8171")
+texture_focused = ExtResource("54_ndqc2")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/BottomOption/Button"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Bottom Option"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="MuteButton" type="TextureButton" parent="Sidebar"]
+z_index = 5
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+toggle_mode = true
+texture_normal = ExtResource("62_y5gb0")
+texture_pressed = ExtResource("63_hkoqk")
+stretch_mode = 3
+
+[connection signal="advancement_done" from="Map" to="." method="_on_map_advancement_done"]
+[connection signal="advancement_step_done" from="Map" to="." method="_on_map_advancement_step_done"]
+[connection signal="score_changed" from="Map" to="." method="_on_map_score_changed"]
+[connection signal="transition_done" from="Map" to="." method="_on_map_transition_done"]
+[connection signal="timeout" from="Map/Timer" to="Map" method="_on_timer_timeout"]
+[connection signal="pressed" from="MapOverlay/MainMenu/ToLevelSelection" to="." method="_on_to_level_selection_pressed"]
+[connection signal="pressed" from="MapOverlay/MainMenu/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="MapOverlay/LevelSelection/StartGame" to="." method="_on_start_game_pressed"]
+[connection signal="pressed" from="MapOverlay/LevelSelection/ToMain" to="." method="_on_to_main_pressed"]
+[connection signal="pressed" from="MapOverlay/LevelSelection/PrevLevelButton" to="." method="_on_prev_level_button_pressed"]
+[connection signal="pressed" from="MapOverlay/LevelSelection/NextLevelButton" to="." method="_on_next_level_button_pressed"]
+[connection signal="pressed" from="MapOverlay/PostGame/ToLevelSelection" to="." method="_on_to_level_selection_pressed"]
+[connection signal="pressed" from="Sidebar/Records/Reset" to="." method="_on_reset_records_pressed"]
+[connection signal="pressed" from="Sidebar/InGameUI/TopOption/Button" to="." method="_on_top_option_pressed"]
+[connection signal="pressed" from="Sidebar/InGameUI/BottomOption/Button" to="." method="_on_bottom_option_pressed"]
+[connection signal="pressed" from="Sidebar/MuteButton" to="." method="_on_mute_button_pressed"]

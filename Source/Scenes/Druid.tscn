@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7tt164thkk3e"]
+
+[ext_resource type="Script" path="res://Code/Druid.gd" id="1_0dedn"]
+[ext_resource type="Texture2D" uid="uid://36kea08gs0qa" path="res://Images/DruidStuff/DruidCircle.png" id="2_5bfet"]
+[ext_resource type="Texture2D" uid="uid://sw1gahi5bvs0" path="res://Images/DruidStuff/Druid.png" id="2_lpndy"]
+
+[node name="Druid" type="Node2D"]
+z_index = 1
+script = ExtResource("1_0dedn")
+
+[node name="Circle" type="Sprite2D" parent="."]
+position = Vector2(10, 10)
+texture = ExtResource("2_5bfet")
+
+[node name="Timer" type="Timer" parent="Circle"]
+wait_time = 0.25
+one_shot = true
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(10, 10)
+texture = ExtResource("2_lpndy")
+
+[connection signal="timeout" from="Circle/Timer" to="." method="_on_timer_timeout"]

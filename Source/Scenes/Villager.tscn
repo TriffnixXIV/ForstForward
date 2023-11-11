@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://204iv18oep35"]
+
+[ext_resource type="Script" path="res://Code/Villager.gd" id="1_4s00r"]
+[ext_resource type="Texture2D" uid="uid://cenp0qegus1al" path="res://Images/VillagerStuff/Horst.png" id="1_clf41"]
+[ext_resource type="Texture2D" uid="uid://2fv58e5rxrx0" path="res://Images/VillagerStuff/DaRealHorst.png" id="2_tdemo"]
+[ext_resource type="Texture2D" uid="uid://dmqb7y0yt8hir" path="res://Images/VillagerStuff/Sparks.png" id="4_b1dv6"]
+
+[node name="Villager" type="Node2D"]
+script = ExtResource("1_4s00r")
+villager_texture = ExtResource("1_clf41")
+horst_texture = ExtResource("2_tdemo")
+
+[node name="Sparks" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(10, 10)
+texture = ExtResource("4_b1dv6")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(10, 10)
+texture = ExtResource("1_clf41")

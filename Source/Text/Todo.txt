@@ -1,0 +1,30 @@
+Mechanics:
+	- replace automatic scaling, multiple options: (for v8)
+		- action upgrades as actions
+		- action upgrades through a upgrade tree
+		- action upgrades through upgrade tokens
+		- action upgrades through altars
+			- rain altar: rain & lightning & beer upgrades
+			- life altar: unlocking treants & druid & treant upgrades
+			- growth altar: growth, plant & spread upgrades
+		- action upgrades through forest enhancements turning into upgrade drops after a delay
+	- maybe replace weight-based random action generation with deck-like drawable actions
+	- add level-specific features to make maps stand out more (high prio)
+	- remove skip round, because it trivializes some records (mid prio)
+	- overgrowing houses instead of de-building them (low prio)
+		overgrown houses count as forest and need less steps to recover than currently
+
+Bug fixes & QoL:
+	-
+
+UI:
+	- change InGameUI elements (high prio)
+	- change reset record button (high prio)
+	- make record sidebar more fancy (high prio)
+	- add info tab (mid prio)
+	- re-order: (low prio)
+		- centered map
+		- options below
+		- forest stats left
+		- village stats right
+		- common stats top

@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpcurlk3kc20s"]
+
+[ext_resource type="Script" path="res://Code/GrowthEffect.gd" id="1_nlsje"]
+[ext_resource type="Texture2D" uid="uid://dqcgaa7tiw7tu" path="res://Images/Spread.png" id="2_mjkxl"]
+
+[node name="GrowthEffect" type="Node2D"]
+script = ExtResource("1_nlsje")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(10, 10)
+texture = ExtResource("2_mjkxl")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
