@@ -237,19 +237,19 @@ volume_db = -7.0
 
 [node name="BeerOverlay" type="Sprite2D" parent="Map"]
 visible = false
-z_index = 2
+z_index = 1
 texture = ExtResource("22_3h8j0")
 centered = false
 
 [node name="RainOverlay" type="Sprite2D" parent="Map"]
 visible = false
-z_index = 3
+z_index = 1
 texture = ExtResource("23_deieb")
 centered = false
 
 [node name="CellHighlight" type="Sprite2D" parent="Map"]
 visible = false
-z_index = 4
+z_index = 1
 texture = ExtResource("31_3mgxn")
 centered = false
 script = ExtResource("33_013ga")
@@ -284,7 +284,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MaskedBackground" type="Sprite2D" parent="."]
-z_index = 1
 texture = ExtResource("27_7p77l")
 centered = false
 
@@ -726,14 +725,12 @@ action_mode = 0
 [node name="Sidebar" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 595.0
+offset_left = 590.0
 offset_top = 5.0
 offset_right = 795.0
 offset_bottom = 445.0
 
 [node name="Records" type="VBoxContainer" parent="Sidebar"]
-visible = false
-z_index = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -743,7 +740,8 @@ grow_vertical = 2
 
 [node name="Title" type="Label" parent="Sidebar/Records"]
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.6
 text = "records"
 label_settings = SubResource("LabelSettings_n5omy")
 horizontal_alignment = 1
@@ -781,13 +779,46 @@ label_settings = SubResource("LabelSettings_g37cd")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Reset" type="Button" parent="Sidebar/Records"]
+[node name="Buttons" type="Control" parent="Sidebar/Records"]
 layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.6
+
+[node name="MuteButton" type="TextureButton" parent="Sidebar/Records/Buttons"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -10.0
+offset_right = -10.0
+offset_bottom = 10.0
+grow_horizontal = 0
+grow_vertical = 2
+toggle_mode = true
+texture_normal = ExtResource("62_y5gb0")
+texture_pressed = ExtResource("63_hkoqk")
+stretch_mode = 0
+
+[node name="Reset" type="Button" parent="Sidebar/Records/Buttons"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -55.5
+offset_top = -15.5
+offset_right = 55.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
 text = "reset records"
 
-[node name="InGameUI" type="VBoxContainer" parent="Sidebar"]
-z_index = 1
+[node name="InGameUI" type="Control" parent="Sidebar"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -795,26 +826,163 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TopContainer" type="HBoxContainer" parent="Sidebar/InGameUI"]
-layout_mode = 2
+[node name="NumberContainer" type="TextureRect" parent="Sidebar/InGameUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -102.5
+offset_right = 102.5
+offset_bottom = 55.0
+grow_horizontal = 2
+texture = ExtResource("30_voj48")
+stretch_mode = 2
 
-[node name="RoundLabel" type="Label" parent="Sidebar/InGameUI/TopContainer"]
+[node name="Numbers" type="HBoxContainer" parent="Sidebar/InGameUI/NumberContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Villagers" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Round 1"
-horizontal_alignment = 1
 
-[node name="ScoreLabel" type="Label" parent="Sidebar/InGameUI/TopContainer"]
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/Villagers"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("56_w2pu1")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Villagers"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "0 trees"
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yjfy3")
 horizontal_alignment = 1
+vertical_alignment = 2
 
-[node name="TopOption" type="Control" parent="Sidebar/InGameUI"]
+[node name="Beer" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/Beer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("31_r1sps")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Beer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_8p3eh")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Rain" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/Rain"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("32_xa7xr")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Rain"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_2bde0")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Growth" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/Growth"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("33_erdad")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Growth"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_rgpb0")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Druids" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/Druids"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("60_bhp0q")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Druids"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_wxrb3")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Treants" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/Treants"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("42_e0d5f")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Treants"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_3woos")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Options" type="VBoxContainer" parent="Sidebar/InGameUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 160
+
+[node name="Top" type="Control" parent="Sidebar/InGameUI/Options"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Button" type="TextureButton" parent="Sidebar/InGameUI/TopOption"]
+[node name="Button" type="TextureButton" parent="Sidebar/InGameUI/Options/Top"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -834,7 +1002,7 @@ texture_hover = ExtResource("52_bcv0s")
 texture_disabled = ExtResource("53_g8171")
 texture_focused = ExtResource("54_ndqc2")
 
-[node name="Label" type="Label" parent="Sidebar/InGameUI/TopOption/Button"]
+[node name="Label" type="Label" parent="Sidebar/InGameUI/Options/Top/Button"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -850,142 +1018,11 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Sidebar/InGameUI"]
-layout_mode = 2
-texture = ExtResource("30_voj48")
-
-[node name="Numbers" type="HBoxContainer" parent="Sidebar/InGameUI/TextureRect"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = -5.0
-offset_bottom = -5.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Villagers" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Villagers"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-texture = ExtResource("56_w2pu1")
-
-[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Villagers"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "0"
-label_settings = SubResource("LabelSettings_yjfy3")
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Beer" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Beer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-texture = ExtResource("31_r1sps")
-
-[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Beer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "0"
-label_settings = SubResource("LabelSettings_8p3eh")
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Rain" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Rain"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-texture = ExtResource("32_xa7xr")
-
-[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Rain"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "0"
-label_settings = SubResource("LabelSettings_2bde0")
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Growth" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Growth"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-texture = ExtResource("33_erdad")
-
-[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Growth"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "0"
-label_settings = SubResource("LabelSettings_rgpb0")
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Druids" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Druids"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-texture = ExtResource("60_bhp0q")
-
-[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Druids"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "0"
-label_settings = SubResource("LabelSettings_wxrb3")
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Treants" type="VBoxContainer" parent="Sidebar/InGameUI/TextureRect/Numbers"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/TextureRect/Numbers/Treants"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-texture = ExtResource("42_e0d5f")
-expand_mode = 2
-
-[node name="Label" type="Label" parent="Sidebar/InGameUI/TextureRect/Numbers/Treants"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "0"
-label_settings = SubResource("LabelSettings_3woos")
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="BottomOption" type="Control" parent="Sidebar/InGameUI"]
+[node name="Bottom" type="Control" parent="Sidebar/InGameUI/Options"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Button" type="TextureButton" parent="Sidebar/InGameUI/BottomOption"]
+[node name="Button" type="TextureButton" parent="Sidebar/InGameUI/Options/Bottom"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1005,7 +1042,7 @@ texture_hover = ExtResource("52_bcv0s")
 texture_disabled = ExtResource("53_g8171")
 texture_focused = ExtResource("54_ndqc2")
 
-[node name="Label" type="Label" parent="Sidebar/InGameUI/BottomOption/Button"]
+[node name="Label" type="Label" parent="Sidebar/InGameUI/Options/Bottom/Button"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1021,22 +1058,60 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="MuteButton" type="TextureButton" parent="Sidebar"]
-z_index = 5
+[node name="CoreStats" type="TextureRect" parent="Sidebar/InGameUI"]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 7
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = -20.0
-grow_horizontal = 0
+offset_left = -102.5
+offset_top = -55.0
+offset_right = 102.5
+grow_horizontal = 2
 grow_vertical = 0
+texture = ExtResource("30_voj48")
+
+[node name="Round" type="Label" parent="Sidebar/InGameUI/CoreStats"]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 3.0
+offset_right = 72.0
+offset_bottom = 29.0
+size_flags_horizontal = 3
+text = "round 1"
+horizontal_alignment = 1
+
+[node name="Score" type="Label" parent="Sidebar/InGameUI/CoreStats"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -27.0
+offset_right = 203.0
+offset_bottom = -1.0
+grow_vertical = 0
+size_flags_horizontal = 3
+text = "0 trees"
+
+[node name="MuteButton" type="TextureButton" parent="Sidebar/InGameUI/CoreStats"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -10.0
+offset_right = -10.0
+offset_bottom = 10.0
+grow_horizontal = 0
+grow_vertical = 2
 toggle_mode = true
 texture_normal = ExtResource("62_y5gb0")
 texture_pressed = ExtResource("63_hkoqk")
-stretch_mode = 3
+stretch_mode = 0
 
 [connection signal="advancement_done" from="Map" to="." method="_on_map_advancement_done"]
 [connection signal="advancement_step_done" from="Map" to="." method="_on_map_advancement_step_done"]
@@ -1050,7 +1125,8 @@ stretch_mode = 3
 [connection signal="pressed" from="MapOverlay/LevelSelection/PrevLevelButton" to="." method="_on_prev_level_button_pressed"]
 [connection signal="pressed" from="MapOverlay/LevelSelection/NextLevelButton" to="." method="_on_next_level_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PostGame/ToLevelSelection" to="." method="_on_to_level_selection_pressed"]
-[connection signal="pressed" from="Sidebar/Records/Reset" to="." method="_on_reset_records_pressed"]
-[connection signal="pressed" from="Sidebar/InGameUI/TopOption/Button" to="." method="_on_top_option_pressed"]
-[connection signal="pressed" from="Sidebar/InGameUI/BottomOption/Button" to="." method="_on_bottom_option_pressed"]
-[connection signal="pressed" from="Sidebar/MuteButton" to="." method="_on_mute_button_pressed"]
+[connection signal="pressed" from="Sidebar/Records/Buttons/MuteButton" to="." method="_on_record_mute_button_pressed"]
+[connection signal="pressed" from="Sidebar/Records/Buttons/Reset" to="." method="_on_reset_records_pressed"]
+[connection signal="pressed" from="Sidebar/InGameUI/Options/Top/Button" to="." method="_on_top_option_pressed"]
+[connection signal="pressed" from="Sidebar/InGameUI/Options/Bottom/Button" to="." method="_on_bottom_option_pressed"]
+[connection signal="pressed" from="Sidebar/InGameUI/CoreStats/MuteButton" to="." method="_on_in_game_mute_button_pressed"]

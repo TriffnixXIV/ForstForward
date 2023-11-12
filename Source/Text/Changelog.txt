@@ -1,5 +1,6 @@
 Mechanics:
 	- villagers are now more performant when looking for trees to chop
+		- also, they are now looking for trees up to distance 30 instead of 20
 
 Bug fixes & QoL:
 	- maybe fixed: sometimes, villagers were outside of the map, leading to a few possible crashes
@@ -10,3 +11,7 @@ Bug fixes & QoL:
 			before the map transition even started, leading to the map only having forests, as in the main menu,
 			triggering the win condition
 		- now, levels can only be started once the map transition is complete
+
+UI:
+	- changed the mute button
+	- changed the in-game UI

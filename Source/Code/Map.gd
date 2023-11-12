@@ -718,10 +718,11 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, from_treant: bool 
 					cell_entries[i][2] = growable_amount
 					tree_amount -= growable_amount
 				else: # all remaining cells need more than the fair share
-					# if the remaining amount of trees can be equally distributed, do thath
+					# if the remaining amount of trees can be equally distributed, do that
 					if tree_amount % remaining_cells == 0:
+						var fair_share = int(tree_amount / float(remaining_cells))
 						for i2 in remaining_cells:
-							cell_entries[i2][2] = tree_amount / remaining_cells
+							cell_entries[i2][2] = fair_share
 					# otherwise divide the next-less amount of equally distributable trees equally,
 					# then distribute the remaining trees randomly
 					else:

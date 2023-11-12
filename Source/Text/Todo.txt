@@ -17,20 +17,19 @@ Mechanics:
 		- can backfire when placed badly
 	- add level-specific features to make maps stand out more (high prio)
 	- remove skip round, because it trivializes some records (mid prio)
-	- overgrowing houses instead of de-building them (low prio)
+	- overgrowing houses instead of de-building them (undecided)
 		overgrown houses count as forest and need less steps to recover than currently
-	- maybe replace weight-based random action generation with deck-like drawable actions (low prio)
+	- maybe replace weight-based random action generation with deck-like drawable actions (undecided)
 		- not that much of a difference at this point?
 
 Bug fixes & QoL:
 	-
 
 UI:
-	- change InGameUI elements (high prio)
 	- change reset record button (high prio)
 	- make record sidebar more fancy (high prio)
 	- add info tab (mid prio)
-	- re-order: (low prio)
+	- re-order: (undecided)
 		- centered map
 		- options below
 		- forest stats left

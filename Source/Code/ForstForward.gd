@@ -196,10 +196,10 @@ func next_actions():
 	bottom_action.set_action(new_actions[1])
 
 func update_top_action_text():
-	$Sidebar/InGameUI/TopOption/Button/Label.text = top_action.get_full_text()
+	$Sidebar/InGameUI/Options/Top/Button/Label.text = top_action.get_full_text()
 
 func update_bottom_action_text():
-	$Sidebar/InGameUI/BottomOption/Button/Label.text = bottom_action.get_full_text()
+	$Sidebar/InGameUI/Options/Bottom/Button/Label.text = bottom_action.get_full_text()
 
 func _on_top_option_pressed():
 	enact_top_option()
@@ -208,15 +208,15 @@ func _on_bottom_option_pressed():
 	enact_bottom_option()
 
 func enact_top_option():
-	if not $Sidebar/InGameUI/TopOption/Button.disabled:
-		if not $Sidebar/InGameUI/TopOption/Button.has_focus():
-			$Sidebar/InGameUI/TopOption/Button.grab_focus()
+	if not $Sidebar/InGameUI/Options/Top/Button.disabled:
+		if not $Sidebar/InGameUI/Options/Top/Button.has_focus():
+			$Sidebar/InGameUI/Options/Top/Button.grab_focus()
 		enact_option(top_action)
 
 func enact_bottom_option():
-	if not $Sidebar/InGameUI/BottomOption/Button.disabled:
-		if not $Sidebar/InGameUI/BottomOption/Button.has_focus():
-			$Sidebar/InGameUI/BottomOption/Button.grab_focus()
+	if not $Sidebar/InGameUI/Options/Bottom/Button.disabled:
+		if not $Sidebar/InGameUI/Options/Bottom/Button.has_focus():
+			$Sidebar/InGameUI/Options/Bottom/Button.grab_focus()
 		enact_option(bottom_action)
 
 func enact_option(action: Action):
@@ -249,30 +249,30 @@ func _on_action_advance_failure():
 func lock_selection(full_lock: bool = false):
 	selection_locked = true
 	
-	$Sidebar/InGameUI/TopOption/Button.disabled = true
-	$Sidebar/InGameUI/BottomOption/Button.disabled = true
+	$Sidebar/InGameUI/Options/Top/Button.disabled = true
+	$Sidebar/InGameUI/Options/Bottom/Button.disabled = true
 	
 	if full_lock:
-		$Sidebar/InGameUI/TopOption/Button.set_focus_mode(Control.FOCUS_NONE)
-		$Sidebar/InGameUI/BottomOption/Button.set_focus_mode(Control.FOCUS_NONE)
+		$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_NONE)
+		$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_NONE)
 	else:
 		if selected_action == bottom_action:
-			$Sidebar/InGameUI/TopOption/Button.set_focus_mode(Control.FOCUS_NONE)
+			$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_NONE)
 		else:
-			$Sidebar/InGameUI/BottomOption/Button.set_focus_mode(Control.FOCUS_NONE)
+			$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_NONE)
 
 func unlock_selection():
 	selection_locked = false
 	
-	$Sidebar/InGameUI/TopOption/Button.disabled = false
-	$Sidebar/InGameUI/TopOption/Button.set_focus_mode(Control.FOCUS_ALL)
-	$Sidebar/InGameUI/BottomOption/Button.disabled = false
-	$Sidebar/InGameUI/BottomOption/Button.set_focus_mode(Control.FOCUS_ALL)
+	$Sidebar/InGameUI/Options/Top/Button.disabled = false
+	$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_ALL)
+	$Sidebar/InGameUI/Options/Bottom/Button.disabled = false
+	$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_ALL)
 
 func skip_round():
 	if $Map.current_phase == $Map.Phase.idle:
-		$Sidebar/InGameUI/TopOption/Button.disabled = true
-		$Sidebar/InGameUI/BottomOption/Button.disabled = true
+		$Sidebar/InGameUI/Options/Top/Button.disabled = true
+		$Sidebar/InGameUI/Options/Bottom/Button.disabled = true
 		advance()
 
 func advance():
@@ -282,11 +282,11 @@ func advance():
 	if game_state == GameState.playing:
 		update_UI()
 		
-		$Sidebar/InGameUI/TopOption/Button.set_focus_mode(Control.FOCUS_NONE)
-		$Sidebar/InGameUI/TopOption/Button/Label.text = ""
+		$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_NONE)
+		$Sidebar/InGameUI/Options/Top/Button/Label.text = ""
 		
-		$Sidebar/InGameUI/BottomOption/Button.set_focus_mode(Control.FOCUS_NONE)
-		$Sidebar/InGameUI/BottomOption/Button/Label.text = ""
+		$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_NONE)
+		$Sidebar/InGameUI/Options/Bottom/Button/Label.text = ""
 		$Map.advance()
 
 func _on_map_score_changed():
@@ -352,15 +352,15 @@ func reset_highscore_highlighting():
 	$Sidebar/Records/FastestLoss.label_settings.shadow_color = Color(0, 1, 0, 0)
 
 func update_numbers():
-	$Sidebar/InGameUI/TextureRect/Numbers/Villagers/Label.text = str(len($Map.villagers))
-	$Sidebar/InGameUI/TextureRect/Numbers/Beer/Label.text = str($Map.beer_level)
-	$Sidebar/InGameUI/TextureRect/Numbers/Beer/Label.label_settings.shadow_color = Color(0.5, 0, 1, 1) if $Map.beer_level > 0 else Color(0, 1, 0, 0)
-	$Sidebar/InGameUI/TextureRect/Numbers/Rain/Label.text = str($Map.rain_duration)
-	$Sidebar/InGameUI/TextureRect/Numbers/Rain/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.is_raining() else Color(0, 1, 0, 0)
-	$Sidebar/InGameUI/TextureRect/Numbers/Growth/Label.text = str($Map.get_growth_stages())
-	$Sidebar/InGameUI/TextureRect/Numbers/Growth/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.get_growth_stages() == 2 and $Map.is_raining() else Color(0, 1, 0, 1) if $Map.get_growth_stages() > 1 else Color(0, 1, 0, 0)
-	$Sidebar/InGameUI/TextureRect/Numbers/Druids/Label.text = str(len($Map.druids))
-	$Sidebar/InGameUI/TextureRect/Numbers/Treants/Label.text = str(len($Map.treants))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.text = str(len($Map.villagers))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Beer/Label.text = str($Map.beer_level)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Beer/Label.label_settings.shadow_color = Color(0.5, 0, 1, 1) if $Map.beer_level > 0 else Color(0, 1, 0, 0)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.text = str($Map.rain_duration)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.is_raining() else Color(0, 1, 0, 0)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.text = str($Map.get_growth_stages())
+	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.get_growth_stages() == 2 and $Map.is_raining() else Color(0, 1, 0, 1) if $Map.get_growth_stages() > 1 else Color(0, 1, 0, 0)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.text = str(len($Map.druids))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.text = str(len($Map.treants))
 
 func update_score():
 	score = $Map.get_score()
@@ -368,10 +368,10 @@ func update_score():
 		lose_game()
 	elif score == $Map.highest_possible_score:
 		win_game()
-	$Sidebar/InGameUI/TopContainer/ScoreLabel.text = str(score) + " trees"
+	$Sidebar/InGameUI/CoreStats/Score.text = str(score) + " trees"
 
 func update_round():
-	$Sidebar/InGameUI/TopContainer/RoundLabel.text = "round " + str(current_round)
+	$Sidebar/InGameUI/CoreStats/Round.text = "round " + str(current_round)
 
 func update_stats():
 	$MapOverlay/PostGame/Stats/Horst/TreesFelled.text = str($Map.total_felled_trees) + " trees felled"
@@ -467,12 +467,18 @@ func _on_reset_records_pressed():
 	update_highscores()
 	$Map.save_player_data()
 
-func _on_mute_button_pressed():
-	AudioServer.set_bus_mute(0, $Sidebar/MuteButton.button_pressed)
+func _on_record_mute_button_pressed():
+	set_muted($Sidebar/Records/Buttons/MuteButton.button_pressed)
+
+func _on_in_game_mute_button_pressed():
+	set_muted($Sidebar/InGameUI/CoreStats/MuteButton.button_pressed)
 
 func set_muted(boolean: bool):
 	AudioServer.set_bus_mute(0, boolean)
-	$Sidebar/MuteButton.button_pressed = boolean
+	$Sidebar/Records/Buttons/MuteButton.button_pressed = boolean
+	$Sidebar/InGameUI/CoreStats/MuteButton.button_pressed = boolean
+	if not boolean:
+		play_success_sound()
 
 func is_muted():
 	return AudioServer.is_bus_mute(0)
