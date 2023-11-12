@@ -1,0 +1,28 @@
+[gd_scene load_steps=17 format=3 uid="uid://bcdc607uvvqyb"]
+
+[ext_resource type="Script" path="res://Code/Crystal.gd" id="1_aiyvn"]
+[ext_resource type="Texture2D" uid="uid://b68ona1f4np40" path="res://Images/Crystals/CrystalPurple0.png" id="2_r3qik"]
+[ext_resource type="Texture2D" uid="uid://2agcjyvfiarv" path="res://Images/Crystals/CrystalPurple1.png" id="3_4xgow"]
+[ext_resource type="Texture2D" uid="uid://cyfy1n07m11os" path="res://Images/Crystals/CrystalPurple2.png" id="4_7dhj5"]
+[ext_resource type="Texture2D" uid="uid://dod8tjvi0fyvp" path="res://Images/Crystals/CrystalPurple3.png" id="5_qbpng"]
+[ext_resource type="Texture2D" uid="uid://djv37cpa2njen" path="res://Images/Crystals/CrystalPurpleFull.png" id="6_nnl34"]
+[ext_resource type="Texture2D" uid="uid://c60mxkfb21kup" path="res://Images/Crystals/CrystalGreen0.png" id="7_4u5eq"]
+[ext_resource type="Texture2D" uid="uid://cagl6sssbu4m0" path="res://Images/Crystals/CrystalGreen1.png" id="8_a4465"]
+[ext_resource type="Texture2D" uid="uid://bt070pm8f10kb" path="res://Images/Crystals/CrystalGreen2.png" id="9_jf8ov"]
+[ext_resource type="Texture2D" uid="uid://dgfylvmkgmpsb" path="res://Images/Crystals/CrystalGreen3.png" id="10_xdpea"]
+[ext_resource type="Texture2D" uid="uid://c1eo5ifgm0dat" path="res://Images/Crystals/CrystalGreenFull.png" id="11_8iqn2"]
+[ext_resource type="Texture2D" uid="uid://vr76g07kec34" path="res://Images/Crystals/CrystalBlue0.png" id="12_bjrmd"]
+[ext_resource type="Texture2D" uid="uid://imvvu23jsnlm" path="res://Images/Crystals/CrystalBlue1.png" id="13_mdp4h"]
+[ext_resource type="Texture2D" uid="uid://cwnyu2pa1dajm" path="res://Images/Crystals/CrystalBlue2.png" id="14_nc8ad"]
+[ext_resource type="Texture2D" uid="uid://c12w6kn125hpr" path="res://Images/Crystals/CrystalBlue3.png" id="15_edtxd"]
+[ext_resource type="Texture2D" uid="uid://c82bnqhtjhkwq" path="res://Images/Crystals/CrystalBlueFull.png" id="16_1d6ba"]
+
+[node name="Crystal" type="Node2D"]
+script = ExtResource("1_aiyvn")
+life_crystal_stages = Array[Texture2D]([ExtResource("2_r3qik"), ExtResource("3_4xgow"), ExtResource("4_7dhj5"), ExtResource("5_qbpng"), ExtResource("6_nnl34")])
+growth_crystal_stages = Array[Texture2D]([ExtResource("7_4u5eq"), ExtResource("8_a4465"), ExtResource("9_jf8ov"), ExtResource("10_xdpea"), ExtResource("11_8iqn2")])
+weather_crystal_stages = Array[Texture2D]([ExtResource("12_bjrmd"), ExtResource("13_mdp4h"), ExtResource("14_nc8ad"), ExtResource("15_edtxd"), ExtResource("16_1d6ba")])
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("12_bjrmd")
+centered = false

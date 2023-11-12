@@ -1,6 +1,10 @@
 Mechanics:
-	- villagers are now more performant when looking for trees to chop
-		- also, they are now looking for trees up to distance 30 instead of 20
+	- added action upgrades that can be obtained through crystals
+		- I will elaborate later
+	- villager changes:
+		- they are now more performant when looking for trees to chop
+		- they are now looking for trees up to distance 30 instead of 20
+		- now only have 12 actions again
 
 Bug fixes & QoL:
 	- maybe fixed: sometimes, villagers were outside of the map, leading to a few possible crashes

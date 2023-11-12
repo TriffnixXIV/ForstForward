@@ -1,4 +1,4 @@
-[gd_scene load_steps=91 format=3 uid="uid://dd6kw8u6mewcl"]
+[gd_scene load_steps=96 format=3 uid="uid://dd6kw8u6mewcl"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -22,6 +22,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/Levels/Level4.tscn" id="18_ngmoe"]
 [ext_resource type="PackedScene" path="res://Scenes/Levels/Level5.tscn" id="19_qo6jg"]
 [ext_resource type="Texture2D" uid="uid://bpo1h2fjic7l2" path="res://Images/BeerOverlay.png" id="22_3h8j0"]
+[ext_resource type="PackedScene" uid="uid://bcdc607uvvqyb" path="res://Scenes/Crystal.tscn" id="22_iqv4p"]
 [ext_resource type="Texture2D" uid="uid://c56838mmyrs1r" path="res://Images/RainOverlay.png" id="23_deieb"]
 [ext_resource type="PackedScene" uid="uid://bmrv7mgrpf6mp" path="res://Scenes/Blast.tscn" id="23_fm4bp"]
 [ext_resource type="PackedScene" uid="uid://cpcurlk3kc20s" path="res://Scenes/GrowthEffect.tscn" id="24_hbdlb"]
@@ -66,6 +67,10 @@
 [ext_resource type="Texture2D" uid="uid://sw1gahi5bvs0" path="res://Images/DruidStuff/Druid.png" id="60_bhp0q"]
 [ext_resource type="Texture2D" uid="uid://ds1gxf71eg7jm" path="res://Images/MuteButton/MuteButton.png" id="62_y5gb0"]
 [ext_resource type="Texture2D" uid="uid://cyjstqtiplehm" path="res://Images/MuteButton/MuteButtonPressed.png" id="63_hkoqk"]
+[ext_resource type="Script" path="res://Code/ButtonSparks.gd" id="67_75gqh"]
+[ext_resource type="Texture2D" uid="uid://b6bd7bg0wfhx2" path="res://Images/OptionButton/GreenSparks.png" id="68_bs5cj"]
+[ext_resource type="Texture2D" uid="uid://clagadh0qvmfo" path="res://Images/OptionButton/BlueSparks.png" id="69_d0ki3"]
+[ext_resource type="Texture2D" uid="uid://i6ojj323noyv" path="res://Images/OptionButton/PurpleSparks.png" id="70_ce7ok"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ufopn"]
 texture = ExtResource("7_gswc0")
@@ -203,6 +208,7 @@ ForestEdge = ExtResource("5_4pb2x")
 Villager = ExtResource("8_kr2na")
 Druid = ExtResource("9_y30ib")
 Treant = ExtResource("17_rglu0")
+CrystalScene = ExtResource("22_iqv4p")
 LightningStrike = ExtResource("25_g2uic")
 Blast = ExtResource("23_fm4bp")
 GrowthEffect = ExtResource("24_hbdlb")
@@ -237,19 +243,19 @@ volume_db = -7.0
 
 [node name="BeerOverlay" type="Sprite2D" parent="Map"]
 visible = false
-z_index = 1
+z_index = 2
 texture = ExtResource("22_3h8j0")
 centered = false
 
 [node name="RainOverlay" type="Sprite2D" parent="Map"]
 visible = false
-z_index = 1
+z_index = 2
 texture = ExtResource("23_deieb")
 centered = false
 
 [node name="CellHighlight" type="Sprite2D" parent="Map"]
 visible = false
-z_index = 1
+z_index = 2
 texture = ExtResource("31_3mgxn")
 centered = false
 script = ExtResource("33_013ga")
@@ -1003,6 +1009,18 @@ texture_hover = ExtResource("52_bcv0s")
 texture_disabled = ExtResource("53_g8171")
 texture_focused = ExtResource("54_ndqc2")
 
+[node name="Sparks" type="TextureRect" parent="Sidebar/InGameUI/Options/Top/Button"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("67_75gqh")
+green_spark_texture = ExtResource("68_bs5cj")
+blue_spark_texture = ExtResource("69_d0ki3")
+purple_spark_texture = ExtResource("70_ce7ok")
+
 [node name="Label" type="Label" parent="Sidebar/InGameUI/Options/Top/Button"]
 layout_mode = 1
 anchors_preset = 15
@@ -1042,6 +1060,20 @@ texture_pressed = ExtResource("51_bldow")
 texture_hover = ExtResource("52_bcv0s")
 texture_disabled = ExtResource("53_g8171")
 texture_focused = ExtResource("54_ndqc2")
+
+[node name="Sparks" type="TextureRect" parent="Sidebar/InGameUI/Options/Bottom/Button"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flip_h = true
+flip_v = true
+script = ExtResource("67_75gqh")
+green_spark_texture = ExtResource("68_bs5cj")
+blue_spark_texture = ExtResource("69_d0ki3")
+purple_spark_texture = ExtResource("70_ce7ok")
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/Options/Bottom/Button"]
 layout_mode = 1

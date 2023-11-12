@@ -56,10 +56,6 @@ func get_available_upgrades(category: Category):
 			#  villagers
 			available_upgrades.append(
 				Upgrade.new("Villager", "actions", map.base_villager_actions - 1, map.base_villager_actions))
-			
-			specifier = action_factory.base_action_data[Action.Type.beer]["specifier"]
-			available_upgrades.append(
-				Upgrade.new("Beer", "amount", specifier + 1, specifier))
 	
 		Category.growth:
 			specifier = action_factory.base_action_data[Action.Type.overgrowth]["specifier"]
@@ -82,5 +78,9 @@ func get_available_upgrades(category: Category):
 			specifier = action_factory.base_action_data[Action.Type.lightning_strike]["specifier"]
 			available_upgrades.append(
 				Upgrade.new("Lightning", "amount", specifier + 1, specifier))
+			
+			specifier = action_factory.base_action_data[Action.Type.beer]["specifier"]
+			available_upgrades.append(
+				Upgrade.new("Beer", "amount", specifier + 1, specifier))
 	
 	return available_upgrades

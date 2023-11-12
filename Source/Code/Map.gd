@@ -27,11 +27,21 @@ var done_druid_count = 0
 var treants: Array[Treant] = []
 var done_treant_count = 0
 
+@export var CrystalScene: PackedScene
+var crystals: Array[Crystal] = []
+var cell_crystal_map = {}
+var crystal_spawn_chances = {
+	Crystal.Type.life: 0.0,
+	Crystal.Type.growth: 0.0,
+	Crystal.Type.weather: 0.0
+}
+var fully_grown_crystals = []
+
 @export var LightningStrike: PackedScene
 @export var Blast: PackedScene
 @export var GrowthEffect: PackedScene
 
-var base_villager_actions = 15
+var base_villager_actions = 12
 var base_druid_actions = 8
 var base_treant_actions = 8
 
@@ -292,6 +302,58 @@ func advance():
 	$AdvancementStart.play()
 	current_phase = Phase.starting
 	$Timer.start()
+	
+	match randi_range(1, 3):
+		1:	crystal_spawn_chances[Crystal.Type.life] += 0.1
+		2:	crystal_spawn_chances[Crystal.Type.growth] += 0.1
+		3:	crystal_spawn_chances[Crystal.Type.weather] += 0.1
+	
+	for crystal in crystals:
+		crystal.grow()
+		if crystal.is_grown():
+			fully_grown_crystals.append(crystal)
+	plant_crystals()
+
+func plant_crystals():
+	var pending_crystal_spawns: Array[Crystal.Type] = []
+	for type in crystal_spawn_chances:
+		while crystal_spawn_chances[type] >= 1:
+			pending_crystal_spawns.append(type)
+			crystal_spawn_chances[type] -= 1.0
+	
+	if len(pending_crystal_spawns) > 0:
+		var weighted_forest_cells = []
+		var total_weight = 0
+		for x in width:
+			for y in height:
+				var cell = Vector2i(x, y)
+				if is_forest(cell) and not cell in cell_crystal_map:
+					var weight = 0
+					for diff in [
+						Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1),
+						Vector2i(1, 1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, -1)]:
+						if is_forest(cell + diff) and cell + diff in cell_crystal_map:
+							weight += 8
+						elif not is_valid_tile(cell + diff):
+							weight += 4
+						elif is_forest(cell + diff):
+							weight += 2
+					if weight > 0:
+						weighted_forest_cells.append([cell, weight])
+						total_weight += weight
+		
+		for _x in min(len(weighted_forest_cells), len(pending_crystal_spawns)):
+			var x = randi_range(1, total_weight)
+			for i in len(weighted_forest_cells):
+				var cell = weighted_forest_cells[i][0]
+				var weight = weighted_forest_cells[i][1]
+				if x <= weight:
+					spawn_crystal(cell, pending_crystal_spawns.pop_front())
+					weighted_forest_cells.remove_at(i)
+					total_weight -= weight
+					break
+				else:
+					x -= weight
 
 func start_druid_phase():
 	if len(druids) == 0 and len(treants) == 0:
@@ -533,6 +595,8 @@ func set_yield(cell_position: Vector2i, amount: int):
 			set_plains(cell_position)
 		if previous_yield >= 10 and amount < 10:
 			update_cell_forest_edges(cell_position)
+			if cell_position in cell_crystal_map:
+				crystal_has_cracked(cell_crystal_map[cell_position])
 
 func get_building_progress(cell_position: Vector2i):
 	if is_house(cell_position):
@@ -593,7 +657,6 @@ func spawn_villager(cell_position: Vector2i):
 	if not current_phase == Phase.transitioning:
 		total_born_villagers += 1
 	highest_villager_count = max(highest_villager_count, len(villagers))
-	
 
 func despawn_villager_at(cell_position: Vector2i, also_horst: bool = false):
 	if cell_position in home_cell_villager_map:
@@ -888,3 +951,34 @@ func blast_with_fire(cell_position: Vector2i):
 func remove_blast(blast: Blast):
 	remove_child(blast)
 	blast.queue_free()
+
+func spawn_crystal(cell_position: Vector2i, type: Crystal.Type):
+	var crystal: Crystal = CrystalScene.instantiate()
+	crystal.position.x = cell_position.x * tile_set.tile_size.x
+	crystal.position.y = cell_position.y * tile_set.tile_size.y
+	crystal.connect("cracked", crystal_has_cracked)
+	add_child(crystal)
+	
+	crystal.map = self
+	crystal.cell_position = cell_position
+	crystal.type = type
+	crystal.update_texture()
+	crystals.append(crystal)
+	cell_crystal_map[cell_position] = crystal
+
+func crystal_has_cracked(crystal: Crystal):
+	crystals.erase(crystal)
+	cell_crystal_map.erase(crystal.cell_position)
+	if crystal.is_grown():
+		fully_grown_crystals.erase(crystal)
+	remove_child(crystal)
+	crystal.queue_free()
+
+func claim_crystal():
+	var crystal = fully_grown_crystals.pop_front()
+	var type = crystal.type
+	crystals.erase(crystal)
+	cell_crystal_map.erase(crystal.cell_position)
+	remove_child(crystal)
+	crystal.queue_free()
+	return type

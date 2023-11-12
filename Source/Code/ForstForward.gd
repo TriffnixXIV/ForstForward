@@ -202,7 +202,7 @@ func next_turn_step():
 		$Sidebar/InGameUI/Options/Bottom/Button.release_focus()
 	if $Sidebar/InGameUI/Options/Top/Button.has_focus():
 		$Sidebar/InGameUI/Options/Top/Button.release_focus()
-	if len(pending_upgrades) > 0:
+	if len($Map.fully_grown_crystals) > 0:
 		upgrading = true
 		next_upgrades()
 	else:
@@ -210,18 +210,36 @@ func next_turn_step():
 		next_actions()
 
 func next_upgrades():
-	var new_upgrades = upgrade_factory.get_upgrades(pending_upgrades.pop_back())
+	var upgrade_category = null
+	match $Map.claim_crystal():
+		Crystal.Type.life:		upgrade_category = UpgradeFactory.Category.life
+		Crystal.Type.growth:	upgrade_category = UpgradeFactory.Category.growth
+		Crystal.Type.weather:	upgrade_category = UpgradeFactory.Category.weather
+	var new_upgrades = upgrade_factory.get_upgrades(upgrade_category)
 	
 	top_upgrade.set_upgrade(new_upgrades[0])
 	bottom_upgrade.set_upgrade(new_upgrades[1])
+	
+	var spark_color = null
+	match upgrade_category:
+		UpgradeFactory.Category.life:		spark_color = ButtonSparks.SparkColor.purple
+		UpgradeFactory.Category.growth:		spark_color = ButtonSparks.SparkColor.green
+		UpgradeFactory.Category.weather:	spark_color = ButtonSparks.SparkColor.blue
+	
 	$Sidebar/InGameUI/Options/Top/Button/Label.text = top_upgrade.get_text()
+	$Sidebar/InGameUI/Options/Top/Button/Sparks.visible = true
+	$Sidebar/InGameUI/Options/Top/Button/Sparks.set_color(spark_color)
 	$Sidebar/InGameUI/Options/Bottom/Button/Label.text = bottom_upgrade.get_text()
+	$Sidebar/InGameUI/Options/Bottom/Button/Sparks.visible = true
+	$Sidebar/InGameUI/Options/Bottom/Button/Sparks.set_color(spark_color)
 
 func next_actions():
 	var new_actions = action_factory.get_actions(current_round)
 	
 	top_action.set_action(new_actions[0])
 	bottom_action.set_action(new_actions[1])
+	$Sidebar/InGameUI/Options/Top/Button/Sparks.visible = false
+	$Sidebar/InGameUI/Options/Bottom/Button/Sparks.visible = false
 
 func update_top_action_text():
 	$Sidebar/InGameUI/Options/Top/Button/Label.text = top_action.get_full_text()
@@ -316,6 +334,15 @@ func skip_round():
 
 func advance():
 	lock_selection(true)
+	match selected_action.type:
+		Action.Type.spawn_treant:		$Map.crystal_spawn_chances[Crystal.Type.life] += 0.3
+		Action.Type.spawn_druid:		$Map.crystal_spawn_chances[Crystal.Type.life] += 0.3
+		Action.Type.overgrowth:			$Map.crystal_spawn_chances[Crystal.Type.growth] += 0.3
+		Action.Type.spread:				$Map.crystal_spawn_chances[Crystal.Type.growth] += 0.3
+		Action.Type.plant:				$Map.crystal_spawn_chances[Crystal.Type.growth] += 0.3
+		Action.Type.rain:				$Map.crystal_spawn_chances[Crystal.Type.weather] += 0.3
+		Action.Type.lightning_strike:	$Map.crystal_spawn_chances[Crystal.Type.weather] += 0.3
+		Action.Type.beer:				$Map.crystal_spawn_chances[Crystal.Type.weather] += 0.3 # this will make sense once beer becomes snow
 	selected_action = null
 	
 	if game_state == GameState.playing:
@@ -336,10 +363,6 @@ func _on_map_advancement_step_done():
 	update_numbers()
 
 func _on_map_advancement_done():
-	match randi_range(1, 3):
-		1: pending_upgrades.append(UpgradeFactory.Category.life)
-		2: pending_upgrades.append(UpgradeFactory.Category.growth)
-		3: pending_upgrades.append(UpgradeFactory.Category.weather)
 	start_next_round()
 
 func start_next_round():
