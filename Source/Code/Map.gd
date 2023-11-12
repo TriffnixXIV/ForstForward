@@ -57,8 +57,11 @@ var growth_boost = 0
 var remaining_growth_stages = 0
 
 var rain_duration = 0
-
 var beer_level = 0
+
+var show_cell_labels = false
+var cell_labels: Array[Array]
+var cell_tree_distance_map: Array[Array]
 
 enum Phase {transitioning, idle, starting, druids, growth, villagers}
 var current_phase = Phase.idle
@@ -80,6 +83,28 @@ func _ready():
 	array.resize(width)
 	for y in height + 1:
 		vertical_forest_edges.append(array.duplicate())
+	
+	cell_tree_distance_map = []
+	array.resize(height)
+	array.fill(width + height + 1)
+	for x in width:
+		cell_tree_distance_map.append(array.duplicate())
+	
+	if show_cell_labels:
+		$CellNumbers.visible = true
+		cell_labels = []
+		for x in width:
+			cell_labels.append(array.duplicate())
+			for y in height:
+				var label = Label.new()
+				label.size = Vector2i(20, 20)
+				label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+				label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				label.label_settings = $CellNumbers/Dummy.label_settings
+				label.position.x = x * 20
+				label.position.y = y * 20
+				cell_labels[x][y] = label
+				$CellNumbers.add_child(label)
 
 func _process(delta):
 	if transition_progress < transition_duration and len(transition_info) > 0:
@@ -327,6 +352,7 @@ func start_villager_phase():
 	current_phase = Phase.villagers
 	for villager in villagers:
 		villager.prepare_turn()
+	update_cell_tree_distance_map()
 	all_villagers_are_done_with_this_step = true
 	$Timer.start()
 
@@ -379,6 +405,35 @@ func finish_advancement():
 
 # miscellaneous advancement stuff
 
+func reset_cell_tree_distance_map():
+	for x in width:
+		for y in height:
+			cell_tree_distance_map[x][y] = width + height + 1
+
+func update_cell_tree_distance_map():
+	reset_cell_tree_distance_map()
+	
+	for x in width:
+		for y in height:
+			for cell in [Vector2i(x, y), Vector2i(width - x - 1, height - y - 1)]:
+				var x_1 = cell.x
+				var y_1 = cell.y
+				if get_yield(cell) > 0:
+					cell_tree_distance_map[x_1][y_1] = 0
+				else:
+					for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+						var x_2 = cell.x + diff.x
+						var y_2 = cell.y + diff.y
+						if x_2 >= 0 and x_2 < width and y_2 >= 0 and y_2 < height:
+							cell_tree_distance_map[x_1][y_1] = min(cell_tree_distance_map[x_1][y_1], cell_tree_distance_map[x_2][y_2] + 1)
+
+func set_cell_tree_distance(cell: Vector2i, distance: int):
+	if cell.x >= 0 and cell.x < width and cell.y >= 0 and cell.y < height:
+		if distance > cell_tree_distance_map[cell.x][cell.y]:
+			cell_tree_distance_map[cell.x][cell.y] = distance
+			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+				set_cell_tree_distance(cell + diff, distance - 1)
+
 func get_growth_stages():
 	var growth_stages = base_growth_stages + growth_boost
 	if rain_duration > 0:
@@ -416,6 +471,12 @@ func update_beer_overlay():
 		$BeerOverlay.modulate.a = min(1, beer_level / 10.0)
 	else:
 		$BeerOverlay.visible = false
+
+func set_cell_labels(values: Array[Array]):
+	if show_cell_labels:
+		for x in width:
+			for y in height:
+				cell_labels[x][y].text = str(values[x][y])
 
 # cell changes
 

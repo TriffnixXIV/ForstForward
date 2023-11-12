@@ -1,5 +1,12 @@
 Mechanics:
-	- 
+	- villagers are now more performant when looking for trees to chop
 
 Bug fixes & QoL:
+	- maybe fixed: sometimes, villagers were outside of the map, leading to a few possible crashes
+		- I think this was due to them also valueing building spots outside of the map, which they now no longer do
 	- fixed: rain possibility was not set correctly, leading to a few inefficiencies
+	- fixed: pressing two buttons at the same time in the main menu instantly won the game
+		- this was due to the first entering the level select and the second starting the game,
+			before the map transition even started, leading to the map only having forests, as in the main menu,
+			triggering the win condition
+		- now, levels can only be started once the map transition is complete

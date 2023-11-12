@@ -1,4 +1,4 @@
-[gd_scene load_steps=90 format=3 uid="uid://dd6kw8u6mewcl"]
+[gd_scene load_steps=91 format=3 uid="uid://dd6kw8u6mewcl"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -44,6 +44,7 @@
 [ext_resource type="Texture2D" uid="uid://xk3vg20yrq4e" path="res://Images/Highlights/LargeGreenHighlight.png" id="35_3tfe7"]
 [ext_resource type="Texture2D" uid="uid://cqu2nut45lepw" path="res://Images/Highlights/LargeHighlight.png" id="36_1cjcc"]
 [ext_resource type="Texture2D" uid="uid://c7ix3anx83jq7" path="res://Images/Highlights/LargeRedHighlight.png" id="37_k0mh1"]
+[ext_resource type="LabelSettings" uid="uid://bterirwd56o63" path="res://Text/CellNumberLabelSettings.tres" id="41_7rtjq"]
 [ext_resource type="Texture2D" uid="uid://1t3o6p2kvsui" path="res://Images/Treant.png" id="42_e0d5f"]
 [ext_resource type="Texture2D" uid="uid://cl1yuroqhceca" path="res://Images/Arrows/ArrowLeft.png" id="47_1d738"]
 [ext_resource type="Texture2D" uid="uid://cnu7bccn28j4s" path="res://Images/Arrows/ArrowLeftPressed.png" id="48_2quy7"]
@@ -258,6 +259,29 @@ negative_highlight = ExtResource("34_70uow")
 large_positive_highlight = ExtResource("35_3tfe7")
 large_neutral_highlight = ExtResource("36_1cjcc")
 large_negative_highlight = ExtResource("37_k0mh1")
+
+[node name="CellNumbers" type="Control" parent="Map"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 580.0
+offset_bottom = 440.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Dummy" type="Label" parent="Map/CellNumbers"]
+visible = false
+offset_right = 20.0
+offset_bottom = 20.0
+size_flags_horizontal = 4
+text = "0"
+label_settings = ExtResource("41_7rtjq")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MaskedBackground" type="Sprite2D" parent="."]
 z_index = 1

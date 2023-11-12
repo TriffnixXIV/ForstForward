@@ -152,12 +152,13 @@ func update_target_wood_source():
 	
 	# if you don't have a wood source, look at a larger distance around you
 	if target_wood_source == null:
-		target_wood_source = search_wood_source_at(cell_position, 20, 6)
+		target_wood_source = search_wood_source_at(cell_position, 30, 6)
 
 func search_wood_source_at(cell: Vector2i, max_distance: int, min_distance: int = 1):
 	var wood_sources = []
-	var distance = min_distance
+	var distance = max(min_distance, map.cell_tree_distance_map[cell.x][cell.y])
 	var distance_threshhold = null
+	var has_found_wood_source = false
 	while distance <= max_distance:
 		if distance == 0:
 			if is_wood_source(cell):
@@ -168,6 +169,9 @@ func search_wood_source_at(cell: Vector2i, max_distance: int, min_distance: int 
 			for diff in [Vector2i(d1, d2), Vector2i(-d2, d1), Vector2i(-d1, -d2), Vector2i(d2, -d1)]:
 				var target_cell = cell + diff
 				if is_wood_source(target_cell):
+					if not has_found_wood_source:
+						has_found_wood_source = true
+						map.set_cell_tree_distance(cell, distance)
 					var distance_to_cell = get_distance_to(target_cell)
 					if distance_threshhold == null or distance_to_cell < distance_threshhold:
 						distance_threshhold = distance_to_cell
@@ -270,7 +274,7 @@ func find_good_building_spots():
 	return good_spots
 
 func evaluate_building_spot(cell: Vector2i):
-	if map.is_house(cell):
+	if map.is_house(cell) or not map.is_valid_tile(cell):
 		return 0
 	else:
 		var value = 0
@@ -306,6 +310,7 @@ func move(target_cell: Vector2i, target_distance: int):
 			match randi_range(0, 1):
 				0: cell_position.x += path.x / abs(path.x)
 				1: cell_position.y += path.y / abs(path.y)
+	
 	update_position()
 
 func update_position():

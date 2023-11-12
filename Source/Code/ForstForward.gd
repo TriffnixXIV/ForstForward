@@ -53,7 +53,8 @@ func _input(event):
 			if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 				set_game_state(GameState.main_menu)
 			elif (event is InputEventKey or (event is InputEventMouseButton and not event.button_index == MOUSE_BUTTON_LEFT)) and event.pressed:
-				set_game_state(GameState.playing)
+				if $Map.current_phase == $Map.Phase.idle:
+					set_game_state(GameState.playing)
 		
 		GameState.playing:
 			if event is InputEventKey and event.pressed:
