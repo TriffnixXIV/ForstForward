@@ -14,7 +14,6 @@ var looking_for_home = false
 
 var carried_wood = 0
 
-var max_actions = 15
 var actions = 0
 
 enum State {idle, getting_wood, building}
@@ -35,7 +34,7 @@ func reset():
 	current_blast_cooldown = 0
 	carried_wood = 0
 	
-	actions = max_actions
+	actions = 0
 	has_signaled_inaction = false
 	
 	cell_position = home_cell
@@ -49,10 +48,10 @@ func reset():
 	if is_devil:
 		unget_real()
 
-func prepare_turn():
-	map.actions_lost_to_beer += min(max_actions, map.beer_level)
+func prepare_turn(action_amount: int):
+	map.actions_lost_to_beer += min(action_amount, map.beer_level)
 	has_signaled_inaction = false
-	actions = max_actions - map.beer_level
+	actions = action_amount - map.beer_level
 
 func act():
 	if actions <= 0:

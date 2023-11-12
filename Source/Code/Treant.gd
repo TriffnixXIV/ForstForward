@@ -4,7 +4,6 @@ class_name Treant
 var map: Map
 var cell_position: Vector2i
 
-var max_actions = 8
 var actions = 0
 
 var target_location
@@ -14,10 +13,10 @@ var has_signaled_inaction = false
 signal done_acting
 signal has_died
 
-func reset_actions():
+func prepare_turn(action_amount: int):
 	update_target_location()
 	has_signaled_inaction = false
-	actions = max_actions
+	actions = action_amount
 	
 	stomp()
 

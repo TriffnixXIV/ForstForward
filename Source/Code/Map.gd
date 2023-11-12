@@ -8,28 +8,32 @@ var transition_duration: float = 0.25
 var transition_progress: float = 0.0
 var transition_info = []
 
+@export var ForestEdge: PackedScene
+var horizontal_forest_edges = []
+var vertical_forest_edges = []
+
 @export var Villager: PackedScene
-var villagers: Array = []
+var villagers: Array[Villager] = []
 var homeless_villagers = []
 var home_cell_villager_map = {}
 var done_villager_count = 0
 var all_villagers_are_done_with_this_step = false
 
 @export var Druid: PackedScene
-var druids = []
+var druids: Array[Druid] = []
 var done_druid_count = 0
 
 @export var Treant: PackedScene
-var treants = []
+var treants: Array[Treant] = []
 var done_treant_count = 0
-
-@export var ForestEdge: PackedScene
-var horizontal_forest_edges = []
-var vertical_forest_edges = []
 
 @export var LightningStrike: PackedScene
 @export var Blast: PackedScene
 @export var GrowthEffect: PackedScene
+
+var base_villager_actions = 15
+var base_druid_actions = 8
+var base_treant_actions = 8
 
 var highest_possible_score: int
 
@@ -297,10 +301,10 @@ func start_druid_phase():
 		current_phase = Phase.druids
 		done_druid_count = 0
 		for druid in druids:
-			druid.reset_actions()
+			druid.prepare_turn(base_druid_actions)
 		done_treant_count = 0
 		for treant in treants:
-			treant.reset_actions()
+			treant.prepare_turn(base_treant_actions)
 		$Timer.start()
 
 func advance_druid_phase():
@@ -351,7 +355,7 @@ func start_villager_phase():
 	done_villager_count = 0
 	current_phase = Phase.villagers
 	for villager in villagers:
-		villager.prepare_turn()
+		villager.prepare_turn(base_villager_actions)
 	update_cell_tree_distance_map()
 	all_villagers_are_done_with_this_step = true
 	$Timer.start()

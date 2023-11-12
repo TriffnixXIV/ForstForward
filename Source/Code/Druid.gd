@@ -4,7 +4,6 @@ class_name Druid
 var map: Map
 var cell_position: Vector2i
 
-var max_actions = 8
 var actions = 0
 
 enum State {idle, moving, planting, tired}
@@ -30,9 +29,9 @@ signal done_acting
 func _ready():
 	update_circle_state()
 
-func reset_actions():
+func prepare_turn(action_amount: int):
 	has_signaled_inaction = false
-	actions = max_actions
+	actions = action_amount
 
 func act():
 	if actions <= 0:

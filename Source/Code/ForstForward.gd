@@ -12,6 +12,12 @@ var action_factory: ActionFactory = ActionFactory.new()
 var top_action: Action = Action.new()
 var bottom_action: Action = Action.new()
 
+var pending_upgrades: Array[UpgradeFactory.Category] = []
+var upgrade_factory: UpgradeFactory = UpgradeFactory.new()
+var top_upgrade: Upgrade = Upgrade.new("", "")
+var bottom_upgrade: Upgrade = Upgrade.new("", "")
+var upgrading = false
+
 var characters_are_transparent
 var current_map_position
 
@@ -22,6 +28,8 @@ func _ready():
 	# initialize the things
 	$MapOverlay/Version.text = version
 	action_factory.map = $Map
+	upgrade_factory.map = $Map
+	upgrade_factory.action_factory = action_factory
 	
 	top_action.connect("text_changed", update_top_action_text)
 	top_action.connect("numbers_changed", update_numbers)
@@ -189,6 +197,26 @@ func set_game_state(state: GameState):
 	
 	update_UI()
 
+func next_turn_step():
+	if $Sidebar/InGameUI/Options/Bottom/Button.has_focus():
+		$Sidebar/InGameUI/Options/Bottom/Button.release_focus()
+	if $Sidebar/InGameUI/Options/Top/Button.has_focus():
+		$Sidebar/InGameUI/Options/Top/Button.release_focus()
+	if len(pending_upgrades) > 0:
+		upgrading = true
+		next_upgrades()
+	else:
+		upgrading = false
+		next_actions()
+
+func next_upgrades():
+	var new_upgrades = upgrade_factory.get_upgrades(pending_upgrades.pop_back())
+	
+	top_upgrade.set_upgrade(new_upgrades[0])
+	bottom_upgrade.set_upgrade(new_upgrades[1])
+	$Sidebar/InGameUI/Options/Top/Button/Label.text = top_upgrade.get_text()
+	$Sidebar/InGameUI/Options/Bottom/Button/Label.text = bottom_upgrade.get_text()
+
 func next_actions():
 	var new_actions = action_factory.get_actions(current_round)
 	
@@ -209,17 +237,28 @@ func _on_bottom_option_pressed():
 
 func enact_top_option():
 	if not $Sidebar/InGameUI/Options/Top/Button.disabled:
-		if not $Sidebar/InGameUI/Options/Top/Button.has_focus():
-			$Sidebar/InGameUI/Options/Top/Button.grab_focus()
-		enact_option(top_action)
+		if upgrading:
+			apply_upgrade(top_upgrade)
+		else:
+			if not $Sidebar/InGameUI/Options/Top/Button.has_focus():
+				$Sidebar/InGameUI/Options/Top/Button.grab_focus()
+			enact_action(top_action)
 
 func enact_bottom_option():
 	if not $Sidebar/InGameUI/Options/Bottom/Button.disabled:
-		if not $Sidebar/InGameUI/Options/Bottom/Button.has_focus():
-			$Sidebar/InGameUI/Options/Bottom/Button.grab_focus()
-		enact_option(bottom_action)
+		if upgrading:
+			apply_upgrade(bottom_upgrade)
+		else:
+			if not $Sidebar/InGameUI/Options/Bottom/Button.has_focus():
+				$Sidebar/InGameUI/Options/Bottom/Button.grab_focus()
+			enact_action(bottom_action)
 
-func enact_option(action: Action):
+func apply_upgrade(upgrade: Upgrade):
+	upgrade.apply($Map, action_factory)
+	play_success_sound()
+	next_turn_step()
+
+func enact_action(action: Action):
 	selected_action = action
 	selected_action.enact($Map)
 	
@@ -233,7 +272,7 @@ func enact_option(action: Action):
 func _on_action_advance_success():
 	if not selection_locked:
 		lock_selection()
-		
+	
 	if game_state == GameState.playing:
 		if selected_action.is_done():
 			advance()
@@ -297,12 +336,16 @@ func _on_map_advancement_step_done():
 	update_numbers()
 
 func _on_map_advancement_done():
+	match randi_range(1, 3):
+		1: pending_upgrades.append(UpgradeFactory.Category.life)
+		2: pending_upgrades.append(UpgradeFactory.Category.growth)
+		3: pending_upgrades.append(UpgradeFactory.Category.weather)
 	start_next_round()
 
 func start_next_round():
 	current_round += 1
 	update_UI()
-	next_actions()
+	next_turn_step()
 	unlock_selection()
 
 func update_UI():
@@ -447,6 +490,7 @@ func start_gameplay():
 	
 	$Map.reload_level()
 	current_round = 1
+	next_turn_step()
 	next_actions()
 	
 	update_highlight()

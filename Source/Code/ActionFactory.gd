@@ -1,11 +1,11 @@
 extends Node
 class_name ActionFactory
 
-var map
+var map: Map
 
 var base_action_data = {
 	Action.Type.spawn_treant: {
-		"unlocked": true,
+		"unlocked": false,
 		"weight": 4,
 		"specifier": 1
 	},
@@ -22,7 +22,7 @@ var base_action_data = {
 	Action.Type.spread: {
 		"unlocked": true,
 		"weight": 3,
-		"specifier": 2
+		"specifier": 40
 	},
 	Action.Type.plant: {
 		"unlocked": true,
@@ -32,17 +32,17 @@ var base_action_data = {
 	Action.Type.rain: {
 		"unlocked": true,
 		"weight": 3,
-		"specifier": 3
+		"specifier": 4
 	},
 	Action.Type.lightning_strike: {
 		"unlocked": true,
 		"weight": 3,
-		"specifier": 1
+		"specifier": 2
 	},
 	Action.Type.beer: {
 		"unlocked": true,
 		"weight": 3,
-		"specifier": 1
+		"specifier": 6
 	}
 }
 
@@ -94,19 +94,20 @@ func get_action_data(action_type, current_round):
 		Action.Type.spawn_druid:
 			var druid_spawn_spots = map.count_druid_spawn_spots()
 			is_possible = druid_spawn_spots > 0
+			action.specifier = min(druid_spawn_spots, action.specifier)
 		
 		Action.Type.overgrowth:
-			action.specifier = 2 + floori(current_round / 15.0)
+			action.specifier += floori(current_round / 15.0)
 		
 		Action.Type.spread:
 			var spreadable_spots = map.count_spreadable_spots()
 			is_possible = spreadable_spots > 0
-			action.specifier = 40 + 4 * current_round
+			action.specifier += 4 * current_round
 		
 		Action.Type.plant:
 			var plantable_spots = map.count_plantable_spots()
 			is_possible = plantable_spots > 0
-			action.specifier = min(plantable_spots, 2 + floori(current_round / 5.0))
+			action.specifier = min(plantable_spots, action.specifier + floori(current_round / 5.0))
 			
 			# convert a semi-random number of forests into a spread action
 			var converted_forests = randi_range(
@@ -126,7 +127,7 @@ func get_action_data(action_type, current_round):
 		
 		Action.Type.lightning_strike:
 			action.specifier = min(
-				2 + floori(map.rain_duration / 3.0),
+				action.specifier + floori(map.rain_duration / 3.0),
 				floori(len(map.villagers) / 9.0)
 			)
 			is_possible = map.is_raining() and action.specifier > 0
@@ -142,12 +143,12 @@ func get_action_data(action_type, current_round):
 				action.add_action(rain_action)
 		
 		Action.Type.rain:
-			action.specifier = 4 + floori(current_round / 10.0)
+			action.specifier += floori(current_round / 10.0)
 			weight = 3 - floori(map.rain_duration / action.specifier)
 			is_possible = weight > 0
 		
 		Action.Type.beer:
-			action.specifier = 6 + floori(current_round / 10.0)
+			action.specifier += floori(current_round / 10.0)
 		
 	action.infer_needed_progress()
 	return {"is possible": is_possible, "weight": weight, "action": action}
