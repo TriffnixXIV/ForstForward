@@ -67,13 +67,13 @@ func get_available_upgrades(category: Category):
 		Category.growth:
 			prototype = action_factory.action_prototypes[Action.Type.overgrowth]
 			strength = prototype.strength
-			if total_growth_upgrades >= 2 * strength:
+			if total_growth_upgrades >= 2 * (strength - prototype.base_strength):
 				available_upgrades.append(
 					Upgrade.new("Growth", "amount", strength + 1, strength))
 			
-			if total_growth_upgrades >= 4 * (strength - prototype.base_strength):
+			if total_growth_upgrades >= 4 * map.min_growth_stages:
 				available_upgrades.append(
-					Upgrade.new("Growth", "amount", strength + 1, strength))
+					Upgrade.new("Growth", "minimum", map.min_growth_stages + 1, map.min_growth_stages))
 			
 			strength = action_factory.action_prototypes[Action.Type.spread].strength
 			available_upgrades.append(

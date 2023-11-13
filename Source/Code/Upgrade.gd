@@ -49,7 +49,7 @@ func get_text():
 				"amount":
 					return "growth\n+" + str(previous_value) + " -> +" + str(value)
 				"minimum":
-					return "base growth\n" + str(previous_value) + " -> " + str(value)
+					return "growth minimum\n" + str(previous_value) + " -> " + str(value)
 		"Spread":
 			match attribute:
 				"amount":

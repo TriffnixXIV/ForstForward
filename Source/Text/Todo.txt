@@ -1,4 +1,8 @@
 Mechanics:
+	- druid changes:
+		- make them look further again
+		- make them not evaluate based on diagonals anymore
+			- more intuitive behavior & evaluation that way?
 	- replace beer with more local snowstorms and/or blizzards (high prio)
 		- removes actions or increases action cost within a certain area
 		- also slows growth (maybe?)
@@ -14,11 +18,12 @@ Mechanics:
 		- not that much of a difference at this point?
 
 Bug fixes & QoL:
-	-
+	- bug: treants sometimes softlock the game when planting themselves or otherwise when idle
 
 UI:
 	- change reset record button (high prio)
 	- make record sidebar more fancy (high prio)
+	- add in-game menu when pressing esc (high prio)
 	- add info tab (mid prio)
 	- re-order: (undecided)
 		- centered map

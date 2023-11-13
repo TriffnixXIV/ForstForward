@@ -198,6 +198,7 @@ func set_game_state(state: GameState):
 	update_UI()
 
 func next_turn_step():
+	update_numbers()
 	if $Sidebar/InGameUI/Options/Bottom/Button.has_focus():
 		$Sidebar/InGameUI/Options/Bottom/Button.release_focus()
 	if $Sidebar/InGameUI/Options/Top/Button.has_focus():
