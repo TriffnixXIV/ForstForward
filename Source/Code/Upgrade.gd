@@ -48,6 +48,8 @@ func get_text():
 			match attribute:
 				"amount":
 					return "growth\n+" + str(previous_value) + " -> +" + str(value)
+				"minimum":
+					return "base growth\n" + str(previous_value) + " -> " + str(value)
 		"Spread":
 			match attribute:
 				"amount":
@@ -60,6 +62,8 @@ func get_text():
 			match attribute:
 				"amount":
 					return "rain\n+" + str(previous_value) + " -> +" + str(value)
+				"growth":
+					return "rain growth boost\n+" + str(previous_value) + " -> +" + str(value)
 		"Lightning":
 			match attribute:
 				"amount":
@@ -72,52 +76,56 @@ func get_text():
 func apply(map: Map, action_factory: ActionFactory):
 	match target:
 		"Treant":
-			action_factory.base_action_data[Action.Type.spawn_treant]["weight"] += 1
+			action_factory.action_prototypes[Action.Type.spawn_treant].weight += 1
 			match attribute:
 				"unlock":
-					action_factory.base_action_data[Action.Type.spawn_treant]["unlocked"] = true
+					action_factory.action_prototypes[Action.Type.spawn_treant].unlocked = true
 				"spawn amount":
-					action_factory.base_action_data[Action.Type.spawn_treant]["specifier"] = value
+					action_factory.action_prototypes[Action.Type.spawn_treant].clicks = value
 				"actions":
-					map.base_treant_actions = value
+					map.treant_actions = value
 		"Druid":
-			action_factory.base_action_data[Action.Type.spawn_druid]["weight"] += 1
+			action_factory.action_prototypes[Action.Type.spawn_druid].weight += 1
 			match attribute:
 				"spawn amount":
-					action_factory.base_action_data[Action.Type.spawn_druid]["specifier"] = value
+					action_factory.action_prototypes[Action.Type.spawn_druid].clicks = value
 				"actions":
-					map.base_druid_actions = value
+					map.druid_actions = value
 		"Villager":
 			match attribute:
 				"actions":
-					map.base_villager_actions = value
+					map.villager_actions = value
 		"Growth":
-			action_factory.base_action_data[Action.Type.overgrowth]["weight"] += 1
+			action_factory.action_prototypes[Action.Type.overgrowth].weight += 1
 			match attribute:
 				"amount":
-					action_factory.base_action_data[Action.Type.overgrowth]["specifier"] = value
+					action_factory.action_prototypes[Action.Type.overgrowth].strength = value
+				"minimum":
+					map.min_growth_stages = value
 		"Spread":
-			action_factory.base_action_data[Action.Type.spread]["weight"] += 1
+			action_factory.action_prototypes[Action.Type.spread].weight += 1
 			match attribute:
 				"amount":
-					action_factory.base_action_data[Action.Type.spread]["specifier"] = value
+					action_factory.action_prototypes[Action.Type.spread].strength = value
 		"Plant":
-			action_factory.base_action_data[Action.Type.plant]["weight"] += 1
+			action_factory.action_prototypes[Action.Type.plant].weight += 1
 			match attribute:
 				"amount":
-					action_factory.base_action_data[Action.Type.plant]["specifier"] = value
+					action_factory.action_prototypes[Action.Type.plant].clicks = value
 		"Rain":
-			action_factory.base_action_data[Action.Type.rain]["weight"] += 1
+			action_factory.action_prototypes[Action.Type.rain].weight += 1
 			match attribute:
 				"amount":
-					action_factory.base_action_data[Action.Type.rain]["specifier"] = value
+					action_factory.action_prototypes[Action.Type.rain].strength = value
+				"growth":
+					map.rain_growth_boost = value
 		"Lightning":
-			action_factory.base_action_data[Action.Type.lightning_strike]["weight"] += 1
+			action_factory.action_prototypes[Action.Type.lightning_strike].weight += 1
 			match attribute:
 				"amount":
-					action_factory.base_action_data[Action.Type.lightning_strike]["specifier"] = value
+					action_factory.action_prototypes[Action.Type.lightning_strike].clicks = value
 		"Beer":
-			action_factory.base_action_data[Action.Type.beer]["weight"] += 1
+			action_factory.action_prototypes[Action.Type.beer].weight += 1
 			match attribute:
 				"amount":
-					action_factory.base_action_data[Action.Type.beer]["specifier"] = value
+					action_factory.action_prototypes[Action.Type.beer].strength = value

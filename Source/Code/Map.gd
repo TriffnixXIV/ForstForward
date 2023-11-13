@@ -27,15 +27,7 @@ var done_druid_count = 0
 var treants: Array[Treant] = []
 var done_treant_count = 0
 
-@export var CrystalScene: PackedScene
-var crystals: Array[Crystal] = []
-var cell_crystal_map = {}
-var crystal_spawn_chances = {
-	Crystal.Type.life: 0.0,
-	Crystal.Type.growth: 0.0,
-	Crystal.Type.weather: 0.0
-}
-var fully_grown_crystals = []
+var crystal_manager: CrystalManager
 
 @export var LightningStrike: PackedScene
 @export var Blast: PackedScene
@@ -44,6 +36,10 @@ var fully_grown_crystals = []
 var base_villager_actions = 12
 var base_druid_actions = 8
 var base_treant_actions = 8
+
+var villager_actions: int
+var druid_actions: int
+var treant_actions: int
 
 var highest_possible_score: int
 
@@ -66,11 +62,15 @@ var total_trees_from_druids: int = 0
 var total_treants_spawned: int = 0
 var total_trees_from_treants: int = 0
 
-var base_growth_stages = 1
+var base_min_growth_stages = 1
+var min_growth_stages: int
 var growth_boost = 0
 var remaining_growth_stages = 0
 
 var rain_duration = 0
+var base_rain_growth_boost = 0
+var rain_growth_boost: int
+
 var beer_level = 0
 
 var show_cell_labels = false
@@ -87,7 +87,9 @@ signal advancement_done
 
 func _ready():
 	super._ready()
+	reset_upgrades()
 	
+	crystal_manager = CrystalManager.new(self)
 	highest_possible_score = width * height * 10
 	
 	var array = []
@@ -105,20 +107,7 @@ func _ready():
 		cell_tree_distance_map.append(array.duplicate())
 	
 	if show_cell_labels:
-		$CellNumbers.visible = true
-		cell_labels = []
-		for x in width:
-			cell_labels.append(array.duplicate())
-			for y in height:
-				var label = Label.new()
-				label.size = Vector2i(20, 20)
-				label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-				label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-				label.label_settings = $CellNumbers/Dummy.label_settings
-				label.position.x = x * 20
-				label.position.y = y * 20
-				cell_labels[x][y] = label
-				$CellNumbers.add_child(label)
+		initialize_cell_labels()
 
 func _process(delta):
 	if transition_progress < transition_duration and len(transition_info) > 0:
@@ -137,6 +126,8 @@ func _process(delta):
 				spawn_villager(data[1])
 		update_forest_edges()
 	elif current_phase == Phase.transitioning:
+		current_phase = Phase.idle
+		
 		if len(villagers) > 0:
 			var horst_exists = false
 			for villager in villagers:
@@ -145,7 +136,16 @@ func _process(delta):
 					break
 			if not horst_exists:
 				villagers[0].get_real()
-		current_phase = Phase.idle
+		
+		for _i in random_starting_crystals:
+			crystal_manager.find_spot_and_spawn_crystal(randi_range(0, 2))
+		for _i in base_life_crystals:
+			crystal_manager.find_spot_and_spawn_crystal(Crystal.Type.life)
+		for _i in base_growth_crystals:
+			crystal_manager.find_spot_and_spawn_crystal(Crystal.Type.growth)
+		for _i in base_weather_crystals:
+			crystal_manager.find_spot_and_spawn_crystal(Crystal.Type.weather)
+		
 		emit_signal("transition_done")
 
 func load_level(level_number: int):
@@ -155,6 +155,11 @@ func load_level(level_number: int):
 	
 	level.load_save_data()
 	save_data = level.save_data
+	
+	random_starting_crystals = level.random_starting_crystals
+	base_life_crystals = level.base_life_crystals
+	base_growth_crystals = level.base_growth_crystals
+	base_weather_crystals = level.base_weather_crystals
 	
 	for x in width:
 		for y in height:
@@ -178,6 +183,11 @@ func reload_level():
 func clear_level():
 	reset()
 	
+	random_starting_crystals = 0
+	base_life_crystals = 0
+	base_growth_crystals = 0
+	base_weather_crystals = 0
+	
 	for x in width:
 		for y in height:
 			if not is_forest(Vector2i(x, y)):
@@ -198,6 +208,7 @@ func reset():
 	transition_progress = 0.0
 	transition_info = []
 	
+	reset_upgrades()
 	reset_stats()
 	growth_boost = 0
 	set_rain(0)
@@ -215,7 +226,15 @@ func reset():
 	for treant in treants:
 		remove_child(treant)
 		treant.queue_free()
+	crystal_manager.reset()
 	treants = []
+
+func reset_upgrades():
+	druid_actions = base_druid_actions
+	treant_actions = base_treant_actions
+	villager_actions = base_villager_actions
+	min_growth_stages = base_min_growth_stages
+	rain_growth_boost = base_rain_growth_boost
 
 func reset_stats():
 	total_felled_trees = 0
@@ -302,58 +321,7 @@ func advance():
 	$AdvancementStart.play()
 	current_phase = Phase.starting
 	$Timer.start()
-	
-	match randi_range(1, 3):
-		1:	crystal_spawn_chances[Crystal.Type.life] += 0.1
-		2:	crystal_spawn_chances[Crystal.Type.growth] += 0.1
-		3:	crystal_spawn_chances[Crystal.Type.weather] += 0.1
-	
-	for crystal in crystals:
-		crystal.grow()
-		if crystal.is_grown():
-			fully_grown_crystals.append(crystal)
-	plant_crystals()
-
-func plant_crystals():
-	var pending_crystal_spawns: Array[Crystal.Type] = []
-	for type in crystal_spawn_chances:
-		while crystal_spawn_chances[type] >= 1:
-			pending_crystal_spawns.append(type)
-			crystal_spawn_chances[type] -= 1.0
-	
-	if len(pending_crystal_spawns) > 0:
-		var weighted_forest_cells = []
-		var total_weight = 0
-		for x in width:
-			for y in height:
-				var cell = Vector2i(x, y)
-				if is_forest(cell) and not cell in cell_crystal_map:
-					var weight = 0
-					for diff in [
-						Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1),
-						Vector2i(1, 1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, -1)]:
-						if is_forest(cell + diff) and cell + diff in cell_crystal_map:
-							weight += 8
-						elif not is_valid_tile(cell + diff):
-							weight += 4
-						elif is_forest(cell + diff):
-							weight += 2
-					if weight > 0:
-						weighted_forest_cells.append([cell, weight])
-						total_weight += weight
-		
-		for _x in min(len(weighted_forest_cells), len(pending_crystal_spawns)):
-			var x = randi_range(1, total_weight)
-			for i in len(weighted_forest_cells):
-				var cell = weighted_forest_cells[i][0]
-				var weight = weighted_forest_cells[i][1]
-				if x <= weight:
-					spawn_crystal(cell, pending_crystal_spawns.pop_front())
-					weighted_forest_cells.remove_at(i)
-					total_weight -= weight
-					break
-				else:
-					x -= weight
+	crystal_manager.advance()
 
 func start_druid_phase():
 	if len(druids) == 0 and len(treants) == 0:
@@ -501,13 +469,13 @@ func set_cell_tree_distance(cell: Vector2i, distance: int):
 				set_cell_tree_distance(cell + diff, distance - 1)
 
 func get_growth_stages():
-	var growth_stages = base_growth_stages + growth_boost
-	if rain_duration > 0:
-		growth_stages += 1
+	var growth_stages = min_growth_stages + growth_boost
+	if is_raining():
+		growth_stages += rain_growth_boost
 	return growth_stages
 
 func advance_rain():
-	if rain_duration > 0:
+	if is_raining():
 		total_rain_duration += 1
 	set_rain(rain_duration - 1)
 
@@ -538,8 +506,38 @@ func update_beer_overlay():
 	else:
 		$BeerOverlay.visible = false
 
+func initialize_cell_labels():
+	var array = []
+	array.resize(height)
+	
+	$CellNumbers.visible = true
+	cell_labels = []
+	for x in width:
+		cell_labels.append(array.duplicate())
+		for y in height:
+			var label = Label.new()
+			label.size = Vector2i(20, 20)
+			label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			label.label_settings = $CellNumbers/Dummy.label_settings
+			label.position.x = x * 20
+			label.position.y = y * 20
+			cell_labels[x][y] = label
+			$CellNumbers.add_child(label)
+
+func get_cell_value_array():
+	var values: Array[Array] = []
+	var array = []
+	array.resize(height)
+	array.fill(0)
+	for x in width:
+		values.append(array.duplicate())
+	return values
+
 func set_cell_labels(values: Array[Array]):
 	if show_cell_labels:
+		if cell_labels == null:
+			initialize_cell_labels()
 		for x in width:
 			for y in height:
 				cell_labels[x][y].text = str(values[x][y])
@@ -595,8 +593,7 @@ func set_yield(cell_position: Vector2i, amount: int):
 			set_plains(cell_position)
 		if previous_yield >= 10 and amount < 10:
 			update_cell_forest_edges(cell_position)
-			if cell_position in cell_crystal_map:
-				crystal_has_cracked(cell_crystal_map[cell_position])
+			crystal_manager.forest_died_at(cell_position)
 
 func get_building_progress(cell_position: Vector2i):
 	if is_house(cell_position):
@@ -951,34 +948,3 @@ func blast_with_fire(cell_position: Vector2i):
 func remove_blast(blast: Blast):
 	remove_child(blast)
 	blast.queue_free()
-
-func spawn_crystal(cell_position: Vector2i, type: Crystal.Type):
-	var crystal: Crystal = CrystalScene.instantiate()
-	crystal.position.x = cell_position.x * tile_set.tile_size.x
-	crystal.position.y = cell_position.y * tile_set.tile_size.y
-	crystal.connect("cracked", crystal_has_cracked)
-	add_child(crystal)
-	
-	crystal.map = self
-	crystal.cell_position = cell_position
-	crystal.type = type
-	crystal.update_texture()
-	crystals.append(crystal)
-	cell_crystal_map[cell_position] = crystal
-
-func crystal_has_cracked(crystal: Crystal):
-	crystals.erase(crystal)
-	cell_crystal_map.erase(crystal.cell_position)
-	if crystal.is_grown():
-		fully_grown_crystals.erase(crystal)
-	remove_child(crystal)
-	crystal.queue_free()
-
-func claim_crystal():
-	var crystal = fully_grown_crystals.pop_front()
-	var type = crystal.type
-	crystals.erase(crystal)
-	cell_crystal_map.erase(crystal.cell_position)
-	remove_child(crystal)
-	crystal.queue_free()
-	return type

@@ -1,4 +1,4 @@
-[gd_scene load_steps=96 format=3 uid="uid://dd6kw8u6mewcl"]
+[gd_scene load_steps=95 format=3 uid="uid://dd6kw8u6mewcl"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -15,14 +15,13 @@
 [ext_resource type="Texture2D" uid="uid://c03kav2gapnit" path="res://Images/Tiles/BuildSite.png" id="10_qgaew"]
 [ext_resource type="Texture2D" uid="uid://ch8m0ppg72bx2" path="res://Images/Tiles/House.png" id="11_3i2bg"]
 [ext_resource type="Script" path="res://Code/Map.gd" id="12_6qirj"]
-[ext_resource type="PackedScene" path="res://Scenes/Levels/Level1.tscn" id="15_407iu"]
+[ext_resource type="PackedScene" uid="uid://dubnlkv4oty8e" path="res://Scenes/Levels/Level1.tscn" id="15_407iu"]
 [ext_resource type="PackedScene" uid="uid://brer30o71215h" path="res://Scenes/Levels/Level2.tscn" id="16_6jsyv"]
-[ext_resource type="PackedScene" path="res://Scenes/Levels/Level3.tscn" id="17_qqkob"]
+[ext_resource type="PackedScene" uid="uid://4sl1qvk822xs" path="res://Scenes/Levels/Level3.tscn" id="17_qqkob"]
 [ext_resource type="PackedScene" uid="uid://bx13d72r8gahd" path="res://Scenes/Treant.tscn" id="17_rglu0"]
-[ext_resource type="PackedScene" path="res://Scenes/Levels/Level4.tscn" id="18_ngmoe"]
-[ext_resource type="PackedScene" path="res://Scenes/Levels/Level5.tscn" id="19_qo6jg"]
+[ext_resource type="PackedScene" uid="uid://d223ip0jmfp16" path="res://Scenes/Levels/Level4.tscn" id="18_ngmoe"]
+[ext_resource type="PackedScene" uid="uid://6b24wittmrru" path="res://Scenes/Levels/Level5.tscn" id="19_qo6jg"]
 [ext_resource type="Texture2D" uid="uid://bpo1h2fjic7l2" path="res://Images/BeerOverlay.png" id="22_3h8j0"]
-[ext_resource type="PackedScene" uid="uid://bcdc607uvvqyb" path="res://Scenes/Crystal.tscn" id="22_iqv4p"]
 [ext_resource type="Texture2D" uid="uid://c56838mmyrs1r" path="res://Images/RainOverlay.png" id="23_deieb"]
 [ext_resource type="PackedScene" uid="uid://bmrv7mgrpf6mp" path="res://Scenes/Blast.tscn" id="23_fm4bp"]
 [ext_resource type="PackedScene" uid="uid://cpcurlk3kc20s" path="res://Scenes/GrowthEffect.tscn" id="24_hbdlb"]
@@ -208,7 +207,6 @@ ForestEdge = ExtResource("5_4pb2x")
 Villager = ExtResource("8_kr2na")
 Druid = ExtResource("9_y30ib")
 Treant = ExtResource("17_rglu0")
-CrystalScene = ExtResource("22_iqv4p")
 LightningStrike = ExtResource("25_g2uic")
 Blast = ExtResource("23_fm4bp")
 GrowthEffect = ExtResource("24_hbdlb")

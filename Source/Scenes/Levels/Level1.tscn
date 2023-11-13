@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=13 format=3 uid="uid://dubnlkv4oty8e"]
 
 [ext_resource type="Texture2D" uid="uid://dqiy4yeveobu2" path="res://Images/Tiles/Plains.png" id="1_nq1nx"]
 [ext_resource type="Texture2D" uid="uid://c2kj8qomwkvw8" path="res://Images/Tiles/Growth.png" id="2_x8p5a"]
@@ -63,3 +63,4 @@ layer_0/tile_data = PackedInt32Array(65540, 2, 0, 65541, 2, 0, 65542, 262145, 0,
 script = ExtResource("6_nlex0")
 level_name = "Horst's small abode"
 level_id = "Abode"
+random_starting_crystals = 3

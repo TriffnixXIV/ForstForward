@@ -64,3 +64,5 @@ layer_0/tile_data = PackedInt32Array(65540, 2, 0, 65541, 2, 0, 65542, 262145, 0,
 script = ExtResource("6_mlsqc")
 level_name = "Horst's village"
 level_id = "Village"
+random_starting_crystals = 2
+base_weather_crystals = 2

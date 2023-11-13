@@ -7,6 +7,11 @@ class_name Level
 var width = 0
 var height = 0
 
+@export var random_starting_crystals: int
+@export var base_life_crystals: int
+@export var base_growth_crystals: int
+@export var base_weather_crystals: int
+
 enum TileType {plains, growth, forest, build_site, house}
 
 var save_filepath_start = "user://save/"

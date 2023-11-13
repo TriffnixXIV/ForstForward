@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=13 format=3 uid="uid://6b24wittmrru"]
 
 [ext_resource type="Texture2D" uid="uid://dqiy4yeveobu2" path="res://Images/Tiles/Plains.png" id="1_oa417"]
 [ext_resource type="Texture2D" uid="uid://c2kj8qomwkvw8" path="res://Images/Tiles/Growth.png" id="2_qp1yi"]
@@ -63,3 +63,4 @@ layer_0/tile_data = PackedInt32Array(65540, 2, 0, 65541, 2, 0, 65542, 2, 0, 6554
 script = ExtResource("6_05e10")
 level_name = "hold the line"
 level_id = "Line"
+base_growth_crystals = 5

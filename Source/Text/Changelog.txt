@@ -1,6 +1,7 @@
 Mechanics:
 	- added action upgrades that can be obtained through crystals
 		- I will elaborate later
+	- removed automatic scaling
 	- villager changes:
 		- they are now more performant when looking for trees to chop
 		- they are now looking for trees up to distance 30 instead of 20

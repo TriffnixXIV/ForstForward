@@ -67,7 +67,7 @@ func _input(event):
 		GameState.playing:
 			if event is InputEventKey and event.pressed:
 				match OS.get_keycode_string(event.keycode):
-					"R":	set_game_state(GameState.playing)
+					"R":	restart_run()
 					"S":	skip_round()
 					"M":	set_muted(not is_muted())
 					"1":	enact_top_option()
@@ -202,7 +202,7 @@ func next_turn_step():
 		$Sidebar/InGameUI/Options/Bottom/Button.release_focus()
 	if $Sidebar/InGameUI/Options/Top/Button.has_focus():
 		$Sidebar/InGameUI/Options/Top/Button.release_focus()
-	if len($Map.fully_grown_crystals) > 0:
+	if len($Map.crystal_manager.fully_grown_crystals) > 0:
 		upgrading = true
 		next_upgrades()
 	else:
@@ -211,7 +211,7 @@ func next_turn_step():
 
 func next_upgrades():
 	var upgrade_category = null
-	match $Map.claim_crystal():
+	match $Map.crystal_manager.claim_crystal():
 		Crystal.Type.life:		upgrade_category = UpgradeFactory.Category.life
 		Crystal.Type.growth:	upgrade_category = UpgradeFactory.Category.growth
 		Crystal.Type.weather:	upgrade_category = UpgradeFactory.Category.weather
@@ -234,7 +234,7 @@ func next_upgrades():
 	$Sidebar/InGameUI/Options/Bottom/Button/Sparks.set_color(spark_color)
 
 func next_actions():
-	var new_actions = action_factory.get_actions(current_round)
+	var new_actions = action_factory.get_actions()
 	
 	top_action.set_action(new_actions[0])
 	bottom_action.set_action(new_actions[1])
@@ -334,15 +334,18 @@ func skip_round():
 
 func advance():
 	lock_selection(true)
+	var crystal_type: Crystal.Type
 	match selected_action.type:
-		Action.Type.spawn_treant:		$Map.crystal_spawn_chances[Crystal.Type.life] += 0.3
-		Action.Type.spawn_druid:		$Map.crystal_spawn_chances[Crystal.Type.life] += 0.3
-		Action.Type.overgrowth:			$Map.crystal_spawn_chances[Crystal.Type.growth] += 0.3
-		Action.Type.spread:				$Map.crystal_spawn_chances[Crystal.Type.growth] += 0.3
-		Action.Type.plant:				$Map.crystal_spawn_chances[Crystal.Type.growth] += 0.3
-		Action.Type.rain:				$Map.crystal_spawn_chances[Crystal.Type.weather] += 0.3
-		Action.Type.lightning_strike:	$Map.crystal_spawn_chances[Crystal.Type.weather] += 0.3
-		Action.Type.beer:				$Map.crystal_spawn_chances[Crystal.Type.weather] += 0.3 # this will make sense once beer becomes snow
+		Action.Type.spawn_treant:		crystal_type = Crystal.Type.life
+		Action.Type.spawn_druid:		crystal_type = Crystal.Type.life
+		Action.Type.overgrowth:			crystal_type = Crystal.Type.growth
+		Action.Type.spread:				crystal_type = Crystal.Type.growth
+		Action.Type.plant:				crystal_type = Crystal.Type.growth
+		Action.Type.rain:				crystal_type = Crystal.Type.weather
+		Action.Type.lightning_strike:	crystal_type = Crystal.Type.weather
+		Action.Type.beer:				crystal_type = Crystal.Type.weather # this will make sense once beer becomes snow
+	$Map.crystal_manager.add_progress(crystal_type, 2)
+	
 	selected_action = null
 	
 	if game_state == GameState.playing:
@@ -424,7 +427,7 @@ func update_numbers():
 	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.text = str($Map.rain_duration)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.is_raining() else Color(0, 1, 0, 0)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.text = str($Map.get_growth_stages())
-	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.get_growth_stages() == 2 and $Map.is_raining() else Color(0, 1, 0, 1) if $Map.get_growth_stages() > 1 else Color(0, 1, 0, 0)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.label_settings.shadow_color = Color(0, 1, 0, 0) if $Map.get_growth_stages() == $Map.min_growth_stages else Color(0, 1, 0, 1) if $Map.growth_boost > 0 else Color(0, 0.5, 1, 1)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.text = str(len($Map.druids))
 	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.text = str(len($Map.treants))
 
@@ -511,10 +514,24 @@ func lose_game():
 func start_gameplay():
 	play_success_sound()
 	
-	$Map.reload_level()
+	action_factory.reset()
+	upgrade_factory.reset()
 	current_round = 1
 	next_turn_step()
-	next_actions()
+	
+	update_highlight()
+	_on_map_transition_done()
+
+func restart_run():
+	stop_gameplay()
+	play_success_sound()
+	
+	action_factory.reset()
+	upgrade_factory.reset()
+	$Map.reload_level()
+	
+	current_round = 1
+	next_turn_step()
 	
 	update_highlight()
 
