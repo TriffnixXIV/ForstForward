@@ -80,6 +80,9 @@ func set_state(new_state: State):
 func update_circle_state():
 	set_circle_state(circle_state)
 
+func _on_timer_timeout():
+	advance_circle_state()
+
 func advance_circle_state():
 	match circle_state:
 		CircleState.active:
@@ -101,9 +104,6 @@ func set_circle_state(new_circle_state):
 		CircleState.gone:
 			$Circle.visible = false
 
-func _on_timer_timeout():
-	advance_circle_state()
-
 func update_target_location():
 	find_good_spots()
 	if len(good_spots) > 0:
@@ -115,10 +115,10 @@ func find_good_spots():
 	good_spots = []
 	spot_distance = 0
 	
-	var max_value = 8 # the highest possible result of the evaluation function
-	var max_distance = 20
+	var max_value = self_growth + 3 * edge_growth # the highest possible result of the evaluation function
+	var max_distance = map.width + map.height
 	value_threshhold = max_value - max_distance
-		
+	
 	while max_value - spot_distance > value_threshhold:
 		if spot_distance == 0:
 			check_cell(cell_position)
@@ -132,6 +132,7 @@ func find_good_spots():
 
 func check_cell(cell: Vector2i):
 	var cell_value = evaluate_target_location(cell)
+	map.set_cell_label(cell, str(cell_value))
 	if cell_value > 0:
 		var score = cell_value - spot_distance
 		if score > value_threshhold:
@@ -147,31 +148,22 @@ func evaluate_target_location(cell: Vector2i):
 		var has_adjacent_forest = false
 		var value = 0
 		if not map.is_forest(cell):
-			value += 2
+			value += min(self_growth, map.get_growable_amount(cell))
 		else:
 			has_adjacent_forest = true
 		
-		var direct_adjacency_value = 0
 		for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-			if map.is_valid_tile(cell + diff):
-				var growth = map.get_yield(cell + diff)
-				if growth <= 0:		direct_adjacency_value += 1.5
-				elif growth < 10:	direct_adjacency_value += 0.5
-				else:				has_adjacent_forest = true
-		
-		value += direct_adjacency_value
-		if direct_adjacency_value > 0:
-			value += 1
+			value += min(edge_growth, map.get_growable_amount(cell + diff))
+			if map.is_forest(cell + diff):
+				has_adjacent_forest = true
 		
 		for diff in [Vector2i(1, 1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, -1)]:
-			if map.is_valid_tile(cell + diff):
-				var growth = map.get_yield(cell + diff)
-				if growth <= 0:		value += 1
-				elif growth < 10:	value += 0.5
-				else:				has_adjacent_forest = true
+			value += min(corner_growth, map.get_growable_amount(cell + diff))
+			if map.is_forest(cell + diff):
+				has_adjacent_forest = true
 		
 		if has_adjacent_forest:
-			return min(8, value)
+			return min(value, self_growth + 3 * edge_growth)
 		else:
 			return 0
 

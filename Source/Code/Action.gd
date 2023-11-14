@@ -2,8 +2,8 @@ extends Resource
 class_name Action
 
 enum Type {spawn_treant, spawn_druid, overgrowth, spread, plant, rain, lightning_strike, beer}
-
 var type = null
+
 var strength = null
 var clicks = null
 var progress = 0
@@ -58,6 +58,17 @@ func copy():
 	action.set_action(self)
 	return action
 
+func get_crystal_type():
+	match type:
+		Type.spawn_treant:		return Crystal.Type.life
+		Type.spawn_druid:		return Crystal.Type.life
+		Type.overgrowth:		return Crystal.Type.growth
+		Type.spread:			return Crystal.Type.growth
+		Type.plant:				return Crystal.Type.growth
+		Type.rain:				return Crystal.Type.weather
+		Type.lightning_strike:	return Crystal.Type.weather
+		Type.beer:				return Crystal.Type.weather # this will make sense once beer becomes snow
+
 func get_full_text():
 	var full_text = get_text()
 	for action in concurrent_actions:
@@ -82,10 +93,11 @@ func get_text():
 			else:
 				return "spawn a druid"
 		Type.plant:
+			var spreadstr = "" if strength <= 0 else "\nspread each " + str(strength)
 			if clicks > 1:
-				return "plant " + str(clicks) + " forests" + progress_text
+				return "plant " + str(clicks) + " forests" + progress_text + spreadstr
 			else:
-				return "plant a forest"
+				return "plant a forest" + spreadstr
 		Type.spread:
 			var click_text = str(clicks) + "x" if clicks > 1 else ""
 			return "spread " + click_text + str(strength) + progress_text
@@ -107,12 +119,12 @@ func enact(map: Map):
 			action.enact(map)
 	
 	match type:
-		Action.Type.overgrowth:
+		Type.overgrowth:
 			map.growth_boost += strength
-		Action.Type.rain:
+		Type.rain:
 			map.rain_duration += strength
 			map.update_rain_overlay()
-		Action.Type.beer:
+		Type.beer:
 			map.beer_level += strength
 			map.update_beer_overlay()
 
@@ -123,17 +135,19 @@ func advance(map: Map, cell_position: Vector2i):
 	
 	var success = false
 	match type:
-		Action.Type.spawn_treant:
+		Type.spawn_treant:
 			success = map.spawn_treant(cell_position)
 			emit_signal("numbers_changed")
-		Action.Type.spawn_druid:
+		Type.spawn_druid:
 			success = map.spawn_druid(cell_position)
 			emit_signal("numbers_changed")
-		Action.Type.spread:
+		Type.spread:
 			success = map.spread_forest(cell_position, strength)
-		Action.Type.plant:
+		Type.plant:
 			success = map.plant_forest(cell_position)
-		Action.Type.lightning_strike:
+			if success and strength > 0:
+				map.spread_forest(cell_position, strength)
+		Type.lightning_strike:
 			success = map.strike_with_lightning(cell_position)
 			emit_signal("numbers_changed")
 	
@@ -142,6 +156,12 @@ func advance(map: Map, cell_position: Vector2i):
 			for action in concurrent_actions:
 				action.enact(map)
 		progress += 1
+		
+		if type == Type.plant:
+			var plantable_spots = map.count_plantable_spots()
+			if plantable_spots < clicks - progress:
+				clicks = progress + plantable_spots
+		
 		emit_signal("text_changed")
 		emit_signal("advance_success")
 	else:

@@ -52,11 +52,6 @@ func cell_is_type(cell_position, type):
 func is_valid_tile(cell_position: Vector2i):
 	return get_cell_source_id(0, cell_position) != -1
 
-func is_identical_tile(cell_position: Vector2i, source_id: int, atlas_coords: Vector2i):
-	var part1 = get_cell_source_id(0, cell_position) == source_id
-	var part2 = get_cell_atlas_coords(0, cell_position) == atlas_coords
-	return part1 and part2
-
 func is_plains(cell_position: Vector2i):
 	return get_cell_source_id(0, cell_position) == TileType.plains
 
@@ -71,3 +66,8 @@ func is_build_site(cell_position: Vector2i):
 
 func is_house(cell_position: Vector2i):
 	return get_cell_source_id(0, cell_position) == TileType.house
+
+func is_identical_tile(cell_position: Vector2i, source_id: int, atlas_coords: Vector2i):
+	var part1 = get_cell_source_id(0, cell_position) == source_id
+	var part2 = get_cell_atlas_coords(0, cell_position) == atlas_coords
+	return part1 and part2

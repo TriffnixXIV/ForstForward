@@ -12,10 +12,9 @@ var action_factory: ActionFactory = ActionFactory.new()
 var top_action: Action = Action.new()
 var bottom_action: Action = Action.new()
 
-var pending_upgrades: Array[UpgradeFactory.Category] = []
 var upgrade_factory: UpgradeFactory = UpgradeFactory.new()
-var top_upgrade: Upgrade = Upgrade.new("", "")
-var bottom_upgrade: Upgrade = Upgrade.new("", "")
+var top_upgrade: Upgrade = Upgrade.new()
+var bottom_upgrade: Upgrade = Upgrade.new()
 var upgrading = false
 
 var characters_are_transparent
@@ -192,8 +191,10 @@ func set_game_state(state: GameState):
 			$Sidebar/InGameUI.visible = true
 			start_gameplay()
 		GameState.post_game:
+			$MapOverlay/PostGame/ToLevelSelection.enable_after(1)
 			$MapOverlay/PostGame.visible = true
 			$Sidebar/Records.visible = true
+			
 	
 	update_UI()
 
@@ -211,21 +212,17 @@ func next_turn_step():
 		next_actions()
 
 func next_upgrades():
-	var upgrade_category = null
-	match $Map.crystal_manager.claim_crystal():
-		Crystal.Type.life:		upgrade_category = UpgradeFactory.Category.life
-		Crystal.Type.growth:	upgrade_category = UpgradeFactory.Category.growth
-		Crystal.Type.weather:	upgrade_category = UpgradeFactory.Category.weather
-	var new_upgrades = upgrade_factory.get_upgrades(upgrade_category)
+	var crystal_type = $Map.crystal_manager.claim_crystal()
+	var new_upgrades = upgrade_factory.get_upgrades(crystal_type)
 	
 	top_upgrade.set_upgrade(new_upgrades[0])
 	bottom_upgrade.set_upgrade(new_upgrades[1])
 	
 	var spark_color = null
-	match upgrade_category:
-		UpgradeFactory.Category.life:		spark_color = ButtonSparks.SparkColor.purple
-		UpgradeFactory.Category.growth:		spark_color = ButtonSparks.SparkColor.green
-		UpgradeFactory.Category.weather:	spark_color = ButtonSparks.SparkColor.blue
+	match crystal_type:
+		Crystal.Type.life:		spark_color = ButtonSparks.SparkColor.yellow
+		Crystal.Type.growth:	spark_color = ButtonSparks.SparkColor.green
+		Crystal.Type.weather:	spark_color = ButtonSparks.SparkColor.blue
 	
 	$Sidebar/InGameUI/Options/Top/Button/Label.text = top_upgrade.get_text()
 	$Sidebar/InGameUI/Options/Top/Button/Sparks.visible = true
@@ -244,9 +241,11 @@ func next_actions():
 
 func update_top_action_text():
 	$Sidebar/InGameUI/Options/Top/Button/Label.text = top_action.get_full_text()
+	$Sidebar/InGameUI/Options/Top/Button/Label.label_settings.shadow_color = Crystal.get_color(top_action.get_crystal_type())
 
 func update_bottom_action_text():
 	$Sidebar/InGameUI/Options/Bottom/Button/Label.text = bottom_action.get_full_text()
+	$Sidebar/InGameUI/Options/Bottom/Button/Label.label_settings.shadow_color = Crystal.get_color(bottom_action.get_crystal_type())
 
 func _on_top_option_pressed():
 	enact_top_option()
@@ -335,17 +334,7 @@ func skip_round():
 
 func advance():
 	lock_selection(true)
-	var crystal_type: Crystal.Type
-	match selected_action.type:
-		Action.Type.spawn_treant:		crystal_type = Crystal.Type.life
-		Action.Type.spawn_druid:		crystal_type = Crystal.Type.life
-		Action.Type.overgrowth:			crystal_type = Crystal.Type.growth
-		Action.Type.spread:				crystal_type = Crystal.Type.growth
-		Action.Type.plant:				crystal_type = Crystal.Type.growth
-		Action.Type.rain:				crystal_type = Crystal.Type.weather
-		Action.Type.lightning_strike:	crystal_type = Crystal.Type.weather
-		Action.Type.beer:				crystal_type = Crystal.Type.weather # this will make sense once beer becomes snow
-	$Map.crystal_manager.add_progress(crystal_type, 2)
+	$Map.crystal_manager.add_progress(selected_action.get_crystal_type(), 2)
 	
 	selected_action = null
 	
@@ -354,9 +343,11 @@ func advance():
 		
 		$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_NONE)
 		$Sidebar/InGameUI/Options/Top/Button/Label.text = ""
+		$Sidebar/InGameUI/Options/Top/Button/Label.label_settings.shadow_color = Color(0, 0, 0, 0)
 		
 		$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_NONE)
 		$Sidebar/InGameUI/Options/Bottom/Button/Label.text = ""
+		$Sidebar/InGameUI/Options/Bottom/Button/Label.label_settings.shadow_color = Color(0, 0, 0, 0)
 		$Map.advance()
 
 func _on_map_score_changed():
@@ -423,8 +414,8 @@ func reset_highscore_highlighting():
 
 func update_numbers():
 	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.text = str(len($Map.villagers))
-	$Sidebar/InGameUI/NumberContainer/Numbers/Beer/Label.text = str($Map.beer_level)
-	$Sidebar/InGameUI/NumberContainer/Numbers/Beer/Label.label_settings.shadow_color = Color(0.5, 0, 1, 1) if $Map.beer_level > 0 else Color(0, 1, 0, 0)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Beer/Label.text = str($Map.get_villager_action_loss())
+	$Sidebar/InGameUI/NumberContainer/Numbers/Beer/Label.label_settings.shadow_color = Color(0, 1, 0, 0) if $Map.get_villager_action_loss() == 0 else Color(0.5, 0, 1, 1) if $Map.beer_level > 0 else Color(0, 0.5, 1, 1)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.text = str($Map.rain_duration)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.is_raining() else Color(0, 1, 0, 0)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.text = str($Map.get_growth_stages())

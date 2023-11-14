@@ -49,9 +49,8 @@ func reset():
 		unget_real()
 
 func prepare_turn(action_amount: int):
-	map.actions_lost_to_beer += min(action_amount, map.beer_level)
 	has_signaled_inaction = false
-	actions = action_amount - map.beer_level
+	actions = action_amount
 
 func act():
 	if actions <= 0:

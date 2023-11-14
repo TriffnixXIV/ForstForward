@@ -10,6 +10,10 @@ var unlocked: bool = true
 var base_weight: int = 3
 var weight: int = 3
 
+# used in the upgrade generator to determine upgrade eligibility
+# increases with each upgrade
+var level: int = 1
+
 func _init(action_type: Type):
 	type = action_type
 	
@@ -27,13 +31,12 @@ func _init(action_type: Type):
 			base_strength = 40
 		Type.plant:
 			base_clicks = 2
-			base_strength = 10
 		Type.rain:
 			base_strength = 3
 		Type.lightning_strike:
 			base_clicks = 0
 		Type.beer:
-			base_strength = 5
+			base_strength = 4
 	
 	reset()
 
@@ -42,3 +45,4 @@ func reset():
 	clicks = base_clicks
 	unlocked = base_unlocked
 	weight = base_weight
+	level = 1 if unlocked else 0

@@ -22,10 +22,12 @@ var all_villagers_are_done_with_this_step = false
 @export var Druid: PackedScene
 var druids: Array[Druid] = []
 var done_druid_count = 0
+var target_druid_count = 0
 
 @export var Treant: PackedScene
 var treants: Array[Treant] = []
 var done_treant_count = 0
+var target_treant_count = 0
 
 var crystal_manager: CrystalManager
 
@@ -33,15 +35,28 @@ var crystal_manager: CrystalManager
 @export var Blast: PackedScene
 @export var GrowthEffect: PackedScene
 
+var highest_possible_score: int
+
 var base_villager_actions = 12
-var base_druid_actions = 8
 var base_treant_actions = 8
+var base_druid_actions = 8
+var base_min_growth_stages = 1
+var base_can_plant_on_buildings = false
+var base_rain_growth_boost = 0
+var base_rain_beer_boost = 0
 
 var villager_actions: int
-var druid_actions: int
 var treant_actions: int
+var druid_actions: int
+var min_growth_stages: int
+var can_plant_on_buildings: bool
+var rain_growth_boost: int
+var rain_beer_boost: int
 
-var highest_possible_score: int
+var growth_boost = 0
+var remaining_growth_stages = 0
+var rain_duration = 0
+var beer_level = 0
 
 var total_felled_trees: int = 0
 var highest_villager_count: int = 0
@@ -62,18 +77,6 @@ var total_trees_from_druids: int = 0
 var total_treants_spawned: int = 0
 var total_trees_from_treants: int = 0
 
-var base_min_growth_stages = 1
-var min_growth_stages: int
-var growth_boost = 0
-var remaining_growth_stages = 0
-
-var rain_duration = 0
-var base_rain_growth_boost = 0
-var rain_growth_boost: int
-
-var beer_level = 0
-
-var show_cell_labels = false
 var cell_labels: Array[Array]
 var cell_tree_distance_map: Array[Array]
 
@@ -102,12 +105,9 @@ func _ready():
 	
 	cell_tree_distance_map = []
 	array.resize(height)
-	array.fill(width + height + 1)
+	array.fill(width + height)
 	for x in width:
 		cell_tree_distance_map.append(array.duplicate())
-	
-	if show_cell_labels:
-		initialize_cell_labels()
 
 func _process(delta):
 	if transition_progress < transition_duration and len(transition_info) > 0:
@@ -230,11 +230,13 @@ func reset():
 	treants = []
 
 func reset_upgrades():
-	druid_actions = base_druid_actions
-	treant_actions = base_treant_actions
-	villager_actions = base_villager_actions
-	min_growth_stages = base_min_growth_stages
-	rain_growth_boost = base_rain_growth_boost
+	villager_actions		= base_villager_actions
+	treant_actions			= base_treant_actions
+	druid_actions			= base_druid_actions
+	min_growth_stages		= base_min_growth_stages
+	can_plant_on_buildings	= base_can_plant_on_buildings
+	rain_growth_boost		= base_rain_growth_boost
+	rain_beer_boost			= base_rain_beer_boost
 
 func reset_stats():
 	total_felled_trees = 0
@@ -329,12 +331,17 @@ func start_druid_phase():
 	else:
 		$DruidStart.play()
 		current_phase = Phase.druids
+		
 		done_druid_count = 0
+		target_druid_count = len(druids)
 		for druid in druids:
-			druid.prepare_turn(base_druid_actions)
+			druid.prepare_turn(druid_actions)
+		
 		done_treant_count = 0
+		target_treant_count = len(treants)
 		for treant in treants:
-			treant.prepare_turn(base_treant_actions)
+			treant.prepare_turn(treant_actions)
+		
 		$Timer.start()
 
 func advance_druid_phase():
@@ -384,8 +391,10 @@ func start_villager_phase():
 	$HorstStart.play()
 	done_villager_count = 0
 	current_phase = Phase.villagers
+	var action_loss = get_villager_action_loss()
 	for villager in villagers:
-		villager.prepare_turn(base_villager_actions)
+		actions_lost_to_beer += min(villager_actions, beer_level)
+		villager.prepare_turn(villager_actions - action_loss)
 	update_cell_tree_distance_map()
 	all_villagers_are_done_with_this_step = true
 	$Timer.start()
@@ -411,7 +420,7 @@ func advance_phase():
 		Phase.starting:
 			start_druid_phase()
 		Phase.druids:
-			if done_druid_count < len(druids) or done_treant_count < len(treants):
+			if done_druid_count < target_druid_count or done_treant_count < target_treant_count:
 				advance_druid_phase()
 			else:
 				done_druid_count = 0
@@ -431,6 +440,11 @@ func advance_phase():
 					finish_advancement()
 
 func finish_advancement():
+	if len(druids) > 0:
+		for x in width:
+			for y in height:
+				druids[0].check_cell(Vector2i(x, y))
+	
 	current_phase = Phase.idle
 	growth_boost = max(0, floori(0.5 * growth_boost))
 	advance_rain()
@@ -442,7 +456,7 @@ func finish_advancement():
 func reset_cell_tree_distance_map():
 	for x in width:
 		for y in height:
-			cell_tree_distance_map[x][y] = width + height + 1
+			cell_tree_distance_map[x][y] = width + height
 
 func update_cell_tree_distance_map():
 	reset_cell_tree_distance_map()
@@ -491,6 +505,12 @@ func set_beer(amount: int):
 	beer_level = amount
 	update_beer_overlay()
 
+func get_villager_action_loss():
+	var villager_action_loss = beer_level
+	if is_raining():
+		villager_action_loss += rain_beer_boost
+	return villager_action_loss
+
 # UI stuff
 
 func update_rain_overlay():
@@ -500,9 +520,10 @@ func update_rain_overlay():
 		$RainOverlay.visible = false
 
 func update_beer_overlay():
-	if beer_level > 0:
+	var coldness = get_villager_action_loss()
+	if coldness > 0:
 		$BeerOverlay.visible = true
-		$BeerOverlay.modulate.a = min(1, beer_level / 10.0)
+		$BeerOverlay.modulate.a = min(1, coldness / float(villager_actions))
 	else:
 		$BeerOverlay.visible = false
 
@@ -533,14 +554,26 @@ func get_cell_value_array():
 	for x in width:
 		values.append(array.duplicate())
 	return values
+	
+func reset_cell_labels():
+	if len(cell_labels) != width:
+		initialize_cell_labels()
+	for x in width:
+		for y in height:
+			cell_labels[x][y].text = ""
+
+func set_cell_label(cell_position: Vector2i, text: String):
+	if is_valid_tile(cell_position):
+		if len(cell_labels) != width:
+			initialize_cell_labels()
+		cell_labels[cell_position.x][cell_position.y].text = text
 
 func set_cell_labels(values: Array[Array]):
-	if show_cell_labels:
-		if cell_labels == null:
-			initialize_cell_labels()
-		for x in width:
-			for y in height:
-				cell_labels[x][y].text = str(values[x][y])
+	if len(cell_labels) != width:
+		initialize_cell_labels()
+	for x in width:
+		for y in height:
+			cell_labels[x][y].text = str(values[x][y])
 
 # cell changes
 
@@ -728,7 +761,8 @@ func count_plantable_spots():
 	return count_spots(can_plant_forest)
 
 func can_plant_forest(cell_position):
-	return is_plains(cell_position) or is_growth(cell_position)
+	return is_plains(cell_position) or is_growth(cell_position) or (
+		can_plant_on_buildings and (is_build_site(cell_position) or is_house(cell_position)))
 
 func plant_forest(cell_position: Vector2i):
 	if can_plant_forest(cell_position):

@@ -18,7 +18,7 @@ Mechanics:
 		- not that much of a difference at this point?
 
 Bug fixes & QoL:
-	- bug: treants sometimes softlock the game when planting themselves or otherwise when idle
+	--
 
 UI:
 	- change reset record button (high prio)

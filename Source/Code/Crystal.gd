@@ -35,3 +35,9 @@ func update_texture():
 		Type.life:		$Sprite.texture = life_crystal_stages[index]
 		Type.growth:	$Sprite.texture = growth_crystal_stages[index]
 		Type.weather:	$Sprite.texture = weather_crystal_stages[index]
+
+static func get_color(crystal_type: Crystal.Type):
+	match crystal_type:
+		Type.life:		return Color(1, 1, 0, 1)
+		Type.growth:	return Color(0, 1, 0, 1)
+		Type.weather:	return Color(0, 0.5, 1, 1)

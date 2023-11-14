@@ -59,6 +59,7 @@ func convert_to_forest():
 	diffs.shuffle()
 	for diff in diffs:
 		map.spread_forest(cell_position, 40, true)
+	emit_signal("done_acting")
 	emit_signal("has_died", self)
 
 func update_target_location():

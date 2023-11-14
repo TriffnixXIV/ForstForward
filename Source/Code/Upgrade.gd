@@ -1,131 +1,150 @@
 extends Resource
 class_name Upgrade
 
-var target = null
-var attribute = null
 var value = null
 var previous_value = null
+var end_text = ""
 
-func _init(target_: String, attribute_: String, value_ = null, previous_value_ = null):
-	target = target_
+enum Type {none, villager, treant, druid, growth, spread, plant, rain, lightning, beer}
+var type: Type = Type.none
+
+enum Attribute {none, unlock, clicks, strength, actions, minimum,
+	growth, spread, on_buildings, beer}
+var attribute: Attribute = Attribute.none
+
+func _init(type_: Type = Type.none, attribute_: Attribute = Attribute.none,
+			value_ = null, previous_value_ = null, end_text_: String = ""):
+	type = type_
 	attribute = attribute_
 	value = value_
 	previous_value = previous_value_
+	end_text = end_text_
 
 func reset():
-	target = null
-	attribute = null
+	type = Type.none
+	attribute = Attribute.none
 	previous_value = null
 	value = null
+	end_text = ""
 
 func set_upgrade(other: Upgrade):
-	target = other.target
+	type = other.type
 	attribute = other.attribute
 	previous_value = other.previous_value
 	value = other.value
+	end_text = other.end_text
 
 func get_text():
-	match target:
-		"Treant":
+	match type:
+		Type.treant:
 			match attribute:
-				"unlock":
+				Attribute.unlock:
 					return "unlock treants"
-				"spawn amount":
+				Attribute.clicks:
 					return "treant spawns\n" + str(previous_value) + " -> " + str(value)
-				"actions":
+				Attribute.actions:
 					return "treant acions\n" + str(previous_value) + " -> " + str(value)
-		"Druid":
+		Type.druid:
 			match attribute:
-				"spawn amount":
+				Attribute.clicks:
 					return "druid spawns\n" + str(previous_value) + " -> " + str(value)
-				"actions":
+				Attribute.actions:
 					return "druid actions\n" + str(previous_value) + " -> " + str(value)
-		"Villager":
+		Type.villager:
 			match attribute:
-				"actions":
+				Attribute.actions:
 					return "villager actions\n" + str(previous_value) + " -> " + str(value)
-		"Growth":
+		Type.growth:
 			match attribute:
-				"amount":
+				Attribute.strength:
 					return "growth\n+" + str(previous_value) + " -> +" + str(value)
-				"minimum":
+				Attribute.minimum:
 					return "growth minimum\n" + str(previous_value) + " -> " + str(value)
-		"Spread":
+		Type.spread:
 			match attribute:
-				"amount":
-					return "spread\n" + str(previous_value) + " -> " + str(value)
-		"Plant":
+				Attribute.clicks:
+					return "spread\n" + end_text
+				Attribute.strength:
+					return "spread\n" + end_text
+		Type.plant:
 			match attribute:
-				"amount":
+				Attribute.clicks:
 					return "plant\n" + str(previous_value) + " -> " + str(value)
-		"Rain":
+				Attribute.spread:
+					return "spread\n" + str(previous_value) + " -> " + str(value) + "\n on every planted forest"
+				Attribute.on_buildings:
+					return "enable planting on buildings"
+		Type.rain:
 			match attribute:
-				"amount":
+				Attribute.strength:
 					return "rain\n+" + str(previous_value) + " -> +" + str(value)
-				"growth":
+				Attribute.growth:
 					return "rain growth boost\n+" + str(previous_value) + " -> +" + str(value)
-		"Lightning":
+				Attribute.beer:
+					return "rain beer boost\n+" + str(previous_value) + " -> +" + str(value)
+		Type.lightning:
 			match attribute:
-				"amount":
+				Attribute.clicks:
 					return "lightning base amount\n" + str(previous_value) + " -> " + str(value)
-		"Beer":
+		Type.beer:
 			match attribute:
-				"amount":
+				Attribute.strength:
 					return "beer\n+" + str(previous_value) + " -> +" + str(value)
 
 func apply(map: Map, action_factory: ActionFactory):
-	match target:
-		"Treant":
-			action_factory.action_prototypes[Action.Type.spawn_treant].weight += 1
+	var prototype: ActionPrototype
+	match type:
+		Type.treant:
+			prototype = action_factory.action_prototypes[Action.Type.spawn_treant]
 			match attribute:
-				"unlock":
-					action_factory.action_prototypes[Action.Type.spawn_treant].unlocked = true
-				"spawn amount":
-					action_factory.action_prototypes[Action.Type.spawn_treant].clicks = value
-				"actions":
-					map.treant_actions = value
-		"Druid":
-			action_factory.action_prototypes[Action.Type.spawn_druid].weight += 1
+				Attribute.unlock:	prototype.unlocked = true
+				Attribute.clicks:	prototype.clicks = value
+				Attribute.actions:	map.treant_actions = value
+		Type.druid:
+			prototype = action_factory.action_prototypes[Action.Type.spawn_treant]
 			match attribute:
-				"spawn amount":
-					action_factory.action_prototypes[Action.Type.spawn_druid].clicks = value
-				"actions":
-					map.druid_actions = value
-		"Villager":
+				Attribute.clicks:	prototype.clicks = value
+				Attribute.actions:	map.druid_actions = value
+		Type.villager:
 			match attribute:
-				"actions":
-					map.villager_actions = value
-		"Growth":
-			action_factory.action_prototypes[Action.Type.overgrowth].weight += 1
+				Attribute.actions:	map.villager_actions = value
+		Type.growth:
+			prototype = action_factory.action_prototypes[Action.Type.overgrowth]
 			match attribute:
-				"amount":
-					action_factory.action_prototypes[Action.Type.overgrowth].strength = value
-				"minimum":
-					map.min_growth_stages = value
-		"Spread":
-			action_factory.action_prototypes[Action.Type.spread].weight += 1
+				Attribute.strength:	prototype.strength = value
+				Attribute.minimum:	map.min_growth_stages = value
+		Type.spread:
+			prototype = action_factory.action_prototypes[Action.Type.spread]
 			match attribute:
-				"amount":
-					action_factory.action_prototypes[Action.Type.spread].strength = value
-		"Plant":
-			action_factory.action_prototypes[Action.Type.plant].weight += 1
+				Attribute.clicks:
+					var strength = action_factory.action_prototypes[Action.Type.spread].strength
+					var clicks = action_factory.action_prototypes[Action.Type.spread].clicks
+					var new_strength = 10 * ceili(((strength * clicks) + 40) / (10.0 * (clicks + 1)))
+					prototype.strength = new_strength
+					prototype.clicks = value
+				Attribute.strength:
+					prototype.strength = value
+		Type.plant:
+			prototype = action_factory.action_prototypes[Action.Type.plant]
 			match attribute:
-				"amount":
-					action_factory.action_prototypes[Action.Type.plant].clicks = value
-		"Rain":
-			action_factory.action_prototypes[Action.Type.rain].weight += 1
+				Attribute.clicks:		prototype.clicks = value
+				Attribute.spread:		prototype.strength = value
+				Attribute.on_buildings:	map.can_plant_on_buildings = true
+		Type.rain:
+			prototype = action_factory.action_prototypes[Action.Type.rain]
 			match attribute:
-				"amount":
-					action_factory.action_prototypes[Action.Type.rain].strength = value
-				"growth":
-					map.rain_growth_boost = value
-		"Lightning":
-			action_factory.action_prototypes[Action.Type.lightning_strike].weight += 1
+				Attribute.strength:	prototype.strength = value
+				Attribute.growth:	map.rain_growth_boost = value
+				Attribute.beer:		map.rain_beer_boost = value
+		Type.lightning:
+			prototype = action_factory.action_prototypes[Action.Type.lightning_strike]
 			match attribute:
-				"amount":
-					action_factory.action_prototypes[Action.Type.lightning_strike].clicks = value
-		"Beer":
-			action_factory.action_prototypes[Action.Type.beer].weight += 1
+				Attribute.clicks:	prototype.clicks = value
+		Type.beer:
+			prototype = action_factory.action_prototypes[Action.Type.beer]
 			match attribute:
-				"amount":
-					action_factory.action_prototypes[Action.Type.beer].strength = value
+				Attribute.strength:	prototype.strength = value
+	
+	if prototype != null:
+		prototype.weight += 1
+		prototype.level += 1

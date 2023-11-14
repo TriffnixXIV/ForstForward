@@ -63,4 +63,4 @@ layer_0/tile_data = PackedInt32Array(65540, 2, 0, 65541, 2, 0, 65542, 262145, 0,
 script = ExtResource("6_nlex0")
 level_name = "Horst's small abode"
 level_id = "Abode"
-random_starting_crystals = 3
+random_starting_crystals = 2

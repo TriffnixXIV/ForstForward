@@ -1,4 +1,4 @@
-[gd_scene load_steps=95 format=3 uid="uid://dd6kw8u6mewcl"]
+[gd_scene load_steps=99 format=3 uid="uid://dd6kw8u6mewcl"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -55,6 +55,7 @@
 [ext_resource type="Texture2D" uid="uid://be2wlg0tx77t0" path="res://Images/OptionButton/ButtonPressed.png" id="51_bldow"]
 [ext_resource type="Texture2D" uid="uid://c78y4f10kqh5d" path="res://Images/OptionButton/ButtonHover.png" id="52_bcv0s"]
 [ext_resource type="Texture2D" uid="uid://jyd1d7c52kov" path="res://Images/OptionButton/ButtonDisabled.png" id="53_g8171"]
+[ext_resource type="Script" path="res://Scenes/ToLevelSelection.gd" id="53_sxtm3"]
 [ext_resource type="Texture2D" uid="uid://dbyt1ovuq165m" path="res://Images/OptionButton/ButtonFocused.png" id="54_ndqc2"]
 [ext_resource type="Texture2D" uid="uid://44xu7o7cs15s" path="res://Images/Arrows/ArrowRight.png" id="55_nk0ko"]
 [ext_resource type="Texture2D" uid="uid://bwnkvgrepin5w" path="res://Images/Arrows/ArrowRightPressed.png" id="56_cgvs5"]
@@ -70,6 +71,7 @@
 [ext_resource type="Texture2D" uid="uid://b6bd7bg0wfhx2" path="res://Images/OptionButton/GreenSparks.png" id="68_bs5cj"]
 [ext_resource type="Texture2D" uid="uid://clagadh0qvmfo" path="res://Images/OptionButton/BlueSparks.png" id="69_d0ki3"]
 [ext_resource type="Texture2D" uid="uid://i6ojj323noyv" path="res://Images/OptionButton/PurpleSparks.png" id="70_ce7ok"]
+[ext_resource type="Texture2D" uid="uid://bf5kaeg2x1e1l" path="res://Images/OptionButton/YellowSparks.png" id="71_11sbm"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ufopn"]
 texture = ExtResource("7_gswc0")
@@ -177,6 +179,13 @@ line_spacing = 0.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_3woos"]
 line_spacing = 0.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_c6rn3"]
+shadow_size = 0
+shadow_color = Color(0, 1, 0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_k73wj"]
+shadow_size = 0
 
 [node name="ForstForward" type="Node2D"]
 script = ExtResource("1_7u1db")
@@ -726,6 +735,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 action_mode = 0
+script = ExtResource("53_sxtm3")
+
+[node name="Timer" type="Timer" parent="MapOverlay/PostGame/ToLevelSelection"]
+one_shot = true
 
 [node name="Sidebar" type="Control" parent="."]
 layout_mode = 3
@@ -1018,6 +1031,7 @@ script = ExtResource("67_75gqh")
 green_spark_texture = ExtResource("68_bs5cj")
 blue_spark_texture = ExtResource("69_d0ki3")
 purple_spark_texture = ExtResource("70_ce7ok")
+yellow_spark_texture = ExtResource("71_11sbm")
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/Options/Top/Button"]
 layout_mode = 1
@@ -1031,6 +1045,7 @@ offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Top Option"
+label_settings = SubResource("LabelSettings_c6rn3")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -1072,6 +1087,7 @@ script = ExtResource("67_75gqh")
 green_spark_texture = ExtResource("68_bs5cj")
 blue_spark_texture = ExtResource("69_d0ki3")
 purple_spark_texture = ExtResource("70_ce7ok")
+yellow_spark_texture = ExtResource("71_11sbm")
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/Options/Bottom/Button"]
 layout_mode = 1
@@ -1085,6 +1101,7 @@ offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Bottom Option"
+label_settings = SubResource("LabelSettings_k73wj")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -1156,6 +1173,7 @@ stretch_mode = 0
 [connection signal="pressed" from="MapOverlay/LevelSelection/PrevLevelButton" to="." method="_on_prev_level_button_pressed"]
 [connection signal="pressed" from="MapOverlay/LevelSelection/NextLevelButton" to="." method="_on_next_level_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PostGame/ToLevelSelection" to="." method="_on_to_level_selection_pressed"]
+[connection signal="timeout" from="MapOverlay/PostGame/ToLevelSelection/Timer" to="MapOverlay/PostGame/ToLevelSelection" method="_on_timer_timeout"]
 [connection signal="pressed" from="Sidebar/Records/Buttons/MuteButton" to="." method="_on_record_mute_button_pressed"]
 [connection signal="pressed" from="Sidebar/Records/Buttons/Reset" to="." method="_on_reset_records_pressed"]
 [connection signal="pressed" from="Sidebar/InGameUI/Options/Top/Button" to="." method="_on_top_option_pressed"]
