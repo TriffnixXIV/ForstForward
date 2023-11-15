@@ -125,7 +125,7 @@ func enact(map: Map):
 			map.rain_duration += strength
 			map.update_rain_overlay()
 		Type.frost:
-			map.frost_level += strength
+			map.frost_boost += strength
 			map.update_frost_overlay()
 
 func advance(map: Map, cell_position: Vector2i):

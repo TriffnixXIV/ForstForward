@@ -67,13 +67,13 @@ func get_available_upgrades(type: Crystal.Type):
 				Upgrade.new(UT.druid, UA.actions, map.druid_actions + 1, map.druid_actions))
 			
 			available_upgrades.append(
-				Upgrade.new(UT.druid, UA.strength, map.druid_circle_trees + 9, map.druid_circle_trees))
+				Upgrade.new(UT.druid, UA.strength, map.druid_circle_trees + 4, map.druid_circle_trees))
 			
 			# villager
-			var lost_actions = max(0, map.base_villager_actions - map.villager_actions)
-			if total_life_upgrades >= floori((pow(lost_actions, 2) + lost_actions) / 2.0):
-				available_upgrades.append(
-					Upgrade.new(UT.villager, UA.actions, map.villager_actions - 1, map.villager_actions))
+#			var lost_actions = max(0, map.base_villager_actions - map.villager_actions)
+#			if total_life_upgrades >= floori((pow(lost_actions, 2) + lost_actions) / 2.0):
+#				available_upgrades.append(
+#					Upgrade.new(UT.villager, UA.actions, map.villager_actions - 1, map.villager_actions))
 		
 		Crystal.Type.growth:
 			# overgrowth
@@ -173,5 +173,10 @@ func get_available_upgrades(type: Crystal.Type):
 			if total_weather_upgrades >= floori((pow(prototype.level, 2) + prototype.level) / 2.0):
 				available_upgrades.append(
 					Upgrade.new(UT.frost, UA.strength, strength + 1, strength))
+			
+			var cost_variable = map.min_frost + 3
+			if total_weather_upgrades >= floori((pow(cost_variable, 2) + cost_variable) / 2.0):
+				available_upgrades.append(
+					Upgrade.new(UT.frost, UA.minimum, map.min_frost + 1, map.min_frost))
 	
 	return available_upgrades

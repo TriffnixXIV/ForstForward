@@ -342,11 +342,11 @@ func advance():
 		
 		$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_NONE)
 		$Sidebar/InGameUI/Options/Top/Button/Label.text = ""
-		$Sidebar/InGameUI/Options/Top/Button/Label.label_settings.shadow_color = Color(0, 0, 0, 0)
+		$Sidebar/InGameUI/Options/Top/Button/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 		
 		$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_NONE)
 		$Sidebar/InGameUI/Options/Bottom/Button/Label.text = ""
-		$Sidebar/InGameUI/Options/Bottom/Button/Label.label_settings.shadow_color = Color(0, 0, 0, 0)
+		$Sidebar/InGameUI/Options/Bottom/Button/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 		$Map.advance()
 
 func _on_map_score_changed():
@@ -406,21 +406,24 @@ func update_highscores():
 	if $Map.save_data.fastest_loss == -1: $Sidebar/Records/FastestLoss.text = "fastest loss\n--"
 
 func reset_highscore_highlighting():
-	$Sidebar/Records/FastestWin.label_settings.shadow_color = Color(0, 1, 0, 0)
-	$Sidebar/Records/SlowestWin.label_settings.shadow_color = Color(0, 1, 0, 0)
-	$Sidebar/Records/SlowestLoss.label_settings.shadow_color = Color(0, 1, 0, 0)
-	$Sidebar/Records/FastestLoss.label_settings.shadow_color = Color(0, 1, 0, 0)
+	$Sidebar/Records/FastestWin.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/Records/SlowestWin.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/Records/SlowestLoss.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/Records/FastestLoss.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 
 func update_numbers():
 	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.text = str(len($Map.villagers))
-	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.text = str($Map.get_villager_action_loss())
-	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.label_settings.shadow_color = Color(0, 1, 0, 0) if $Map.get_villager_action_loss() == 0 else Color(0.5, 0, 1, 1) if $Map.frost_level > 0 else Color(0, 0.5, 1, 1)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.text = str($Map.get_coldness())
+	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8) if $Map.get_coldness() == $Map.min_frost else Color(0.5, 1, 1, 1) if $Map.frost_boost > 0 else Color(0, 0.5, 1, 1)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.text = str($Map.rain_duration)
-	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.is_raining() else Color(0, 1, 0, 0)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.is_raining() else Color(0, 0, 0, 0.8)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.text = str($Map.get_growth_stages())
-	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.label_settings.shadow_color = Color(0, 1, 0, 0) if $Map.get_growth_stages() == $Map.min_growth_stages else Color(0, 1, 0, 1) if $Map.growth_boost > 0 else Color(0, 0.5, 1, 1)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8) if $Map.get_growth_stages() == $Map.min_growth else Color(0, 1, 0, 1) if $Map.growth_boost > 0 else Color(0, 0.5, 1, 1)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.text = str(len($Map.druids))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.text = str(len($Map.treants))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 
 func update_score():
 	score = $Map.get_score()
@@ -440,7 +443,7 @@ func update_stats():
 	$MapOverlay/PostGame/Stats/Horst/Deaths.text = str($Map.total_dead_villagers) + " villagers died"
 	$MapOverlay/PostGame/Stats/Horst/DeathsTreant.text = str($Map.total_deaths_to_treants) + " deaths to treants"
 	$MapOverlay/PostGame/Stats/Horst/DeathsLightning.text = str($Map.total_deaths_to_lightning) + " deaths to lightning"
-	$MapOverlay/PostGame/Stats/Horst/Frost.text = str($Map.total_frost_level) + " total frost level"
+	$MapOverlay/PostGame/Stats/Horst/Frost.text = str($Map.total_coldness) + " total frost level"
 	$MapOverlay/PostGame/Stats/Horst/FrostActions.text = str($Map.actions_lost_to_frost) + " actions lost to frost"
 	
 	$MapOverlay/PostGame/Stats/Forst/Trees.text = str($Map.total_grown_trees) + " trees grown"
@@ -467,11 +470,15 @@ func win_game():
 			$Map.save_data.fastest_win = current_round
 			$Sidebar/Records/FastestWin.label_settings.shadow_color = Color(0, 1, 0, 1)
 			$Map.save_player_data()
+		elif current_round == $Map.save_data.fastest_win:
+			$Sidebar/Records/FastestWin.label_settings.shadow_color = Color(0.5, 1, 0, 1)
 		
 		if $Map.save_data.slowest_win == -1 or current_round > $Map.save_data.slowest_win:
 			$Map.save_data.slowest_win = current_round
 			$Sidebar/Records/SlowestWin.label_settings.shadow_color = Color(0, 1, 0, 1)
 			$Map.save_player_data()
+		elif current_round == $Map.save_data.slowest_win:
+			$Sidebar/Records/SlowestWin.label_settings.shadow_color = Color(0.5, 1, 0, 1)
 		
 		$MapOverlay/LevelSelection/Message.label_settings.shadow_color = Color(0, 1, 0, 1)
 		$MapOverlay/LevelSelection/Message.text = "another forest to protect, peace to restore"
@@ -491,11 +498,15 @@ func lose_game():
 			$Map.save_data.slowest_loss = current_round
 			$Sidebar/Records/SlowestLoss.label_settings.shadow_color = Color(0, 1, 0, 1)
 			$Map.save_player_data()
+		elif current_round == $Map.save_data.slowest_loss:
+			$Sidebar/Records/SlowestLoss.label_settings.shadow_color = Color(0.5, 1, 0, 1)
 		
 		if $Map.save_data.fastest_loss == -1 or current_round < $Map.save_data.fastest_loss:
 			$Map.save_data.fastest_loss = current_round
 			$Sidebar/Records/FastestLoss.label_settings.shadow_color = Color(0, 1, 0, 1)
 			$Map.save_player_data()
+		elif current_round == $Map.save_data.fastest_loss:
+			$Sidebar/Records/FastestLoss.label_settings.shadow_color = Color(0.5, 1, 0, 1)
 		
 		$MapOverlay/LevelSelection/Message.label_settings.shadow_color = Color(1, 0, 0, 1)
 		$MapOverlay/LevelSelection/Message.text = "Horst wants to cut down more forests"

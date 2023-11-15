@@ -106,6 +106,8 @@ func get_text():
 			match attribute:
 				Attribute.strength:
 					return "frost\n+" + str(previous_value) + " -> +" + str(value)
+				Attribute.minimum:
+					return "frost minimum\n" + str(previous_value) + " -> " + str(value)
 
 func apply(map: Map, action_factory: ActionFactory):
 	var prototype: ActionPrototype
@@ -166,9 +168,12 @@ func apply(map: Map, action_factory: ActionFactory):
 				Attribute.rain_conversion:	action_factory.rain_lightning_conversion = value
 				Attribute.rain:				action_factory.lightning_bonus_rain = value
 		Type.frost:
-			prototype = action_factory.action_prototypes[Action.Type.frost]
 			match attribute:
-				Attribute.strength:	prototype.strength = value
+				Attribute.strength:
+					prototype = action_factory.action_prototypes[Action.Type.frost]
+					prototype.strength = value
+				
+				Attribute.minimum:	map.min_frost = value
 	
 	if prototype != null:
 		prototype.weight += 1

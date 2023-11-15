@@ -41,28 +41,30 @@ var base_villager_actions = 12
 var base_treant_actions = 8
 var base_druid_actions = 8
 var base_druid_circle_trees = 16
-var base_min_growth_stages = 1
+var base_min_growth = 1
 var base_can_spread_on_plains = false
 var base_can_spread_on_buildings = false
 var base_can_plant_on_buildings = false
 var base_rain_growth_boost = 0
 var base_rain_frost_boost = 0
+var base_min_frost = 0
 
 var villager_actions: int
 var treant_actions: int
 var druid_actions: int
 var druid_circle_trees: int
-var min_growth_stages: int
+var min_growth: int
 var can_spread_on_plains: bool
 var can_spread_on_buildings: bool
 var can_plant_on_buildings: bool
 var rain_growth_boost: int
 var rain_frost_boost: int
+var min_frost: int
 
 var growth_boost = 0
 var remaining_growth_stages = 0
 var rain_duration = 0
-var frost_level = 0
+var frost_boost = 0
 
 var total_felled_trees: int = 0
 var highest_villager_count: int = 0
@@ -70,7 +72,7 @@ var total_born_villagers: int = 0
 var total_dead_villagers: int = 0
 var total_deaths_to_treants: int = 0
 var total_deaths_to_lightning: int = 0
-var total_frost_level: int = 0
+var total_coldness: int = 0
 var actions_lost_to_frost: int = 0
 
 var total_grown_trees: int = 0
@@ -206,11 +208,14 @@ func clear_level():
 
 func stop():
 	$Timer.stop()
+	growth_boost = 0
 	set_rain(0)
-	set_frost(0)
+	frost_boost = 0
+	update_frost_overlay()
 	current_phase = Phase.idle
 
 func reset():
+	$Timer.stop()
 	transition_progress = 0.0
 	transition_info = []
 	
@@ -218,8 +223,8 @@ func reset():
 	reset_stats()
 	growth_boost = 0
 	set_rain(0)
-	set_frost(0)
-	$Timer.stop()
+	frost_boost = 0
+	update_frost_overlay()
 	
 	for villager in homeless_villagers:
 		despawn_villager(villager, true)
@@ -240,12 +245,13 @@ func reset_upgrades():
 	treant_actions			= base_treant_actions
 	druid_actions			= base_druid_actions
 	druid_circle_trees		= base_druid_circle_trees
-	min_growth_stages		= base_min_growth_stages
+	min_growth				= base_min_growth
 	can_spread_on_plains	= base_can_spread_on_plains
 	can_spread_on_buildings	= base_can_spread_on_buildings
 	can_plant_on_buildings	= base_can_plant_on_buildings
 	rain_growth_boost		= base_rain_growth_boost
-	rain_frost_boost			= base_rain_frost_boost
+	rain_frost_boost		= base_rain_frost_boost
+	min_frost				= base_min_frost
 
 func reset_stats():
 	total_felled_trees = 0
@@ -254,7 +260,7 @@ func reset_stats():
 	total_dead_villagers = 0
 	total_deaths_to_treants = 0
 	total_deaths_to_lightning = 0
-	total_frost_level = 0
+	total_coldness = 0
 	actions_lost_to_frost = 0
 	
 	total_grown_trees = 0
@@ -401,9 +407,9 @@ func start_villager_phase():
 	$HorstStart.play()
 	done_villager_count = 0
 	current_phase = Phase.villagers
-	var action_loss = get_villager_action_loss()
+	var action_loss = get_coldness()
 	for villager in villagers:
-		actions_lost_to_frost += min(villager_actions, frost_level)
+		actions_lost_to_frost += min(villager_actions, action_loss)
 		villager.prepare_turn(villager_actions - action_loss)
 	update_cell_tree_distance_map()
 	all_villagers_are_done_with_this_step = true
@@ -488,7 +494,7 @@ func set_cell_tree_distance(cell: Vector2i, distance: int):
 				set_cell_tree_distance(cell + diff, distance - 1)
 
 func get_growth_stages():
-	var growth_stages = min_growth_stages + growth_boost
+	var growth_stages = min_growth + growth_boost
 	if is_raining():
 		growth_stages += rain_growth_boost
 	return growth_stages
@@ -503,18 +509,15 @@ func set_rain(duration: int):
 	update_rain_overlay()
 
 func advance_frost():
-	total_frost_level += frost_level
-	set_frost(floori(0.5 * frost_level))
-
-func set_frost(amount: int):
-	frost_level = amount
+	total_coldness += get_coldness()
+	frost_boost = max(0, floori(0.5 * frost_boost))
 	update_frost_overlay()
 
-func get_villager_action_loss():
-	var villager_action_loss = frost_level
+func get_coldness():
+	var coldness = min_frost + frost_boost
 	if is_raining():
-		villager_action_loss += rain_frost_boost
-	return villager_action_loss
+		coldness += rain_frost_boost
+	return coldness
 
 # UI stuff
 
@@ -525,7 +528,7 @@ func update_rain_overlay():
 		$RainOverlay.visible = false
 
 func update_frost_overlay():
-	var coldness = get_villager_action_loss()
+	var coldness = get_coldness()
 	if coldness > 0:
 		$FrostOverlay.visible = true
 		$FrostOverlay.modulate.a = min(1, coldness / float(villager_actions))

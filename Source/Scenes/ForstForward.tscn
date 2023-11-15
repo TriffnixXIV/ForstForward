@@ -1,4 +1,4 @@
-[gd_scene load_steps=99 format=3 uid="uid://48ilpky72qan"]
+[gd_scene load_steps=100 format=3 uid="uid://48ilpky72qan"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -164,21 +164,30 @@ shadow_color = Color(0, 1, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_yjfy3"]
 line_spacing = 0.0
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.8)
 
 [sub_resource type="LabelSettings" id="LabelSettings_8p3eh"]
 line_spacing = 0.0
+shadow_size = 0
 
 [sub_resource type="LabelSettings" id="LabelSettings_2bde0"]
 line_spacing = 0.0
+shadow_size = 0
 
 [sub_resource type="LabelSettings" id="LabelSettings_rgpb0"]
 line_spacing = 0.0
+shadow_size = 0
 
 [sub_resource type="LabelSettings" id="LabelSettings_wxrb3"]
 line_spacing = 0.0
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.8)
 
 [sub_resource type="LabelSettings" id="LabelSettings_3woos"]
 line_spacing = 0.0
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.8)
 
 [sub_resource type="LabelSettings" id="LabelSettings_c6rn3"]
 shadow_size = 0
@@ -186,6 +195,10 @@ shadow_color = Color(0, 1, 0, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_k73wj"]
 shadow_size = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_4qkyg"]
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.8)
 
 [node name="ForstForward" type="Node2D"]
 script = ExtResource("1_7u1db")
@@ -1128,6 +1141,7 @@ offset_right = 72.0
 offset_bottom = 29.0
 size_flags_horizontal = 3
 text = "round 1"
+label_settings = SubResource("LabelSettings_4qkyg")
 horizontal_alignment = 1
 
 [node name="Score" type="Label" parent="Sidebar/InGameUI/CoreStats"]
@@ -1142,6 +1156,7 @@ offset_bottom = -1.0
 grow_vertical = 0
 size_flags_horizontal = 3
 text = "0 trees"
+label_settings = SubResource("LabelSettings_4qkyg")
 
 [node name="MuteButton" type="TextureButton" parent="Sidebar/InGameUI/CoreStats"]
 layout_mode = 1
