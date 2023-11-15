@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b56tnpemcrfjy"
-path="res://.godot/imported/RainDrop.png-7193d5c62e5a5fc24df2ce5bb46dabc5.ctex"
+uid="uid://ck4rwbskgjv3l"
+path="res://.godot/imported/Snow.png-765540440a44b70bba5228ca5332e06e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/RainDrop.png"
-dest_files=["res://.godot/imported/RainDrop.png-7193d5c62e5a5fc24df2ce5bb46dabc5.ctex"]
+source_file="res://Images/Icons/Snow.png"
+dest_files=["res://.godot/imported/Snow.png-765540440a44b70bba5228ca5332e06e.ctex"]
 
 [params]
 

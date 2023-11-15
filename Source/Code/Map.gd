@@ -46,7 +46,7 @@ var base_can_spread_on_plains = false
 var base_can_spread_on_buildings = false
 var base_can_plant_on_buildings = false
 var base_rain_growth_boost = 0
-var base_rain_beer_boost = 0
+var base_rain_frost_boost = 0
 
 var villager_actions: int
 var treant_actions: int
@@ -57,12 +57,12 @@ var can_spread_on_plains: bool
 var can_spread_on_buildings: bool
 var can_plant_on_buildings: bool
 var rain_growth_boost: int
-var rain_beer_boost: int
+var rain_frost_boost: int
 
 var growth_boost = 0
 var remaining_growth_stages = 0
 var rain_duration = 0
-var beer_level = 0
+var frost_level = 0
 
 var total_felled_trees: int = 0
 var highest_villager_count: int = 0
@@ -70,8 +70,8 @@ var total_born_villagers: int = 0
 var total_dead_villagers: int = 0
 var total_deaths_to_treants: int = 0
 var total_deaths_to_lightning: int = 0
-var total_beer_level: int = 0
-var actions_lost_to_beer: int = 0
+var total_frost_level: int = 0
+var actions_lost_to_frost: int = 0
 
 var total_grown_trees: int = 0
 var total_planted_trees: int = 0
@@ -207,7 +207,7 @@ func clear_level():
 func stop():
 	$Timer.stop()
 	set_rain(0)
-	set_beer(0)
+	set_frost(0)
 	current_phase = Phase.idle
 
 func reset():
@@ -218,7 +218,7 @@ func reset():
 	reset_stats()
 	growth_boost = 0
 	set_rain(0)
-	set_beer(0)
+	set_frost(0)
 	$Timer.stop()
 	
 	for villager in homeless_villagers:
@@ -245,7 +245,7 @@ func reset_upgrades():
 	can_spread_on_buildings	= base_can_spread_on_buildings
 	can_plant_on_buildings	= base_can_plant_on_buildings
 	rain_growth_boost		= base_rain_growth_boost
-	rain_beer_boost			= base_rain_beer_boost
+	rain_frost_boost			= base_rain_frost_boost
 
 func reset_stats():
 	total_felled_trees = 0
@@ -254,8 +254,8 @@ func reset_stats():
 	total_dead_villagers = 0
 	total_deaths_to_treants = 0
 	total_deaths_to_lightning = 0
-	total_beer_level = 0
-	actions_lost_to_beer = 0
+	total_frost_level = 0
+	actions_lost_to_frost = 0
 	
 	total_grown_trees = 0
 	total_planted_trees = 0
@@ -403,7 +403,7 @@ func start_villager_phase():
 	current_phase = Phase.villagers
 	var action_loss = get_villager_action_loss()
 	for villager in villagers:
-		actions_lost_to_beer += min(villager_actions, beer_level)
+		actions_lost_to_frost += min(villager_actions, frost_level)
 		villager.prepare_turn(villager_actions - action_loss)
 	update_cell_tree_distance_map()
 	all_villagers_are_done_with_this_step = true
@@ -453,7 +453,7 @@ func finish_advancement():
 	current_phase = Phase.idle
 	growth_boost = max(0, floori(0.5 * growth_boost))
 	advance_rain()
-	advance_beer()
+	advance_frost()
 	emit_signal("advancement_done")
 
 # miscellaneous advancement stuff
@@ -502,18 +502,18 @@ func set_rain(duration: int):
 	rain_duration = max(0, duration)
 	update_rain_overlay()
 
-func advance_beer():
-	total_beer_level += beer_level
-	set_beer(floori(0.5 * beer_level))
+func advance_frost():
+	total_frost_level += frost_level
+	set_frost(floori(0.5 * frost_level))
 
-func set_beer(amount: int):
-	beer_level = amount
-	update_beer_overlay()
+func set_frost(amount: int):
+	frost_level = amount
+	update_frost_overlay()
 
 func get_villager_action_loss():
-	var villager_action_loss = beer_level
+	var villager_action_loss = frost_level
 	if is_raining():
-		villager_action_loss += rain_beer_boost
+		villager_action_loss += rain_frost_boost
 	return villager_action_loss
 
 # UI stuff
@@ -524,13 +524,13 @@ func update_rain_overlay():
 	else:
 		$RainOverlay.visible = false
 
-func update_beer_overlay():
+func update_frost_overlay():
 	var coldness = get_villager_action_loss()
 	if coldness > 0:
-		$BeerOverlay.visible = true
-		$BeerOverlay.modulate.a = min(1, coldness / float(villager_actions))
+		$FrostOverlay.visible = true
+		$FrostOverlay.modulate.a = min(1, coldness / float(villager_actions))
 	else:
-		$BeerOverlay.visible = false
+		$FrostOverlay.visible = false
 
 func initialize_cell_labels():
 	var array = []

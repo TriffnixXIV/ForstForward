@@ -1,4 +1,4 @@
-[gd_scene load_steps=99 format=3 uid="uid://dd6kw8u6mewcl"]
+[gd_scene load_steps=99 format=3 uid="uid://48ilpky72qan"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -21,8 +21,6 @@
 [ext_resource type="PackedScene" uid="uid://bx13d72r8gahd" path="res://Scenes/Treant.tscn" id="17_rglu0"]
 [ext_resource type="PackedScene" uid="uid://d223ip0jmfp16" path="res://Scenes/Levels/Level4.tscn" id="18_ngmoe"]
 [ext_resource type="PackedScene" uid="uid://6b24wittmrru" path="res://Scenes/Levels/Level5.tscn" id="19_qo6jg"]
-[ext_resource type="Texture2D" uid="uid://bpo1h2fjic7l2" path="res://Images/BeerOverlay.png" id="22_3h8j0"]
-[ext_resource type="Texture2D" uid="uid://c56838mmyrs1r" path="res://Images/RainOverlay.png" id="23_deieb"]
 [ext_resource type="PackedScene" uid="uid://bmrv7mgrpf6mp" path="res://Scenes/Blast.tscn" id="23_fm4bp"]
 [ext_resource type="PackedScene" uid="uid://cpcurlk3kc20s" path="res://Scenes/GrowthEffect.tscn" id="24_hbdlb"]
 [ext_resource type="AudioStream" uid="uid://dy6gtytfq6mgv" path="res://Sounds/DruidStart.wav" id="24_p5qfq"]
@@ -35,10 +33,9 @@
 [ext_resource type="AudioStream" uid="uid://ivwiikmisbdp" path="res://Sounds/HorstAdvance.wav" id="29_opsn4"]
 [ext_resource type="Texture2D" uid="uid://dyeqdeiowhliu" path="res://Images/Middle.png" id="30_voj48"]
 [ext_resource type="Texture2D" uid="uid://ix3c2ehb5410" path="res://Images/Highlights/Highlight.png" id="31_3mgxn"]
-[ext_resource type="Texture2D" uid="uid://bjggyugi4001j" path="res://Images/Beer.png" id="31_r1sps"]
-[ext_resource type="Texture2D" uid="uid://b56tnpemcrfjy" path="res://Images/RainDrop.png" id="32_xa7xr"]
+[ext_resource type="Texture2D" uid="uid://c6imxygtnlk5g" path="res://Images/MapOverlays/SnowOverlay.png" id="31_ctvyl"]
+[ext_resource type="Texture2D" uid="uid://c56838mmyrs1r" path="res://Images/MapOverlays/RainOverlay.png" id="32_dub1y"]
 [ext_resource type="Script" path="res://Code/CellHighlight.gd" id="33_013ga"]
-[ext_resource type="Texture2D" uid="uid://bbnperurcnlc8" path="res://Images/Leaf.png" id="33_erdad"]
 [ext_resource type="Texture2D" uid="uid://htocvri6t264" path="res://Images/Highlights/GreenHighlight.png" id="33_yyet2"]
 [ext_resource type="Texture2D" uid="uid://dnsatdhdbguxs" path="res://Images/Highlights/RedHighlight.png" id="34_70uow"]
 [ext_resource type="Texture2D" uid="uid://xk3vg20yrq4e" path="res://Images/Highlights/LargeGreenHighlight.png" id="35_3tfe7"]
@@ -63,8 +60,11 @@
 [ext_resource type="Texture2D" uid="uid://cifp3h3pq8ndu" path="res://Images/Exit/XNormal.png" id="57_bn3s8"]
 [ext_resource type="Texture2D" uid="uid://86ldk7gv0ryc" path="res://Images/Arrows/ArrowRightHover.png" id="57_plwts"]
 [ext_resource type="Texture2D" uid="uid://boxj06aryddeq" path="res://Images/Exit/XPressed.png" id="58_6p8y3"]
+[ext_resource type="Texture2D" uid="uid://ck4rwbskgjv3l" path="res://Images/Icons/Snow.png" id="58_fvx64"]
+[ext_resource type="Texture2D" uid="uid://b56tnpemcrfjy" path="res://Images/Icons/RainDrop.png" id="59_ksjrr"]
 [ext_resource type="Texture2D" uid="uid://celwycvrm7wv" path="res://Images/Exit/XHovered.png" id="59_s61jp"]
 [ext_resource type="Texture2D" uid="uid://sw1gahi5bvs0" path="res://Images/DruidStuff/Druid.png" id="60_bhp0q"]
+[ext_resource type="Texture2D" uid="uid://bbnperurcnlc8" path="res://Images/Icons/Leaf.png" id="60_i1nh0"]
 [ext_resource type="Texture2D" uid="uid://ds1gxf71eg7jm" path="res://Images/MuteButton/MuteButton.png" id="62_y5gb0"]
 [ext_resource type="Texture2D" uid="uid://cyjstqtiplehm" path="res://Images/MuteButton/MuteButtonPressed.png" id="63_hkoqk"]
 [ext_resource type="Script" path="res://Code/ButtonSparks.gd" id="67_75gqh"]
@@ -248,16 +248,16 @@ stream = ExtResource("28_hswee")
 stream = ExtResource("29_opsn4")
 volume_db = -7.0
 
-[node name="BeerOverlay" type="Sprite2D" parent="Map"]
+[node name="FrostOverlay" type="Sprite2D" parent="Map"]
 visible = false
 z_index = 2
-texture = ExtResource("22_3h8j0")
+texture = ExtResource("31_ctvyl")
 centered = false
 
 [node name="RainOverlay" type="Sprite2D" parent="Map"]
 visible = false
 z_index = 2
-texture = ExtResource("23_deieb")
+texture = ExtResource("32_dub1y")
 centered = false
 
 [node name="CellHighlight" type="Sprite2D" parent="Map"]
@@ -596,14 +596,14 @@ layout_mode = 2
 text = "X deaths to lightning"
 label_settings = ExtResource("48_sowv6")
 
-[node name="Beer" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+[node name="Frost" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
 layout_mode = 2
-text = "X total beer level"
+text = "X total frost level"
 label_settings = ExtResource("48_sowv6")
 
-[node name="BeerActions" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+[node name="FrostActions" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
 layout_mode = 2
-text = "X actions lost to beer"
+text = "X actions lost to frost"
 label_settings = ExtResource("48_sowv6")
 
 [node name="Separator" type="TextureRect" parent="MapOverlay/PostGame/Stats"]
@@ -887,17 +887,17 @@ label_settings = SubResource("LabelSettings_yjfy3")
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="Beer" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+[node name="Frost" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/Beer"]
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/Frost"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
-texture = ExtResource("31_r1sps")
+texture = ExtResource("58_fvx64")
 
-[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Beer"]
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Frost"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -914,7 +914,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
-texture = ExtResource("32_xa7xr")
+texture = ExtResource("59_ksjrr")
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Rain"]
 layout_mode = 2
@@ -933,7 +933,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
-texture = ExtResource("33_erdad")
+texture = ExtResource("60_i1nh0")
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Growth"]
 layout_mode = 2

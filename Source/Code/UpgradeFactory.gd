@@ -137,9 +137,9 @@ func get_available_upgrades(type: Crystal.Type):
 				available_upgrades.append(
 					Upgrade.new(UT.rain, UA.growth, map.rain_growth_boost + 1, map.rain_growth_boost))
 			
-			if prototype.level >= 3 + 5 * map.rain_beer_boost:
+			if prototype.level >= 3 + 5 * map.rain_frost_boost:
 				available_upgrades.append(
-					Upgrade.new(UT.rain, UA.beer, map.rain_beer_boost + 1, map.rain_beer_boost))
+					Upgrade.new(UT.rain, UA.frost, map.rain_frost_boost + 1, map.rain_frost_boost))
 			
 			# lightning
 			prototype = action_factory.action_prototypes[Action.Type.lightning_strike]
@@ -167,11 +167,11 @@ func get_available_upgrades(type: Crystal.Type):
 						available_upgrades.append(
 							Upgrade.new(UT.lightning, UA.rain_conversion, strength - 1, strength))
 			
-			# beer
-			prototype = action_factory.action_prototypes[Action.Type.beer]
+			# frost
+			prototype = action_factory.action_prototypes[Action.Type.frost]
 			strength = prototype.strength
 			if total_weather_upgrades >= floori((pow(prototype.level, 2) + prototype.level) / 2.0):
 				available_upgrades.append(
-					Upgrade.new(UT.beer, UA.strength, strength + 1, strength))
+					Upgrade.new(UT.frost, UA.strength, strength + 1, strength))
 	
 	return available_upgrades

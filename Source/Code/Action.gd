@@ -1,7 +1,7 @@
 extends Resource
 class_name Action
 
-enum Type {spawn_treant, spawn_druid, overgrowth, spread, plant, rain, lightning_strike, beer}
+enum Type {spawn_treant, spawn_druid, overgrowth, spread, plant, rain, lightning_strike, frost}
 var type = null
 
 var strength = null
@@ -9,7 +9,7 @@ var clicks = null
 var progress = 0
 
 var next_action: Action = null
-var concurrent_actions: Array[Action] = [] # can only contain overgrowth, rain and beer actions
+var concurrent_actions: Array[Action] = [] # can only contain overgrowth, rain and frost actions
 
 signal advance_success
 signal advance_failure
@@ -38,10 +38,10 @@ func set_action(other: Action):
 	emit_signal("text_changed")
 
 func add_action(other: Action):
-	if other.type in [Type.overgrowth, Type.rain, Type.beer]:
+	if other.type in [Type.overgrowth, Type.rain, Type.frost]:
 		concurrent_actions.append(other)
 	else:
-		if type in [Type.overgrowth, Type.rain, Type.beer]:
+		if type in [Type.overgrowth, Type.rain, Type.frost]:
 			other.concurrent_actions.append(copy())
 			set_action(other)
 		elif next_action != null:
@@ -67,7 +67,7 @@ func get_crystal_type():
 		Type.plant:				return Crystal.Type.growth
 		Type.rain:				return Crystal.Type.weather
 		Type.lightning_strike:	return Crystal.Type.weather
-		Type.beer:				return Crystal.Type.weather # this will make sense once beer becomes snow
+		Type.frost:				return Crystal.Type.weather # this will make sense once frost becomes snow
 
 func get_full_text():
 	var full_text = get_text()
@@ -105,8 +105,8 @@ func get_text():
 			return "growth +" + str(strength)
 		Type.rain:
 			return "rain +" + str(strength) if strength > 0 else "rain " + str(strength) if strength < 0 else ""
-		Type.beer:
-			return "beer +" + str(strength)
+		Type.frost:
+			return "frost +" + str(strength)
 		Type.lightning_strike:
 			if clicks > 1:
 				return "summon " + str(clicks) + " lightning strikes" + progress_text
@@ -114,7 +114,7 @@ func get_text():
 				return "summon a lightning strike"
 
 func enact(map: Map):
-	if type in [Type.overgrowth, Type.rain, Type.beer]:
+	if type in [Type.overgrowth, Type.rain, Type.frost]:
 		for action in concurrent_actions:
 			action.enact(map)
 	
@@ -124,9 +124,9 @@ func enact(map: Map):
 		Type.rain:
 			map.rain_duration += strength
 			map.update_rain_overlay()
-		Type.beer:
-			map.beer_level += strength
-			map.update_beer_overlay()
+		Type.frost:
+			map.frost_level += strength
+			map.update_frost_overlay()
 
 func advance(map: Map, cell_position: Vector2i):
 	if progress >= clicks:

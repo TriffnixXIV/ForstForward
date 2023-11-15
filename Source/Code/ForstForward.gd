@@ -413,8 +413,8 @@ func reset_highscore_highlighting():
 
 func update_numbers():
 	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.text = str(len($Map.villagers))
-	$Sidebar/InGameUI/NumberContainer/Numbers/Beer/Label.text = str($Map.get_villager_action_loss())
-	$Sidebar/InGameUI/NumberContainer/Numbers/Beer/Label.label_settings.shadow_color = Color(0, 1, 0, 0) if $Map.get_villager_action_loss() == 0 else Color(0.5, 0, 1, 1) if $Map.beer_level > 0 else Color(0, 0.5, 1, 1)
+	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.text = str($Map.get_villager_action_loss())
+	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.label_settings.shadow_color = Color(0, 1, 0, 0) if $Map.get_villager_action_loss() == 0 else Color(0.5, 0, 1, 1) if $Map.frost_level > 0 else Color(0, 0.5, 1, 1)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.text = str($Map.rain_duration)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.is_raining() else Color(0, 1, 0, 0)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.text = str($Map.get_growth_stages())
@@ -440,8 +440,8 @@ func update_stats():
 	$MapOverlay/PostGame/Stats/Horst/Deaths.text = str($Map.total_dead_villagers) + " villagers died"
 	$MapOverlay/PostGame/Stats/Horst/DeathsTreant.text = str($Map.total_deaths_to_treants) + " deaths to treants"
 	$MapOverlay/PostGame/Stats/Horst/DeathsLightning.text = str($Map.total_deaths_to_lightning) + " deaths to lightning"
-	$MapOverlay/PostGame/Stats/Horst/Beer.text = str($Map.total_beer_level) + " total beer level"
-	$MapOverlay/PostGame/Stats/Horst/BeerActions.text = str($Map.actions_lost_to_beer) + " actions lost to beer"
+	$MapOverlay/PostGame/Stats/Horst/Frost.text = str($Map.total_frost_level) + " total frost level"
+	$MapOverlay/PostGame/Stats/Horst/FrostActions.text = str($Map.actions_lost_to_frost) + " actions lost to frost"
 	
 	$MapOverlay/PostGame/Stats/Forst/Trees.text = str($Map.total_grown_trees) + " trees grown"
 	$MapOverlay/PostGame/Stats/Forst/Plant.text = str($Map.total_planted_trees) + " trees planted"

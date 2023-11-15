@@ -36,7 +36,7 @@ func _init(action_type: Type):
 		Type.lightning_strike:
 			base_unlocked = false
 			base_clicks = 1
-		Type.beer:
+		Type.frost:
 			base_strength = 4
 	
 	reset()

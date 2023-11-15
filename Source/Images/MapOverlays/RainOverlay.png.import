@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbnperurcnlc8"
-path="res://.godot/imported/Leaf.png-77e47d49b466abbc2c9b8e1095cc099c.ctex"
+uid="uid://c56838mmyrs1r"
+path="res://.godot/imported/RainOverlay.png-ac8f41f116a03c3fb8235fde4a287f19.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Leaf.png"
-dest_files=["res://.godot/imported/Leaf.png-77e47d49b466abbc2c9b8e1095cc099c.ctex"]
+source_file="res://Images/MapOverlays/RainOverlay.png"
+dest_files=["res://.godot/imported/RainOverlay.png-ac8f41f116a03c3fb8235fde4a287f19.ctex"]
 
 [params]
 

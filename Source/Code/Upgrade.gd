@@ -5,11 +5,11 @@ var value = null
 var previous_value = null
 var end_text = ""
 
-enum Type {none, villager, treant, druid, growth, spread, plant, rain, lightning, beer}
+enum Type {none, villager, treant, druid, growth, spread, plant, rain, lightning, frost}
 var type: Type = Type.none
 
 enum Attribute {none, unlock, clicks, strength, actions, minimum,
-	growth, spread, on_plains, on_buildings, unlock_rain, rain, rain_conversion, beer}
+	growth, spread, on_plains, on_buildings, unlock_rain, rain, rain_conversion, frost}
 var attribute: Attribute = Attribute.none
 
 func _init(type_: Type = Type.none, attribute_: Attribute = Attribute.none,
@@ -86,8 +86,8 @@ func get_text():
 					return "rain\n+" + str(previous_value) + " -> +" + str(value)
 				Attribute.growth:
 					return "rain growth boost\n+" + str(previous_value) + " -> +" + str(value)
-				Attribute.beer:
-					return "rain beer boost\n+" + str(previous_value) + " -> +" + str(value)
+				Attribute.frost:
+					return "rain frost boost\n+" + str(previous_value) + " -> +" + str(value)
 		Type.lightning:
 			match attribute:
 				Attribute.unlock:
@@ -102,10 +102,10 @@ func get_text():
 					var rainstr_1 = "+" + str(previous_value) if previous_value > 0 else str(previous_value)
 					var rainstr_2 = "+" + str(value) if value > 0 else str(value)
 					return "lightning rain\n" + rainstr_1 + " -> " + rainstr_2
-		Type.beer:
+		Type.frost:
 			match attribute:
 				Attribute.strength:
-					return "beer\n+" + str(previous_value) + " -> +" + str(value)
+					return "frost\n+" + str(previous_value) + " -> +" + str(value)
 
 func apply(map: Map, action_factory: ActionFactory):
 	var prototype: ActionPrototype
@@ -156,7 +156,7 @@ func apply(map: Map, action_factory: ActionFactory):
 			match attribute:
 				Attribute.strength:	prototype.strength = value
 				Attribute.growth:	map.rain_growth_boost = value
-				Attribute.beer:		map.rain_beer_boost = value
+				Attribute.frost:		map.rain_frost_boost = value
 		Type.lightning:
 			prototype = action_factory.action_prototypes[Action.Type.lightning_strike]
 			match attribute:
@@ -165,8 +165,8 @@ func apply(map: Map, action_factory: ActionFactory):
 				Attribute.unlock_rain:		action_factory.rain_lightning_conversion_unlocked = true
 				Attribute.rain_conversion:	action_factory.rain_lightning_conversion = value
 				Attribute.rain:				action_factory.lightning_bonus_rain = value
-		Type.beer:
-			prototype = action_factory.action_prototypes[Action.Type.beer]
+		Type.frost:
+			prototype = action_factory.action_prototypes[Action.Type.frost]
 			match attribute:
 				Attribute.strength:	prototype.strength = value
 	

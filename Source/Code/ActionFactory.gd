@@ -18,8 +18,8 @@ var action_prototypes = {
 		ActionPrototype.new(Action.Type.rain),
 	Action.Type.lightning_strike: 
 		ActionPrototype.new(Action.Type.lightning_strike),
-	Action.Type.beer: 
-		ActionPrototype.new(Action.Type.beer)
+	Action.Type.frost: 
+		ActionPrototype.new(Action.Type.frost)
 }
 
 var base_rain_lightning_conversion_unlocked = false

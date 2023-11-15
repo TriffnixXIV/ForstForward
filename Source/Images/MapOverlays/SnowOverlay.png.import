@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bpo1h2fjic7l2"
-path="res://.godot/imported/BeerOverlay.png-5551ed9ffcac07e85ea3259a47a6f29e.ctex"
+uid="uid://c6imxygtnlk5g"
+path="res://.godot/imported/SnowOverlay.png-3b9d2d3eb6f01bad055e2d9d5bb248b2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/BeerOverlay.png"
-dest_files=["res://.godot/imported/BeerOverlay.png-5551ed9ffcac07e85ea3259a47a6f29e.ctex"]
+source_file="res://Images/MapOverlays/SnowOverlay.png"
+dest_files=["res://.godot/imported/SnowOverlay.png-3b9d2d3eb6f01bad055e2d9d5bb248b2.ctex"]
 
 [params]
 
