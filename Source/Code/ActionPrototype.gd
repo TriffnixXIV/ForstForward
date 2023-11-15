@@ -34,7 +34,8 @@ func _init(action_type: Type):
 		Type.rain:
 			base_strength = 3
 		Type.lightning_strike:
-			base_clicks = 0
+			base_unlocked = false
+			base_clicks = 1
 		Type.beer:
 			base_strength = 4
 	

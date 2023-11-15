@@ -9,7 +9,7 @@ enum Type {none, villager, treant, druid, growth, spread, plant, rain, lightning
 var type: Type = Type.none
 
 enum Attribute {none, unlock, clicks, strength, actions, minimum,
-	growth, spread, on_buildings, beer}
+	growth, spread, on_plains, on_buildings, unlock_rain, rain, rain_conversion, beer}
 var attribute: Attribute = Attribute.none
 
 func _init(type_: Type = Type.none, attribute_: Attribute = Attribute.none,
@@ -48,6 +48,8 @@ func get_text():
 			match attribute:
 				Attribute.clicks:
 					return "druid spawns\n" + str(previous_value) + " -> " + str(value)
+				Attribute.strength:
+					return "druid circle trees\n" + str(previous_value) + " -> " + str(value)
 				Attribute.actions:
 					return "druid actions\n" + str(previous_value) + " -> " + str(value)
 		Type.villager:
@@ -66,6 +68,10 @@ func get_text():
 					return "spread\n" + end_text
 				Attribute.strength:
 					return "spread\n" + end_text
+				Attribute.on_plains:
+					return "enable spreading on all non-buildings"
+				Attribute.on_buildings:
+					return "enable spreading on buildings"
 		Type.plant:
 			match attribute:
 				Attribute.clicks:
@@ -84,8 +90,18 @@ func get_text():
 					return "rain beer boost\n+" + str(previous_value) + " -> +" + str(value)
 		Type.lightning:
 			match attribute:
+				Attribute.unlock:
+					return "unlock lightning"
 				Attribute.clicks:
 					return "lightning base amount\n" + str(previous_value) + " -> " + str(value)
+				Attribute.unlock_rain:
+					return "lightning\n+1 for each " + str(value) + " rain duration"
+				Attribute.rain_conversion:
+					return "lightning\n+1 for each\n" + str(previous_value) + " -> " + str(value) + "\n rain duration"
+				Attribute.rain:
+					var rainstr_1 = "+" + str(previous_value) if previous_value > 0 else str(previous_value)
+					var rainstr_2 = "+" + str(value) if value > 0 else str(value)
+					return "lightning rain\n" + rainstr_1 + " -> " + rainstr_2
 		Type.beer:
 			match attribute:
 				Attribute.strength:
@@ -104,14 +120,17 @@ func apply(map: Map, action_factory: ActionFactory):
 			prototype = action_factory.action_prototypes[Action.Type.spawn_treant]
 			match attribute:
 				Attribute.clicks:	prototype.clicks = value
+				Attribute.strength:	map.druid_circle_trees = value
 				Attribute.actions:	map.druid_actions = value
 		Type.villager:
 			match attribute:
 				Attribute.actions:	map.villager_actions = value
 		Type.growth:
-			prototype = action_factory.action_prototypes[Action.Type.overgrowth]
 			match attribute:
-				Attribute.strength:	prototype.strength = value
+				Attribute.strength:
+					prototype = action_factory.action_prototypes[Action.Type.overgrowth]
+					prototype.strength = value
+				
 				Attribute.minimum:	map.min_growth_stages = value
 		Type.spread:
 			prototype = action_factory.action_prototypes[Action.Type.spread]
@@ -122,8 +141,10 @@ func apply(map: Map, action_factory: ActionFactory):
 					var new_strength = 10 * ceili(((strength * clicks) + 40) / (10.0 * (clicks + 1)))
 					prototype.strength = new_strength
 					prototype.clicks = value
-				Attribute.strength:
-					prototype.strength = value
+				
+				Attribute.strength:		prototype.strength = value
+				Attribute.on_plains:	map.can_spread_on_plains = true
+				Attribute.on_buildings:	map.can_spread_on_buildings = true
 		Type.plant:
 			prototype = action_factory.action_prototypes[Action.Type.plant]
 			match attribute:
@@ -139,7 +160,11 @@ func apply(map: Map, action_factory: ActionFactory):
 		Type.lightning:
 			prototype = action_factory.action_prototypes[Action.Type.lightning_strike]
 			match attribute:
-				Attribute.clicks:	prototype.clicks = value
+				Attribute.unlock:			prototype.unlocked = true
+				Attribute.clicks:			prototype.clicks = value
+				Attribute.unlock_rain:		action_factory.rain_lightning_conversion_unlocked = true
+				Attribute.rain_conversion:	action_factory.rain_lightning_conversion = value
+				Attribute.rain:				action_factory.lightning_bonus_rain = value
 		Type.beer:
 			prototype = action_factory.action_prototypes[Action.Type.beer]
 			match attribute:

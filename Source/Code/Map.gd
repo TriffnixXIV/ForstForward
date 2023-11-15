@@ -40,7 +40,10 @@ var highest_possible_score: int
 var base_villager_actions = 12
 var base_treant_actions = 8
 var base_druid_actions = 8
+var base_druid_circle_trees = 16
 var base_min_growth_stages = 1
+var base_can_spread_on_plains = false
+var base_can_spread_on_buildings = false
 var base_can_plant_on_buildings = false
 var base_rain_growth_boost = 0
 var base_rain_beer_boost = 0
@@ -48,7 +51,10 @@ var base_rain_beer_boost = 0
 var villager_actions: int
 var treant_actions: int
 var druid_actions: int
+var druid_circle_trees: int
 var min_growth_stages: int
+var can_spread_on_plains: bool
+var can_spread_on_buildings: bool
 var can_plant_on_buildings: bool
 var rain_growth_boost: int
 var rain_beer_boost: int
@@ -233,7 +239,10 @@ func reset_upgrades():
 	villager_actions		= base_villager_actions
 	treant_actions			= base_treant_actions
 	druid_actions			= base_druid_actions
+	druid_circle_trees		= base_druid_circle_trees
 	min_growth_stages		= base_min_growth_stages
+	can_spread_on_plains	= base_can_spread_on_plains
+	can_spread_on_buildings	= base_can_spread_on_buildings
 	can_plant_on_buildings	= base_can_plant_on_buildings
 	rain_growth_boost		= base_rain_growth_boost
 	rain_beer_boost			= base_rain_beer_boost
@@ -336,6 +345,7 @@ func start_druid_phase():
 		target_druid_count = len(druids)
 		for druid in druids:
 			druid.prepare_turn(druid_actions)
+			druid.set_circle_trees(druid_circle_trees)
 		
 		done_treant_count = 0
 		target_treant_count = len(treants)
@@ -440,11 +450,6 @@ func advance_phase():
 					finish_advancement()
 
 func finish_advancement():
-	if len(druids) > 0:
-		for x in width:
-			for y in height:
-				druids[0].check_cell(Vector2i(x, y))
-	
 	current_phase = Phase.idle
 	growth_boost = max(0, floori(0.5 * growth_boost))
 	advance_rain()
@@ -767,7 +772,7 @@ func can_plant_forest(cell_position):
 func plant_forest(cell_position: Vector2i):
 	if can_plant_forest(cell_position):
 		var previous_yield = get_yield(cell_position)
-		set_forest(cell_position)
+		increase_yield(cell_position, 20)
 		show_growth_effect(cell_position)
 		total_planted_trees += get_yield(cell_position) - previous_yield
 		emit_signal("score_changed")
@@ -779,10 +784,16 @@ func count_spreadable_spots():
 	return count_spots(can_spread_forest)
 
 func can_spread_forest(cell_position: Vector2i):
-	return is_forest(cell_position)
+	return (is_forest(cell_position)
+		) or (
+			can_spread_on_plains and (is_growth(cell_position) or is_plains(cell_position))
+		) or (
+			can_spread_on_buildings and (is_build_site(cell_position) or is_house(cell_position))
+		)
 
 func spread_forest(cell_position: Vector2i, tree_amount: int, from_treant: bool = false):
 	if can_spread_forest(cell_position):
+		increase_yield(cell_position, 20)
 		show_growth_effect(cell_position)
 		var distance = 1
 		var cell_entries = []

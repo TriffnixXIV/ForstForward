@@ -3,17 +3,6 @@ class_name ActionFactory
 
 var map: Map
 
-#var occurences = {
-#	"spawn_treant": 0,
-#	"spawn_druid": 0,
-#	"overgrowth": 0,
-#	"spread": 0,
-#	"plant": 0,
-#	"rain": 0,
-#	"summon_lightning": 0,
-#	"beer": 0
-#}
-
 var action_prototypes = {
 	Action.Type.spawn_treant:
 		ActionPrototype.new(Action.Type.spawn_treant),
@@ -33,7 +22,19 @@ var action_prototypes = {
 		ActionPrototype.new(Action.Type.beer)
 }
 
+var base_rain_lightning_conversion_unlocked = false
+var base_rain_lightning_conversion = 6
+var base_lightning_bonus_rain = -3
+
+var rain_lightning_conversion_unlocked: bool
+var rain_lightning_conversion: int
+var lightning_bonus_rain: int
+
 func reset():
+	rain_lightning_conversion_unlocked = base_rain_lightning_conversion_unlocked
+	rain_lightning_conversion = base_rain_lightning_conversion
+	lightning_bonus_rain = base_lightning_bonus_rain
+	
 	for key in action_prototypes:
 		action_prototypes[key].reset()
 
@@ -44,11 +45,6 @@ func get_actions(amount: int = 2):
 	var weight_total = 0
 	for entry in possible_actions:
 		weight_total += entry[0]
-	
-#	var printarray = []
-#	for entry in possible_actions:
-#		printarray.append([entry[0], Action.Type.keys()[entry[1].type]])
-#	print(printarray)
 	
 	while len(actions) < amount:
 		var x = randi_range(0, weight_total - 1)
@@ -64,11 +60,6 @@ func get_actions(amount: int = 2):
 	
 	var earlier_type = func (a: Action, b: Action): return a.type < b.type
 	actions.sort_custom(earlier_type)
-#	printarray = []
-#	for action in actions:
-#		occurences[Action.Type.keys()[action.type]] += 1
-#		printarray.append(Action.Type.keys()[action.type])
-#	print(printarray, " ", occurences)
 	return actions
 
 func get_possible_actions():
@@ -104,36 +95,16 @@ func get_action_data(action_type):
 			var plantable_spots = map.count_plantable_spots()
 			is_possible = plantable_spots > 0
 			action.clicks = min(plantable_spots, action.clicks)
-			
-			# convert a semi-random number of forests into a spread action
-			var converted_forests = randi_range(
-				max(0, action.clicks - 10),
-				max(0, action.clicks - 4)
-			)
-			if converted_forests > 0:
-				# plant will be between 4 and 10 forests
-				action.clicks -= converted_forests
-				
-				# the spread action will be [20 * number of converted forests] strong
-				var spread_action = Action.new()
-				spread_action.type = Action.Type.spread
-				spread_action.strength = 20 * converted_forests
-				spread_action.clicks = 1
-				action.add_action(spread_action)
 		
 		Action.Type.lightning_strike:
-			action.clicks = min(
-				action.clicks + floori(map.rain_duration / 3.0),
-				floori(len(map.villagers) / 9.0)
-			)
+			if rain_lightning_conversion_unlocked:
+				action.clicks += floori(map.rain_duration / float(rain_lightning_conversion))
 			is_possible = map.is_raining() and action.clicks > 0
 			
-			# if the lightning strike count is low in regards to existing villages,
-			# give some free rain on top to get the count up next time
-			if action.clicks < floori(len(map.villagers) / 9.0):
+			if lightning_bonus_rain != 0:
 				var rain_action = Action.new()
 				rain_action.type = Action.Type.rain
-				rain_action.strength = 3
+				rain_action.strength = max(lightning_bonus_rain, -map.rain_duration)
 				action.add_action(rain_action)
 		
 		Action.Type.rain:

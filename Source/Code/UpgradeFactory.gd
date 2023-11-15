@@ -42,7 +42,7 @@ func get_available_upgrades(type: Crystal.Type):
 		Crystal.Type.life:
 			# treant
 			prototype = action_factory.action_prototypes[Action.Type.spawn_treant]
-			if prototype.unlocked == false:
+			if not prototype.unlocked:
 				if total_life_upgrades >= 5:
 					available_upgrades.append(
 						Upgrade.new(UT.treant, UA.unlock))
@@ -57,13 +57,17 @@ func get_available_upgrades(type: Crystal.Type):
 						Upgrade.new(UT.treant, UA.actions, map.treant_actions + 2, map.treant_actions))
 			
 			# druid
-			clicks = action_factory.action_prototypes[Action.Type.spawn_druid].clicks
-			if total_life_upgrades >= 2 + 2 * clicks:
+			prototype = action_factory.action_prototypes[Action.Type.spawn_druid]
+			clicks = prototype.clicks
+			if total_life_upgrades >= 2 + 3 * clicks:
 				available_upgrades.append(
 					Upgrade.new(UT.druid, UA.clicks, clicks + 1, clicks))
-				
+			
 			available_upgrades.append(
 				Upgrade.new(UT.druid, UA.actions, map.druid_actions + 1, map.druid_actions))
+			
+			available_upgrades.append(
+				Upgrade.new(UT.druid, UA.strength, map.druid_circle_trees + 9, map.druid_circle_trees))
 			
 			# villager
 			var lost_actions = max(0, map.base_villager_actions - map.villager_actions)
@@ -75,11 +79,11 @@ func get_available_upgrades(type: Crystal.Type):
 			# overgrowth
 			prototype = action_factory.action_prototypes[Action.Type.overgrowth]
 			strength = prototype.strength
-			if total_growth_upgrades >= 2 * (strength - prototype.base_strength):
+			if total_growth_upgrades >= floori((pow(strength, 2) + strength) / 2.0):
 				available_upgrades.append(
 					Upgrade.new(UT.growth, UA.strength, strength + 1, strength))
 			
-			if total_growth_upgrades >= 4 * map.min_growth_stages:
+			if total_growth_upgrades >= pow(map.min_growth_stages, 2) + map.min_growth_stages:
 				available_upgrades.append(
 					Upgrade.new(UT.growth, UA.minimum, map.min_growth_stages + 1, map.min_growth_stages))
 			
@@ -87,8 +91,8 @@ func get_available_upgrades(type: Crystal.Type):
 			prototype = action_factory.action_prototypes[Action.Type.spread]
 			strength = prototype.strength
 			clicks = prototype.clicks
-			var clickstr = "" if clicks == 1 else str(clicks) + "x"
-			new_strength = strength + 10 * ceili(4 / float(clicks))
+			var clickstr = "" if clicks == 1 else str(clicks) + "x "
+			new_strength = strength + 10 * ceili((3 + clicks) / float(clicks))
 			available_upgrades.append(
 				Upgrade.new(UT.spread, UA.strength, new_strength, strength,
 					clickstr + str(strength) + " -> " + clickstr + str(new_strength)))
@@ -97,7 +101,15 @@ func get_available_upgrades(type: Crystal.Type):
 				new_strength = 10 * ceili(((strength * clicks) + 40) / (10.0 * (clicks + 1)))
 				available_upgrades.append(
 					Upgrade.new(UT.spread, UA.clicks, clicks + 1, clicks,
-						clickstr + str(strength) + " -> " + str(clicks + 1) + "x" + str(new_strength)))
+						clickstr + str(strength) + " -> " + str(clicks + 1) + "x " + str(new_strength)))
+			
+			if prototype.level >= 5 and not map.can_spread_on_plains:
+				available_upgrades.append(
+					Upgrade.new(UT.spread, UA.on_plains))
+			
+			if prototype.level >= 8 and map.can_spread_on_plains and not map.can_spread_on_buildings:
+				available_upgrades.append(
+					Upgrade.new(UT.spread, UA.on_buildings))
 			
 			# plant
 			prototype = action_factory.action_prototypes[Action.Type.plant]
@@ -105,7 +117,7 @@ func get_available_upgrades(type: Crystal.Type):
 			available_upgrades.append(
 				Upgrade.new(UT.plant, UA.clicks, clicks + 2, clicks))
 			
-			if prototype.level >= 5:
+			if prototype.level >= 5 and not map.can_plant_on_buildings:
 				available_upgrades.append(
 					Upgrade.new(UT.plant, UA.on_buildings))
 			
@@ -130,9 +142,30 @@ func get_available_upgrades(type: Crystal.Type):
 					Upgrade.new(UT.rain, UA.beer, map.rain_beer_boost + 1, map.rain_beer_boost))
 			
 			# lightning
-			clicks = action_factory.action_prototypes[Action.Type.lightning_strike].clicks
-			available_upgrades.append(
-				Upgrade.new(UT.lightning, UA.clicks, clicks + 1, clicks))
+			prototype = action_factory.action_prototypes[Action.Type.lightning_strike]
+			if not prototype.unlocked:
+				if total_weather_upgrades >= 3:
+					available_upgrades.append(
+						Upgrade.new(UT.lightning, UA.unlock))
+			else:
+				clicks = prototype.clicks
+				available_upgrades.append(
+					Upgrade.new(UT.lightning, UA.clicks, clicks + 1, clicks))
+				
+				strength = action_factory.lightning_bonus_rain
+				available_upgrades.append(
+					Upgrade.new(UT.lightning, UA.rain, strength + 1, strength))
+				
+				if not action_factory.rain_lightning_conversion_unlocked:
+					if total_weather_upgrades >= 5:
+						available_upgrades.append(
+							Upgrade.new(UT.lightning, UA.unlock_rain, action_factory.rain_lightning_conversion))
+				else:
+					strength = action_factory.rain_lightning_conversion
+					var diff = max(0, action_factory.base_rain_lightning_conversion - strength)
+					if prototype.level >= 5 + floori((pow(diff, 2) + diff) / 2.0) and strength > 1:
+						available_upgrades.append(
+							Upgrade.new(UT.lightning, UA.rain_conversion, strength - 1, strength))
 			
 			# beer
 			prototype = action_factory.action_prototypes[Action.Type.beer]

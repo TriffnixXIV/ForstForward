@@ -77,6 +77,14 @@ func set_state(new_state: State):
 		State.tired:
 			pass
 
+func set_circle_trees(amount: int):
+	self_growth = amount % 8
+	edge_growth = floori(amount / 8.0)
+	corner_growth = floori(amount / 8.0)
+	while corner_growth > 1 and self_growth < edge_growth and self_growth < 10:
+		corner_growth -= 1
+		self_growth += 4
+
 func update_circle_state():
 	set_circle_state(circle_state)
 
@@ -132,7 +140,6 @@ func find_good_spots():
 
 func check_cell(cell: Vector2i):
 	var cell_value = evaluate_target_location(cell)
-	map.set_cell_label(cell, str(cell_value))
 	if cell_value > 0:
 		var score = cell_value - spot_distance
 		if score > value_threshhold:

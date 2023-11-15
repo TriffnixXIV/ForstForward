@@ -194,7 +194,6 @@ func set_game_state(state: GameState):
 			$MapOverlay/PostGame/ToLevelSelection.enable_after(1)
 			$MapOverlay/PostGame.visible = true
 			$Sidebar/Records.visible = true
-			
 	
 	update_UI()
 

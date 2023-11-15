@@ -99,12 +99,12 @@ func get_text():
 			else:
 				return "plant a forest" + spreadstr
 		Type.spread:
-			var click_text = str(clicks) + "x" if clicks > 1 else ""
+			var click_text = str(clicks) + "x " if clicks > 1 else ""
 			return "spread " + click_text + str(strength) + progress_text
 		Type.overgrowth:
 			return "growth +" + str(strength)
 		Type.rain:
-			return "rain +" + str(strength)
+			return "rain +" + str(strength) if strength > 0 else "rain " + str(strength) if strength < 0 else ""
 		Type.beer:
 			return "beer +" + str(strength)
 		Type.lightning_strike:
