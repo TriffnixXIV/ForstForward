@@ -43,7 +43,7 @@ func get_text():
 				Attribute.clicks:
 					return "treant spawns\n" + str(previous_value) + " -> " + str(value)
 				Attribute.actions:
-					return "treant acions\n" + str(previous_value) + " -> " + str(value)
+					return "treant actions\n" + str(previous_value) + " -> " + str(value)
 				Attribute.spread:
 					return "treant death spread\n4x" + str(previous_value) + " -> 4x" + str(value)
 		Type.treantling:
@@ -51,7 +51,7 @@ func get_text():
 				Attribute.clicks:
 					return "treantling spawns\n" + str(previous_value) + " -> " + str(value)
 				Attribute.actions:
-					return "treantling acions\n" + str(previous_value) + " -> " + str(value)
+					return "treantling actions\n" + str(previous_value) + " -> " + str(value)
 				Attribute.strength:
 					return "treantling strength\n" + str(previous_value) + " -> " + str(value)
 				Attribute.lifespan:
@@ -156,7 +156,7 @@ func apply(map: Map, action_factory: ActionFactory):
 					prototype = action_factory.action_prototypes[Action.Type.overgrowth]
 					prototype.strength = value
 				
-				Attribute.minimum:	map.min_growth_stages = value
+				Attribute.minimum:	map.min_growth = value
 		Type.spread:
 			prototype = action_factory.action_prototypes[Action.Type.spread]
 			match attribute:

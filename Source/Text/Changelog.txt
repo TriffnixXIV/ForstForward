@@ -1,31 +1,6 @@
 Mechanics:
-	- added action upgrades that can be obtained through crystals
-		- too much to sensibly fit in here
-	- removed automatic scaling
-	- villager changes:
-		- they are now more performant when looking for trees to chop
-		- they are now looking for trees up to distance 30 instead of 20
-		- now only have 12 actions again
-	- druid changes:
-		- they evaluate target locations differently once more
-	- replaced beer with frost
-	- added a new creature: the treantling
-		- it's basically tiny treants with a limited lifespan
-	- lots of other stuff that I didn't keep track of
+	--
 
 Bug fixes & QoL:
-	- fixed: treants sometimes softlocked the game when planting themselves
-	- fixed: when winning the game through a left-click, the post-game screen was instantly skipped
-		- now, a left-click can only skip the post-game screen if it has been there for more than a second
-	- maybe fixed: sometimes, villagers were outside of the map, leading to a few possible crashes
-		- I think this was due to them also valueing building spots outside of the map, which they now no longer do
-	- fixed: rain possibility was not set correctly, leading to a few inefficiencies
-	- fixed: pressing two buttons at the same time in the main menu instantly won the game
-		- this was due to the first entering the level select and the second starting the game,
-			before the map transition even started, leading to the map only having forests, as in the main menu,
-			triggering the win condition
-		- now, levels can only be started once the map transition is complete
-
-UI:
-	- changed the mute button
-	- changed the in-game UI
+	- fixed: the treantling action upgrade now has correct spelling
+	- fixed: min growth action upgrade now works again

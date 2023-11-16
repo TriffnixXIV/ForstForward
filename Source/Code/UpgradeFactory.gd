@@ -91,12 +91,6 @@ func get_available_upgrades(type: Crystal.Type):
 			
 			available_upgrades.append(
 				Upgrade.new(UT.druid, UA.strength, map.druid_circle_trees + 4, map.druid_circle_trees))
-			
-			# villager
-#			var lost_actions = max(0, map.base_villager_actions - map.villager_actions)
-#			if total_life_upgrades >= floori((pow(lost_actions, 2) + lost_actions) / 2.0):
-#				available_upgrades.append(
-#					Upgrade.new(UT.villager, UA.actions, map.villager_actions - 1, map.villager_actions))
 		
 		Crystal.Type.growth:
 			# overgrowth
