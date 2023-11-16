@@ -1,4 +1,4 @@
-[gd_scene load_steps=100 format=3 uid="uid://48ilpky72qan"]
+[gd_scene load_steps=106 format=3 uid="uid://48ilpky72qan"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -65,8 +65,11 @@
 [ext_resource type="Texture2D" uid="uid://celwycvrm7wv" path="res://Images/Exit/XHovered.png" id="59_s61jp"]
 [ext_resource type="Texture2D" uid="uid://sw1gahi5bvs0" path="res://Images/DruidStuff/Druid.png" id="60_bhp0q"]
 [ext_resource type="Texture2D" uid="uid://bbnperurcnlc8" path="res://Images/Icons/Leaf.png" id="60_i1nh0"]
+[ext_resource type="Texture2D" uid="uid://tdaw3aabw7js" path="res://Images/Crystals/CrystalYellowFull.png" id="61_fbcrw"]
+[ext_resource type="Texture2D" uid="uid://c1eo5ifgm0dat" path="res://Images/Crystals/CrystalGreenFull.png" id="62_y0cet"]
 [ext_resource type="Texture2D" uid="uid://ds1gxf71eg7jm" path="res://Images/MuteButton/MuteButton.png" id="62_y5gb0"]
 [ext_resource type="Texture2D" uid="uid://cyjstqtiplehm" path="res://Images/MuteButton/MuteButtonPressed.png" id="63_hkoqk"]
+[ext_resource type="Texture2D" uid="uid://c82bnqhtjhkwq" path="res://Images/Crystals/CrystalBlueFull.png" id="63_vtxh1"]
 [ext_resource type="Script" path="res://Code/ButtonSparks.gd" id="67_75gqh"]
 [ext_resource type="Texture2D" uid="uid://b6bd7bg0wfhx2" path="res://Images/OptionButton/GreenSparks.png" id="68_bs5cj"]
 [ext_resource type="Texture2D" uid="uid://clagadh0qvmfo" path="res://Images/OptionButton/BlueSparks.png" id="69_d0ki3"]
@@ -175,7 +178,19 @@ shadow_size = 0
 line_spacing = 0.0
 shadow_size = 0
 
-[sub_resource type="LabelSettings" id="LabelSettings_rgpb0"]
+[sub_resource type="LabelSettings" id="LabelSettings_uob5l"]
+line_spacing = 0.0
+shadow_size = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_k4xos"]
+line_spacing = 0.0
+shadow_size = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_a7hs7"]
+line_spacing = 0.0
+shadow_size = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_xh270"]
 line_spacing = 0.0
 shadow_size = 0
 
@@ -523,7 +538,6 @@ texture_hover = ExtResource("57_plwts")
 stretch_mode = 3
 
 [node name="PostGame" type="Control" parent="MapOverlay"]
-visible = false
 z_index = 2
 layout_mode = 1
 anchors_preset = 8
@@ -938,26 +952,84 @@ label_settings = SubResource("LabelSettings_2bde0")
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="Growth" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+[node name="GrowthStages" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/Growth"]
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/GrowthStages"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 texture = ExtResource("60_i1nh0")
 
-[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/Growth"]
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/GrowthStages"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "0"
-label_settings = SubResource("LabelSettings_rgpb0")
+label_settings = SubResource("LabelSettings_uob5l")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="LifeUpgrades" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/LifeUpgrades"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("61_fbcrw")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/LifeUpgrades"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_k4xos")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="GrowthUpgrades" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/GrowthUpgrades"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("62_y0cet")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/GrowthUpgrades"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_a7hs7")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="WeatherUpgrades" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Image" type="TextureRect" parent="Sidebar/InGameUI/NumberContainer/Numbers/WeatherUpgrades"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("63_vtxh1")
+
+[node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/WeatherUpgrades"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_xh270")
 horizontal_alignment = 1
 vertical_alignment = 2
 
 [node name="Druids" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -977,6 +1049,7 @@ horizontal_alignment = 1
 vertical_alignment = 2
 
 [node name="Treants" type="VBoxContainer" parent="Sidebar/InGameUI/NumberContainer/Numbers"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 

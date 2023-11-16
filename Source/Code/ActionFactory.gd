@@ -6,6 +6,8 @@ var map: Map
 var action_prototypes = {
 	Action.Type.spawn_treant:
 		ActionPrototype.new(Action.Type.spawn_treant),
+	Action.Type.spawn_treantling:
+		ActionPrototype.new(Action.Type.spawn_treantling),
 	Action.Type.spawn_druid: 
 		ActionPrototype.new(Action.Type.spawn_druid),
 	Action.Type.overgrowth: 

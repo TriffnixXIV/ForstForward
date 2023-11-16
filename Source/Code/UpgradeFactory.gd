@@ -55,11 +55,34 @@ func get_available_upgrades(type: Crystal.Type):
 				if total_life_upgrades >= map.treant_actions:
 					available_upgrades.append(
 						Upgrade.new(UT.treant, UA.actions, map.treant_actions + 2, map.treant_actions))
+				
+				available_upgrades.append(
+					Upgrade.new(UT.treant, UA.spread, map.treant_death_spread + 10, map.treant_death_spread))
+			
+			# treantling
+			prototype = action_factory.action_prototypes[Action.Type.spawn_treantling]
+			clicks = prototype.clicks
+			if prototype.level >= 3 * clicks:
+				available_upgrades.append(
+					Upgrade.new(UT.treantling, UA.clicks, clicks + 1, clicks))
+			
+			available_upgrades.append(
+				Upgrade.new(UT.treantling, UA.actions, map.treantling_actions + 2, map.treantling_actions))
+			
+			if prototype.level >= 1 + pow(map.treantling_strength, 2) + map.treantling_strength:
+				available_upgrades.append(
+					Upgrade.new(UT.treantling, UA.strength, map.treantling_strength + 1, map.treantling_strength))
+			
+			available_upgrades.append(
+				Upgrade.new(UT.treantling, UA.lifespan, map.treantling_lifespan + 5, map.treantling_lifespan))
+			
+			available_upgrades.append(
+				Upgrade.new(UT.treantling, UA.spread, map.treantling_death_spread + 6, map.treantling_death_spread))
 			
 			# druid
 			prototype = action_factory.action_prototypes[Action.Type.spawn_druid]
 			clicks = prototype.clicks
-			if total_life_upgrades >= 2 + 3 * clicks:
+			if prototype.level >= 2 + 3 * clicks:
 				available_upgrades.append(
 					Upgrade.new(UT.druid, UA.clicks, clicks + 1, clicks))
 			
@@ -83,9 +106,9 @@ func get_available_upgrades(type: Crystal.Type):
 				available_upgrades.append(
 					Upgrade.new(UT.growth, UA.strength, strength + 1, strength))
 			
-			if total_growth_upgrades >= pow(map.min_growth_stages, 2) + map.min_growth_stages:
+			if total_growth_upgrades >= pow(map.min_growth, 2) + map.min_growth:
 				available_upgrades.append(
-					Upgrade.new(UT.growth, UA.minimum, map.min_growth_stages + 1, map.min_growth_stages))
+					Upgrade.new(UT.growth, UA.minimum, map.min_growth + 1, map.min_growth))
 			
 			# spread
 			prototype = action_factory.action_prototypes[Action.Type.spread]

@@ -199,7 +199,7 @@ func update_target_build_site():
 		target_build_site = map.find_closest_cell_of_type(cell_position, [map.TileType.build_site], 7)
 
 func update_target_building_spot():
-	if target_building_spot != null and (map.is_house(target_building_spot) or map.is_build_site(target_building_spot)):
+	if target_building_spot != null and not map.is_plains(target_building_spot):
 		target_building_spot = null
 	
 	if target_building_spot == null:

@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://ch1hk112gxpni"]
+
+[ext_resource type="Script" path="res://Code/Treantling.gd" id="1_ouokp"]
+[ext_resource type="Texture2D" uid="uid://cq7pqe3iw80wp" path="res://Images/Treantling.png" id="2_14xa4"]
+
+[node name="Treantling" type="Node2D"]
+z_index = 1
+script = ExtResource("1_ouokp")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_14xa4")
+centered = false

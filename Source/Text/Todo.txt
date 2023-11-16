@@ -1,8 +1,4 @@
 Mechanics:
-	- druid changes:
-		- make them look further again
-		- make them not evaluate based on diagonals anymore
-			- more intuitive behavior & evaluation that way?
 	- replace beer with more local snowstorms and/or blizzards (high prio)
 		- removes actions or increases action cost within a certain area
 		- also slows growth (maybe?)

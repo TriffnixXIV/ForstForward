@@ -48,14 +48,9 @@ func add_progress(crystal_type: Crystal.Type, amount: int):
 				crystals_with_type.shuffle()
 				i = 0
 	
-	spawn_chances[crystal_type] += map.count_spots(map.is_forest) / 10000.0
+	spawn_chances[crystal_type] += 0.02
 
 func advance():
-	match randi_range(1, 3):
-		1:	spawn_chances[Crystal.Type.life] += 0.01
-		2:	spawn_chances[Crystal.Type.growth] += 0.01
-		3:	spawn_chances[Crystal.Type.weather] += 0.01
-	
 	for crystal in crystals:
 		crystal.grow()
 		if crystal.is_grown():

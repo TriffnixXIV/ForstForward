@@ -5,27 +5,18 @@ var map: Map
 var cell_position: Vector2i
 
 var actions = 0
+var death_spread = 0
 
 var target_location
 
-var has_signaled_inaction = false
-
-signal done_acting
 signal has_died
 
 func prepare_turn(action_amount: int):
-	update_target_location()
-	has_signaled_inaction = false
 	actions = action_amount
-	
-	stomp()
 
 func act():
 	if actions <= 0:
-		if not has_signaled_inaction:
-			has_signaled_inaction = true
-			emit_signal("done_acting")
-		return null
+		return false
 	
 	if target_location == null or target_location == cell_position or map.get_building_progress(target_location) == 0:
 		update_target_location()
@@ -36,6 +27,7 @@ func act():
 	
 	stomp()
 	actions -= 1
+	return true
 
 func stomp():
 	var previous_villager_amount = len(map.villagers)
@@ -51,6 +43,9 @@ func stomp():
 			actions -= 0.5
 	map.total_deaths_to_treants += previous_villager_amount - len(map.villagers)
 
+func set_death_spread(amount: int):
+	death_spread = amount
+
 func convert_to_forest():
 	var diffs = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]
 	for diff in diffs:
@@ -58,8 +53,7 @@ func convert_to_forest():
 		map.total_trees_from_treants += map.increase_yield(cell, 20)
 	diffs.shuffle()
 	for diff in diffs:
-		map.spread_forest(cell_position, 40, true)
-	emit_signal("done_acting")
+		map.spread_forest(cell_position, death_spread, true)
 	emit_signal("has_died", self)
 
 func update_target_location():
@@ -77,7 +71,7 @@ func update_target_location():
 			current_best_value = target_value
 
 func is_valid_target(cell: Vector2i, _extra):
-	return cell != cell_position and evaluate_for_buildings(cell) > 0
+	return evaluate_for_buildings(cell) > 0
 
 func evaluate_for_buildings(cell: Vector2i):
 	var value = 0

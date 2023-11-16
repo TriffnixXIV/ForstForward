@@ -1,6 +1,6 @@
 extends Node2D
 
-var version = "v8 dev"
+var version = "v8"
 
 var current_round = 1
 var score = 0
@@ -125,6 +125,8 @@ func update_highlight_color():
 		match selected_action.get_active_type():
 			Action.Type.spawn_treant:
 				valid_click_target = $Map.can_spawn_treant(current_map_position)
+			Action.Type.spawn_treantling:
+				valid_click_target = $Map.can_spawn_treantling(current_map_position)
 			Action.Type.spawn_druid:
 				valid_click_target = $Map.can_spawn_druid(current_map_position)
 			Action.Type.plant:
@@ -418,8 +420,14 @@ func update_numbers():
 	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8) if $Map.get_coldness() == $Map.min_frost else Color(0.5, 1, 1, 1) if $Map.frost_boost > 0 else Color(0, 0.5, 1, 1)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.text = str($Map.rain_duration)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Rain/Label.label_settings.shadow_color = Color(0, 0.5, 1, 1) if $Map.is_raining() else Color(0, 0, 0, 0.8)
-	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.text = str($Map.get_growth_stages())
-	$Sidebar/InGameUI/NumberContainer/Numbers/Growth/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8) if $Map.get_growth_stages() == $Map.min_growth else Color(0, 1, 0, 1) if $Map.growth_boost > 0 else Color(0, 0.5, 1, 1)
+	$Sidebar/InGameUI/NumberContainer/Numbers/GrowthStages/Label.text = str($Map.get_growth_stages())
+	$Sidebar/InGameUI/NumberContainer/Numbers/GrowthStages/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8) if $Map.get_growth_stages() == $Map.min_growth else Color(0, 1, 0, 1) if $Map.growth_boost > 0 else Color(0, 0.5, 1, 1)
+	$Sidebar/InGameUI/NumberContainer/Numbers/LifeUpgrades/Label.text = str(upgrade_factory.total_life_upgrades)
+	$Sidebar/InGameUI/NumberContainer/Numbers/LifeUpgrades/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/InGameUI/NumberContainer/Numbers/GrowthUpgrades/Label.text = str(upgrade_factory.total_growth_upgrades)
+	$Sidebar/InGameUI/NumberContainer/Numbers/GrowthUpgrades/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/InGameUI/NumberContainer/Numbers/WeatherUpgrades/Label.text = str(upgrade_factory.total_weather_upgrades)
+	$Sidebar/InGameUI/NumberContainer/Numbers/WeatherUpgrades/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.text = str(len($Map.druids))
 	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.text = str(len($Map.treants))

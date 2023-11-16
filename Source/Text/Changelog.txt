@@ -1,6 +1,6 @@
 Mechanics:
 	- added action upgrades that can be obtained through crystals
-		- I will elaborate later
+		- too much to sensibly fit in here
 	- removed automatic scaling
 	- villager changes:
 		- they are now more performant when looking for trees to chop
@@ -8,6 +8,10 @@ Mechanics:
 		- now only have 12 actions again
 	- druid changes:
 		- they evaluate target locations differently once more
+	- replaced beer with frost
+	- added a new creature: the treantling
+		- it's basically tiny treants with a limited lifespan
+	- lots of other stuff that I didn't keep track of
 
 Bug fixes & QoL:
 	- fixed: treants sometimes softlocked the game when planting themselves

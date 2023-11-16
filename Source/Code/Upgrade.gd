@@ -5,11 +5,11 @@ var value = null
 var previous_value = null
 var end_text = ""
 
-enum Type {none, villager, treant, druid, growth, spread, plant, rain, lightning, frost}
+enum Type {none, villager, treant, treantling, druid, growth, spread, plant, rain, lightning, frost}
 var type: Type = Type.none
 
 enum Attribute {none, unlock, clicks, strength, actions, minimum,
-	growth, spread, on_plains, on_buildings, unlock_rain, rain, rain_conversion, frost}
+	lifespan, growth, spread, on_plains, on_buildings, unlock_rain, rain, rain_conversion, frost}
 var attribute: Attribute = Attribute.none
 
 func _init(type_: Type = Type.none, attribute_: Attribute = Attribute.none,
@@ -44,14 +44,28 @@ func get_text():
 					return "treant spawns\n" + str(previous_value) + " -> " + str(value)
 				Attribute.actions:
 					return "treant acions\n" + str(previous_value) + " -> " + str(value)
+				Attribute.spread:
+					return "treant death spread\n4x" + str(previous_value) + " -> 4x" + str(value)
+		Type.treantling:
+			match attribute:
+				Attribute.clicks:
+					return "treantling spawns\n" + str(previous_value) + " -> " + str(value)
+				Attribute.actions:
+					return "treantling acions\n" + str(previous_value) + " -> " + str(value)
+				Attribute.strength:
+					return "treantling strength\n" + str(previous_value) + " -> " + str(value)
+				Attribute.lifespan:
+					return "treantling lifespan\n" + str(previous_value) + " -> " + str(value)
+				Attribute.spread:
+					return "treantling death spread\n" + str(previous_value) + " -> " + str(value)
 		Type.druid:
 			match attribute:
 				Attribute.clicks:
 					return "druid spawns\n" + str(previous_value) + " -> " + str(value)
-				Attribute.strength:
-					return "druid circle trees\n" + str(previous_value) + " -> " + str(value)
 				Attribute.actions:
 					return "druid actions\n" + str(previous_value) + " -> " + str(value)
+				Attribute.strength:
+					return "druid circle trees\n" + str(previous_value) + " -> " + str(value)
 		Type.villager:
 			match attribute:
 				Attribute.actions:
@@ -118,12 +132,21 @@ func apply(map: Map, action_factory: ActionFactory):
 				Attribute.unlock:	prototype.unlocked = true
 				Attribute.clicks:	prototype.clicks = value
 				Attribute.actions:	map.treant_actions = value
-		Type.druid:
-			prototype = action_factory.action_prototypes[Action.Type.spawn_treant]
+				Attribute.spread:	map.treant_death_spread = value
+		Type.treantling:
+			prototype = action_factory.action_prototypes[Action.Type.spawn_treantling]
 			match attribute:
 				Attribute.clicks:	prototype.clicks = value
-				Attribute.strength:	map.druid_circle_trees = value
+				Attribute.actions:	map.treantling_actions = value
+				Attribute.strength:	map.treantling_strength = value
+				Attribute.lifespan:	map.treantling_lifespan = value
+				Attribute.spread:	map.treantling_death_spread = value
+		Type.druid:
+			prototype = action_factory.action_prototypes[Action.Type.spawn_druid]
+			match attribute:
+				Attribute.clicks:	prototype.clicks = value
 				Attribute.actions:	map.druid_actions = value
+				Attribute.strength:	map.druid_circle_trees = value
 		Type.villager:
 			match attribute:
 				Attribute.actions:	map.villager_actions = value

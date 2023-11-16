@@ -1,7 +1,7 @@
 extends Resource
 class_name Action
 
-enum Type {spawn_treant, spawn_druid, overgrowth, spread, plant, rain, lightning_strike, frost}
+enum Type {spawn_treant, spawn_treantling, spawn_druid, overgrowth, spread, plant, rain, lightning_strike, frost}
 var type = null
 
 var strength = null
@@ -61,6 +61,7 @@ func copy():
 func get_crystal_type():
 	match type:
 		Type.spawn_treant:		return Crystal.Type.life
+		Type.spawn_treantling:	return Crystal.Type.life
 		Type.spawn_druid:		return Crystal.Type.life
 		Type.overgrowth:		return Crystal.Type.growth
 		Type.spread:			return Crystal.Type.growth
@@ -87,6 +88,11 @@ func get_text():
 				return "spawn " + str(clicks) + " treants" + progress_text
 			else:
 				return "spawn a treant"
+		Type.spawn_treantling:
+			if clicks > 1:
+				return "spawn " + str(clicks) + " treantlings" + progress_text
+			else:
+				return "spawn a treantling"
 		Type.spawn_druid:
 			if clicks > 1:
 				return "spawn " + str(clicks) + " druids" + progress_text
@@ -138,6 +144,8 @@ func advance(map: Map, cell_position: Vector2i):
 		Type.spawn_treant:
 			success = map.spawn_treant(cell_position)
 			emit_signal("numbers_changed")
+		Type.spawn_treantling:
+			success = map.spawn_treantling(cell_position)
 		Type.spawn_druid:
 			success = map.spawn_druid(cell_position)
 			emit_signal("numbers_changed")
@@ -152,15 +160,21 @@ func advance(map: Map, cell_position: Vector2i):
 			emit_signal("numbers_changed")
 	
 	if success:
-		if progress == 0:
-			for action in concurrent_actions:
-				action.enact(map)
 		progress += 1
 		
-		if type == Type.plant:
-			var plantable_spots = map.count_plantable_spots()
-			if plantable_spots < clicks - progress:
-				clicks = progress + plantable_spots
+		match type:
+			Type.plant:
+				var plantable_spots = map.count_plantable_spots()
+				if plantable_spots < clicks - progress:
+					clicks = progress + plantable_spots
+			Type.lightning_strike:
+				var strikable_spots = map.count_strikeable_spots()
+				if strikable_spots == 0:
+					clicks = progress
+		
+		if clicks == progress:
+			for action in concurrent_actions:
+				action.enact(map)
 		
 		emit_signal("text_changed")
 		emit_signal("advance_success")

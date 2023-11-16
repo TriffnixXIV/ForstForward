@@ -22,6 +22,9 @@ func _init(action_type: Type):
 			base_unlocked = false
 			base_weight = 4
 			base_clicks = 1
+		Type.spawn_treantling:
+			base_weight = 3
+			base_clicks = 1
 		Type.spawn_druid:
 			base_clicks = 1
 		Type.overgrowth:

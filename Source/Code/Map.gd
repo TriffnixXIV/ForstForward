@@ -12,6 +12,8 @@ var transition_info = []
 var horizontal_forest_edges = []
 var vertical_forest_edges = []
 
+var still_acting: bool = false
+
 @export var Villager: PackedScene
 var villagers: Array[Villager] = []
 var homeless_villagers = []
@@ -21,13 +23,12 @@ var all_villagers_are_done_with_this_step = false
 
 @export var Druid: PackedScene
 var druids: Array[Druid] = []
-var done_druid_count = 0
-var target_druid_count = 0
 
 @export var Treant: PackedScene
 var treants: Array[Treant] = []
-var done_treant_count = 0
-var target_treant_count = 0
+
+var Treantling: PackedScene = preload("res://Scenes/Treantling.tscn")
+var treantlings: Array[Treantling] = []
 
 var crystal_manager: CrystalManager
 
@@ -39,6 +40,11 @@ var highest_possible_score: int
 
 var base_villager_actions = 12
 var base_treant_actions = 8
+var base_treant_death_spread = 20
+var base_treantling_actions = 8
+var base_treantling_strength = 1
+var base_treantling_lifespan = 20
+var base_treantling_death_spread = 6
 var base_druid_actions = 8
 var base_druid_circle_trees = 16
 var base_min_growth = 1
@@ -51,6 +57,11 @@ var base_min_frost = 0
 
 var villager_actions: int
 var treant_actions: int
+var treant_death_spread: int
+var treantling_actions: int
+var treantling_strength: int
+var treantling_lifespan: int
+var treantling_death_spread: int
 var druid_actions: int
 var druid_circle_trees: int
 var min_growth: int
@@ -230,19 +241,32 @@ func reset():
 		despawn_villager(villager, true)
 	for villager in villagers:
 		villager.reset()
+	
 	for druid in druids:
 		remove_child(druid)
 		druid.queue_free()
 	druids = []
+	
 	for treant in treants:
 		remove_child(treant)
 		treant.queue_free()
-	crystal_manager.reset()
 	treants = []
+	
+	for treantling in treantlings:
+		remove_child(treantling)
+		treantling.queue_free()
+	treantlings = []
+	
+	crystal_manager.reset()
 
 func reset_upgrades():
 	villager_actions		= base_villager_actions
 	treant_actions			= base_treant_actions
+	treant_death_spread		= base_treant_death_spread
+	treantling_actions		= base_treantling_actions
+	treantling_strength		= base_treantling_strength
+	treantling_lifespan		= base_treantling_lifespan
+	treantling_death_spread = base_treantling_death_spread
 	druid_actions			= base_druid_actions
 	druid_circle_trees		= base_druid_circle_trees
 	min_growth				= base_min_growth
@@ -341,38 +365,38 @@ func advance():
 	crystal_manager.advance()
 
 func start_druid_phase():
-	if len(druids) == 0 and len(treants) == 0:
+	if len(druids) == 0 and len(treantlings) == 0 and len(treants) == 0:
 		start_growth_phase()
 	else:
 		$DruidStart.play()
+		still_acting = true
 		current_phase = Phase.druids
 		
-		done_druid_count = 0
-		target_druid_count = len(druids)
 		for druid in druids:
 			druid.prepare_turn(druid_actions)
 			druid.set_circle_trees(druid_circle_trees)
 		
-		done_treant_count = 0
-		target_treant_count = len(treants)
 		for treant in treants:
 			treant.prepare_turn(treant_actions)
+			treant.set_death_spread(treant_death_spread)
+		
+		for treantling in treantlings:
+			treantling.prepare_turn(treantling_actions)
+			treantling.set_stomp_strength(treantling_strength)
+			treantling.set_death_spread(treantling_death_spread)
 		
 		$Timer.start()
 
 func advance_druid_phase():
 	$DruidAdvance.play()
+	still_acting = false
 	for druid in druids:
-		druid.act()
+		still_acting = druid.act() or still_acting
 	for treant in treants:
-		treant.act()
+		still_acting = treant.act() or still_acting
+	for treantling in treantlings:
+		still_acting = treantling.act() or still_acting
 	$Timer.start()
-
-func _on_druid_done_acting():
-	done_druid_count += 1
-
-func _on_treant_done_acting():
-	done_treant_count += 1
 
 func start_growth_phase():
 	$GrowthStart.play()
@@ -436,11 +460,9 @@ func advance_phase():
 		Phase.starting:
 			start_druid_phase()
 		Phase.druids:
-			if done_druid_count < target_druid_count or done_treant_count < target_treant_count:
+			if still_acting:
 				advance_druid_phase()
 			else:
-				done_druid_count = 0
-				done_treant_count = 0
 				start_growth_phase()
 		Phase.growth:
 			if remaining_growth_stages > 0:
@@ -796,7 +818,10 @@ func can_spread_forest(cell_position: Vector2i):
 
 func spread_forest(cell_position: Vector2i, tree_amount: int, from_treant: bool = false):
 	if can_spread_forest(cell_position):
-		increase_yield(cell_position, 20)
+		var increase = increase_yield(cell_position, 20)
+		if from_treant:	total_trees_from_treants += increase
+		else:			total_spread_trees += increase
+		
 		show_growth_effect(cell_position)
 		var distance = 1
 		var cell_entries = []
@@ -851,10 +876,9 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, from_treant: bool 
 			
 			for cell_entry in cell_entries:
 				increase_yield(cell_entry[0], cell_entry[2])
-				if from_treant:
-					total_trees_from_treants += cell_entry[2]
-				else:
-					total_spread_trees += cell_entry[2]
+				
+				if from_treant:	total_trees_from_treants += cell_entry[2]
+				else:			total_spread_trees += cell_entry[2]
 			
 			# -1 tree for each ungrowable cell (forest or invalid tile)
 			# 4 * distance is the total amount of cells at that distance
@@ -936,7 +960,6 @@ func spawn_treant(cell_position: Vector2i):
 		treant.cell_position = cell_position
 		treant.map = self
 		treant.update_position()
-		treant.connect("done_acting", _on_treant_done_acting)
 		treant.connect("has_died", despawn_treant)
 		treants.append(treant)
 		add_child(treant)
@@ -950,6 +973,31 @@ func despawn_treant(treant: Treant):
 	remove_child(treant)
 	treant.queue_free()
 
+func count_treantling_spawn_spots():
+	return count_spots(can_spawn_treantling)
+
+func can_spawn_treantling(cell_position: Vector2i):
+	return is_forest(cell_position)
+
+func spawn_treantling(cell_position: Vector2i):
+	if can_spawn_treantling(cell_position):
+		var treantling: Treantling = Treantling.instantiate()
+		treantling.cell_position = cell_position
+		treantling.map = self
+		treantling.lifespan = treantling_lifespan
+		treantling.update_position()
+		treantling.connect("has_died", despawn_treantling)
+		treantlings.append(treantling)
+		add_child(treantling)
+		return true
+	else:
+		return false
+
+func despawn_treantling(treantling: Treantling):
+	treantlings.erase(treantling)
+	remove_child(treantling)
+	treantling.queue_free()
+
 func count_druid_spawn_spots():
 	return count_spots(can_spawn_druid)
 
@@ -962,7 +1010,6 @@ func spawn_druid(cell_position: Vector2i):
 		druid.cell_position = cell_position
 		druid.map = self
 		druid.update_position()
-		druid.connect("done_acting", _on_druid_done_acting)
 		druids.append(druid)
 		add_child(druid)
 		return true

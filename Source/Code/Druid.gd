@@ -22,23 +22,15 @@ var self_growth = 4
 var edge_growth = 2
 var corner_growth = 1
 
-var has_signaled_inaction = false
-
-signal done_acting
-
 func _ready():
 	update_circle_state()
 
 func prepare_turn(action_amount: int):
-	has_signaled_inaction = false
 	actions = action_amount
 
 func act():
 	if actions <= 0:
-		if not has_signaled_inaction:
-			has_signaled_inaction = true
-			emit_signal("done_acting")
-		return null
+		return false
 	
 	update_state()
 	match state:
@@ -56,6 +48,7 @@ func act():
 			state = State.planting
 	
 	actions -= 1
+	return true
 
 func update_state():
 	set_state(state)
