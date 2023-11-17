@@ -335,7 +335,8 @@ func skip_round():
 
 func advance():
 	lock_selection(true)
-	$Map.crystal_manager.add_progress(selected_action.get_crystal_type(), 2)
+	if selected_action != null:
+		$Map.crystal_manager.add_progress(selected_action.get_crystal_type(), 2)
 	
 	selected_action = null
 	
@@ -470,7 +471,7 @@ func win_game():
 		$VictorySound.play()
 		
 		$MapOverlay/PostGame/Title.label_settings.shadow_color = Color(0, 1, 0, 1)
-		$MapOverlay/PostGame/Title.text = "the forest is at peace once more"
+		$MapOverlay/PostGame/Title.text = $Map.level_name + " is at peace once more"
 		$MapOverlay/PostGame/Message.label_settings.shadow_color = Color(0, 1, 0, 1)
 		$MapOverlay/PostGame/Message.text = "rekt Horst in " + str(current_round) + " rounds"
 		
@@ -498,7 +499,7 @@ func lose_game():
 		$LoseSound.play()
 		
 		$MapOverlay/PostGame/Title.label_settings.shadow_color = Color(1, 0, 0, 1)
-		$MapOverlay/PostGame/Title.text = "civilization beckons"
+		$MapOverlay/PostGame/Title.text = $Map.level_name + " is doomed to be civilized"
 		$MapOverlay/PostGame/Message.label_settings.shadow_color = Color(1, 0, 0, 1)
 		$MapOverlay/PostGame/Message.text = "rekt by Horst in " + str(current_round) + " rounds"
 		
