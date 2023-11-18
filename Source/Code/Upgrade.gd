@@ -113,9 +113,9 @@ func get_text():
 				Attribute.rain_conversion:
 					return "lightning\n+1 for each\n" + str(previous_value) + " -> " + str(value) + "\n rain duration"
 				Attribute.rain:
-					var rainstr_1 = "+" + str(previous_value) if previous_value > 0 else str(previous_value)
-					var rainstr_2 = "+" + str(value) if value > 0 else str(value)
-					return "lightning rain\n" + rainstr_1 + " -> " + rainstr_2
+					var rainstr_1 = str(-previous_value) if previous_value > 0 else "+" + str(-previous_value)
+					var rainstr_2 = str(-value) if value > 0 else "+" + str(-value)
+					return "lightning rain\n" + rainstr_1 + " -> " + rainstr_2 + "\nper strike"
 		Type.frost:
 			match attribute:
 				Attribute.strength:
@@ -189,7 +189,7 @@ func apply(map: Map, action_factory: ActionFactory):
 				Attribute.clicks:			prototype.clicks = value
 				Attribute.unlock_rain:		action_factory.rain_lightning_conversion_unlocked = true
 				Attribute.rain_conversion:	action_factory.rain_lightning_conversion = value
-				Attribute.rain:				action_factory.lightning_bonus_rain = value
+				Attribute.rain:				prototype.cost = value
 		Type.frost:
 			match attribute:
 				Attribute.strength:

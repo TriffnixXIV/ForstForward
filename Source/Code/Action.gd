@@ -2,13 +2,14 @@ extends Resource
 class_name Action
 
 enum Type {spawn_treant, spawn_treantling, spawn_druid, overgrowth, spread, plant, rain, lightning_strike, frost}
-var type = null
+var type
 
-var strength = null
-var clicks = null
+var strength
+var cost
+var clicks
 var progress = 0
 
-var next_action: Action = null
+var next_action: Action
 var concurrent_actions: Array[Action] = [] # can only contain overgrowth, rain and frost actions
 
 signal advance_success
@@ -19,12 +20,15 @@ signal numbers_changed
 func reset():
 	type = null
 	strength = null
+	cost = null
+	clicks = null
 	progress = 0
 	next_action = null
 
 func set_action(other: Action):
 	type = other.type
 	strength = other.strength
+	cost = other.cost
 	clicks = other.clicks
 	progress = other.progress
 	next_action = other.next_action
@@ -114,10 +118,11 @@ func get_text():
 		Type.frost:
 			return "frost +" + str(strength)
 		Type.lightning_strike:
+			var rain_text = "rain " + str(-cost) if cost > 0 else "rain +" + str(-cost) if cost < 0 else ""
 			if clicks > 1:
-				return "summon " + str(clicks) + " lightning strikes" + progress_text
+				return "summon " + str(clicks) + " lightning strikes" + progress_text + "\n" + rain_text + " for each"
 			else:
-				return "summon a lightning strike"
+				return "summon a lightning strike" + "\n" + rain_text + " for each"
 
 func enact(map: Map):
 	if type in [Type.overgrowth, Type.rain, Type.frost]:
@@ -128,8 +133,7 @@ func enact(map: Map):
 		Type.overgrowth:
 			map.growth_boost += strength
 		Type.rain:
-			map.rain_duration += strength
-			map.update_rain_overlay()
+			map.set_rain(map.rain_duration + strength)
 		Type.frost:
 			map.frost_boost += strength
 			map.update_frost_overlay()
@@ -143,20 +147,22 @@ func advance(map: Map, cell_position: Vector2i):
 	match type:
 		Type.spawn_treant:
 			success = map.spawn_treant(cell_position)
-			emit_signal("numbers_changed")
 		Type.spawn_treantling:
 			success = map.spawn_treantling(cell_position)
 		Type.spawn_druid:
 			success = map.spawn_druid(cell_position)
-			emit_signal("numbers_changed")
 		Type.spread:
 			success = map.spread_forest(cell_position, strength)
+			emit_signal("numbers_changed")
 		Type.plant:
 			success = map.plant_forest(cell_position)
 			if success and strength > 0:
 				map.spread_forest(cell_position, strength)
+			emit_signal("numbers_changed")
 		Type.lightning_strike:
 			success = map.strike_with_lightning(cell_position)
+			if success:
+				map.set_rain(map.rain_duration - cost)
 			emit_signal("numbers_changed")
 	
 	if success:
@@ -169,7 +175,7 @@ func advance(map: Map, cell_position: Vector2i):
 					clicks = progress + plantable_spots
 			Type.lightning_strike:
 				var strikable_spots = map.count_strikeable_spots()
-				if strikable_spots == 0:
+				if strikable_spots == 0 or not map.is_raining():
 					clicks = progress
 		
 		if clicks == progress:

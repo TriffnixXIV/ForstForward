@@ -29,6 +29,7 @@ func reset():
 		Crystal.Type.weather: -0.1
 	}
 	fully_grown_crystals = []
+	pending_crystal_spawns = []
 
 func add_progress(crystal_type: Crystal.Type, amount: int):
 	var crystals_with_type = []

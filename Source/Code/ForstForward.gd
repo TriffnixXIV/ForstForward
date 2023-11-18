@@ -1,6 +1,6 @@
 extends Node2D
 
-var version = "v8"
+var version = "v9 dev"
 
 var current_round = 1
 var score = 0
@@ -67,7 +67,7 @@ func _input(event):
 			if event is InputEventKey and event.pressed:
 				match OS.get_keycode_string(event.keycode):
 					"R":	restart_run()
-					"S":	skip_round()
+#					"S":	skip_round()
 					"M":	set_muted(not is_muted())
 					"1":	enact_top_option()
 					"2":	enact_bottom_option()
@@ -200,7 +200,7 @@ func set_game_state(state: GameState):
 	update_UI()
 
 func next_turn_step():
-	update_numbers()
+	update_UI()
 	if $Sidebar/InGameUI/Options/Bottom/Button.has_focus():
 		$Sidebar/InGameUI/Options/Bottom/Button.release_focus()
 	if $Sidebar/InGameUI/Options/Top/Button.has_focus():
@@ -364,7 +364,6 @@ func _on_map_advancement_done():
 
 func start_next_round():
 	current_round += 1
-	update_UI()
 	next_turn_step()
 	unlock_selection()
 

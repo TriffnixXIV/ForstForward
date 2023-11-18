@@ -2,6 +2,7 @@ extends Action
 class_name ActionPrototype
 
 var base_strength: int = 0
+var base_cost: int = 0
 var base_clicks: int = 0
 
 var base_unlocked: bool = true
@@ -39,6 +40,7 @@ func _init(action_type: Type):
 		Type.lightning_strike:
 			base_unlocked = false
 			base_clicks = 1
+			base_cost = 3
 		Type.frost:
 			base_strength = 4
 	
@@ -46,6 +48,7 @@ func _init(action_type: Type):
 
 func reset():
 	strength = base_strength
+	cost = base_cost
 	clicks = base_clicks
 	unlocked = base_unlocked
 	weight = base_weight

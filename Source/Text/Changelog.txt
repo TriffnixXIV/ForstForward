@@ -1,6 +1,11 @@
 Mechanics:
-	--
+	- removed the ability to skip a round
+	- lightning:
+		- now costs 3 rain per strike instead of in total
+		- cost reduction upgrades now occur later
+			- first reduction unlocks at lightning level 3, then, the next ones are unlocked every 3rd level
 
 Bug fixes & QoL:
-	- fixed: the treantling action upgrade now has correct spelling
-	- fixed: min growth action upgrade now works again
+	- fixed: "spawn treantling" occured even when the treantlings were impossible to place
+	- fixed: crystals that were unable to spawn before the end of a run were spawning at the beginning of the next run
+	- villager count now also updates between plants and spreads

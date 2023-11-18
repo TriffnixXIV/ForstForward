@@ -1,13 +1,11 @@
 Mechanics:
-	- replace beer with more local snowstorms and/or blizzards (high prio)
-		- removes actions or increases action cost within a certain area
-		- also slows growth (maybe?)
-		- more thematic
-		- more skill expression through having to position it
-		- less of a universal solver
-		- can backfire when placed badly
-	- add level-specific features to make maps stand out more (high prio)
-	- remove skip round, because it trivializes some records (mid prio)
+	- rain:
+		- every second rain growth or rain frost upgrade increases the rate at which rain ticks down
+			- example: the upgrade "rain growth boost: 1 -> 2" also increases rain duration tickdown by 1
+				- at the end of a round, rain then ticks down by 2 rounds instead of 1
+	- druids:
+		make pathing more intuitive (they move too far away for too little benefit)
+		include power in distance calculation
 	- overgrowing houses instead of de-building them (undecided)
 		overgrown houses count as forest and need less steps to recover than currently
 	- maybe replace weight-based random action generation with deck-like drawable actions (undecided)

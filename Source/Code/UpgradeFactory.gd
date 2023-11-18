@@ -169,9 +169,10 @@ func get_available_upgrades(type: Crystal.Type):
 				available_upgrades.append(
 					Upgrade.new(UT.lightning, UA.clicks, clicks + 1, clicks))
 				
-				strength = action_factory.lightning_bonus_rain
-				available_upgrades.append(
-					Upgrade.new(UT.lightning, UA.rain, strength + 1, strength))
+				if prototype.level >= 3 + 3 * (prototype.base_cost - prototype.cost):
+					strength = prototype.cost
+					available_upgrades.append(
+						Upgrade.new(UT.lightning, UA.rain, strength - 1, strength))
 				
 				if not action_factory.rain_lightning_conversion_unlocked:
 					if total_weather_upgrades >= 5:

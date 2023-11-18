@@ -26,16 +26,13 @@ var action_prototypes = {
 
 var base_rain_lightning_conversion_unlocked = false
 var base_rain_lightning_conversion = 6
-var base_lightning_bonus_rain = -3
 
 var rain_lightning_conversion_unlocked: bool
 var rain_lightning_conversion: int
-var lightning_bonus_rain: int
 
 func reset():
 	rain_lightning_conversion_unlocked = base_rain_lightning_conversion_unlocked
 	rain_lightning_conversion = base_rain_lightning_conversion
-	lightning_bonus_rain = base_lightning_bonus_rain
 	
 	for key in action_prototypes:
 		action_prototypes[key].reset()
@@ -77,12 +74,14 @@ func get_action_data(action_type):
 	var is_possible = true
 	var weight = action_prototypes[action_type].weight
 	var action = Action.new()
-	action.type = action_type
-	action.strength = action_prototypes[action_type].strength
-	action.clicks = action_prototypes[action_type].clicks
+	action.set_action(action_prototypes[action_type])
 	match action_type:
 		Action.Type.spawn_treant:
 			var treant_spawn_spots = map.count_treant_spawn_spots()
+			is_possible = treant_spawn_spots > 0
+		
+		Action.Type.spawn_treantling:
+			var treant_spawn_spots = map.count_treantling_spawn_spots()
 			is_possible = treant_spawn_spots > 0
 		
 		Action.Type.spawn_druid:
@@ -102,12 +101,6 @@ func get_action_data(action_type):
 			if rain_lightning_conversion_unlocked:
 				action.clicks += floori(map.rain_duration / float(rain_lightning_conversion))
 			is_possible = map.is_raining() and action.clicks > 0
-			
-			if lightning_bonus_rain != 0:
-				var rain_action = Action.new()
-				rain_action.type = Action.Type.rain
-				rain_action.strength = max(lightning_bonus_rain, -map.rain_duration)
-				action.add_action(rain_action)
 		
 		Action.Type.rain:
 			weight -= floori(map.rain_duration / action.strength)
