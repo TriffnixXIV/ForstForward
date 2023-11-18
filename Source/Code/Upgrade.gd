@@ -99,9 +99,9 @@ func get_text():
 				Attribute.strength:
 					return "rain\n+" + str(previous_value) + " -> +" + str(value)
 				Attribute.growth:
-					return "rain growth boost\n+" + str(previous_value) + " -> +" + str(value)
+					return "rain growth boost\n+" + str(previous_value) + " -> +" + str(value) + end_text
 				Attribute.frost:
-					return "rain frost boost\n+" + str(previous_value) + " -> +" + str(value)
+					return "rain frost boost\n+" + str(previous_value) + " -> +" + str(value) + end_text
 		Type.lightning:
 			match attribute:
 				Attribute.unlock:
@@ -179,9 +179,16 @@ func apply(map: Map, action_factory: ActionFactory):
 		Type.rain:
 			prototype = action_factory.action_prototypes[Action.Type.rain]
 			match attribute:
+				Attribute.growth:
+					map.rain_growth_boost = value
+					if value % 2 == 0:
+						map.rain_decay_rate += 1
+				Attribute.frost:
+					map.rain_frost_boost = value
+					if value % 2 == 0:
+						map.rain_decay_rate += 1
+				
 				Attribute.strength:	prototype.strength = value
-				Attribute.growth:	map.rain_growth_boost = value
-				Attribute.frost:		map.rain_frost_boost = value
 		Type.lightning:
 			prototype = action_factory.action_prototypes[Action.Type.lightning_strike]
 			match attribute:

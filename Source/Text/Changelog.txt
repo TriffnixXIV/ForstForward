@@ -1,5 +1,9 @@
 Mechanics:
 	- removed the ability to skip a round
+	- rain:
+		- every second rain growth or rain frost upgrade increases the rate at which rain ticks down
+			- example: the upgrade "rain growth boost: 1 -> 2" also increases rain duration tickdown by 1
+				- at the end of a round, rain then ticks down by 2 rounds instead of 1
 	- lightning:
 		- now costs 3 rain per strike instead of in total
 		- cost reduction upgrades now occur later

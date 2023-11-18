@@ -1,8 +1,4 @@
 Mechanics:
-	- rain:
-		- every second rain growth or rain frost upgrade increases the rate at which rain ticks down
-			- example: the upgrade "rain growth boost: 1 -> 2" also increases rain duration tickdown by 1
-				- at the end of a round, rain then ticks down by 2 rounds instead of 1
 	- druids:
 		make pathing more intuitive (they move too far away for too little benefit)
 		include power in distance calculation
@@ -12,7 +8,7 @@ Mechanics:
 		- not that much of a difference at this point?
 
 Bug fixes & QoL:
-	--
+	- add dedicated treantling stats
 
 UI:
 	- change reset record button (high prio)

@@ -152,11 +152,13 @@ func get_available_upgrades(type: Crystal.Type):
 			
 			if prototype.level >= 5 * map.rain_growth_boost:
 				available_upgrades.append(
-					Upgrade.new(UT.rain, UA.growth, map.rain_growth_boost + 1, map.rain_growth_boost))
+					Upgrade.new(UT.rain, UA.growth, map.rain_growth_boost + 1, map.rain_growth_boost,
+						"" if map.rain_growth_boost % 2 == 0 else "\nrain tickdown rate\n" + str(map.rain_decay_rate) + " -> " + str(map.rain_decay_rate + 1)))
 			
 			if prototype.level >= 3 + 5 * map.rain_frost_boost:
 				available_upgrades.append(
-					Upgrade.new(UT.rain, UA.frost, map.rain_frost_boost + 1, map.rain_frost_boost))
+					Upgrade.new(UT.rain, UA.frost, map.rain_frost_boost + 1, map.rain_frost_boost,
+						"" if map.rain_frost_boost % 2 == 0 else "\nrain tickdown rate\n" + str(map.rain_decay_rate) + " -> " + str(map.rain_decay_rate + 1)))
 			
 			# lightning
 			prototype = action_factory.action_prototypes[Action.Type.lightning_strike]

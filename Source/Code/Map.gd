@@ -51,6 +51,7 @@ var base_min_growth = 1
 var base_can_spread_on_plains = false
 var base_can_spread_on_buildings = false
 var base_can_plant_on_buildings = false
+var base_rain_decay_rate = 1
 var base_rain_growth_boost = 0
 var base_rain_frost_boost = 0
 var base_min_frost = 0
@@ -68,6 +69,7 @@ var min_growth: int
 var can_spread_on_plains: bool
 var can_spread_on_buildings: bool
 var can_plant_on_buildings: bool
+var rain_decay_rate: int
 var rain_growth_boost: int
 var rain_frost_boost: int
 var min_frost: int
@@ -273,6 +275,7 @@ func reset_upgrades():
 	can_spread_on_plains	= base_can_spread_on_plains
 	can_spread_on_buildings	= base_can_spread_on_buildings
 	can_plant_on_buildings	= base_can_plant_on_buildings
+	rain_decay_rate			= base_rain_decay_rate
 	rain_growth_boost		= base_rain_growth_boost
 	rain_frost_boost		= base_rain_frost_boost
 	min_frost				= base_min_frost
@@ -524,7 +527,7 @@ func get_growth_stages():
 func advance_rain():
 	if is_raining():
 		total_rain_duration += 1
-	set_rain(rain_duration - 1)
+	set_rain(rain_duration - rain_decay_rate)
 
 func set_rain(duration: int):
 	rain_duration = max(0, duration)
