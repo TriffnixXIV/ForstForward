@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://bvqavbbk5k1r"]
+
+[ext_resource type="Script" path="res://Code/TextButton.gd" id="1_rpe8a"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_815iu"]
+font_size = 24
+shadow_color = Color(0, 1, 0, 1)
+
+[node name="TextButton" type="TextureButton"]
+size_flags_vertical = 3
+script = ExtResource("1_rpe8a")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -46.5
+offset_top = -18.5
+offset_right = 46.5
+offset_bottom = 18.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "resume"
+label_settings = SubResource("LabelSettings_815iu")
+
+[connection signal="button_down" from="." to="." method="_on_button_down"]
+[connection signal="button_up" from="." to="." method="_on_button_up"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

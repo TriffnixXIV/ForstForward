@@ -69,8 +69,7 @@ func plant_crystals():
 	
 	for _i in len(pending_crystal_spawns):
 		var crystal_type = pending_crystal_spawns.pop_front()
-		if not find_spot_and_spawn_crystal(crystal_type):
-			pending_crystal_spawns.append(crystal_type)
+		find_spot_and_spawn_crystal(crystal_type)
 
 func find_spot_and_spawn_crystal(crystal_type: Crystal.Type):
 	var spawn_spot = find_crystal_spawn_spot(crystal_type)
@@ -78,6 +77,7 @@ func find_spot_and_spawn_crystal(crystal_type: Crystal.Type):
 		spawn_crystal(spawn_spot, crystal_type)
 		return true
 	else:
+		pending_crystal_spawns.append(crystal_type)
 		return false
 
 func find_crystal_spawn_spot(crystal_type: Crystal.Type):

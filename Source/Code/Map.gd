@@ -43,8 +43,8 @@ var base_treant_actions = 8
 var base_treant_death_spread = 20
 var base_treantling_actions = 8
 var base_treantling_strength = 1
-var base_treantling_lifespan = 20
-var base_treantling_death_spread = 6
+var base_treantling_lifespan = 24
+var base_treantling_death_spread = 8
 var base_druid_actions = 8
 var base_druid_circle_trees = 16
 var base_min_growth = 1
@@ -168,6 +168,7 @@ func _process(delta):
 			crystal_manager.find_spot_and_spawn_crystal(Crystal.Type.weather)
 		
 		emit_signal("transition_done")
+		emit_signal("score_changed")
 
 func load_level(level_number: int):
 	var level = levels[level_number].instantiate()
@@ -182,6 +183,7 @@ func load_level(level_number: int):
 	base_growth_crystals = level.base_growth_crystals
 	base_weather_crystals = level.base_weather_crystals
 	
+	level.generate()
 	for x in width:
 		for y in height:
 			var cell = Vector2i(x, y)
@@ -299,24 +301,6 @@ func reset_stats():
 	total_trees_from_druids = 0
 	total_treants_spawned = 0
 	total_trees_from_treants = 0
-
-# cell type stuff
-
-func set_plains(cell_position: Vector2i):
-	set_cell(0, cell_position, TileType.plains, Vector2i(0, 0))
-
-func set_growth(cell_position: Vector2i, amount: int):
-	set_cell(0, cell_position, TileType.growth, Vector2i(amount - 1, 0))
-
-func set_forest(cell_position: Vector2i):
-	set_cell(0, cell_position, TileType.forest, Vector2i(0, 0))
-	update_cell_forest_edges(cell_position)
-
-func set_build_site(cell_position: Vector2i, progress: int):
-	set_cell(0, cell_position, TileType.build_site, Vector2i(progress - 1, 0))
-
-func set_house(cell_position: Vector2i):
-	set_cell(0, cell_position, TileType.house, Vector2i(0, 0))
 
 # forest edge stuff
 
@@ -655,6 +639,7 @@ func set_yield(cell_position: Vector2i, amount: int):
 			set_growth(cell_position, amount)
 		elif amount >= 10:
 			set_forest(cell_position)
+			update_cell_forest_edges(cell_position)
 		else:
 			set_plains(cell_position)
 		if previous_yield >= 10 and amount < 10:

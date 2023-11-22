@@ -20,7 +20,7 @@ var upgrading = false
 var characters_are_transparent
 var current_map_position
 
-enum GameState {main_menu, level_selection, playing, post_game}
+enum GameState {main_menu, level_selection, playing, in_game_menu, post_game}
 var game_state = GameState.main_menu
 
 func _ready():
@@ -73,7 +73,7 @@ func _input(event):
 					"2":	enact_bottom_option()
 				match event.keycode:
 					KEY_TAB:	set_character_transparency(true)
-					KEY_ESCAPE:	set_game_state(GameState.level_selection)
+					KEY_ESCAPE:	set_game_state(GameState.in_game_menu)
 			elif event is InputEventKey and not event.pressed:
 				match event.keycode:
 					KEY_TAB:	set_character_transparency(false)
@@ -82,6 +82,12 @@ func _input(event):
 				if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 					var cell_position = get_cell_from_position(event.position)
 					selected_action.advance($Map, cell_position)
+		
+		GameState.in_game_menu:
+			if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+				set_game_state(GameState.level_selection)
+			elif (event is InputEventKey or (event is InputEventMouseButton and not event.button_index == MOUSE_BUTTON_LEFT)) and event.pressed:
+				set_game_state(GameState.playing)
 		
 		GameState.post_game:
 			if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
@@ -150,29 +156,26 @@ func update_highlight_color():
 func set_character_transparency(boolean: bool):
 	characters_are_transparent = boolean
 	if characters_are_transparent:
-		for villager in $Map.villagers:
-			villager.modulate.a = 0.2
-		for druid in $Map.druids:
-			druid.modulate.a = 0.2
-		for treant in $Map.treants:
-			treant.modulate.a = 0.2
+		for creature in $Map.villagers + $Map.druids + $Map.treants + $Map.treantlings:
+			creature.modulate.a = 0.2
 	else:
-		for villager in $Map.villagers:
-			villager.modulate.a = 1
-		for druid in $Map.druids:
-			druid.modulate.a = 1
-		for treant in $Map.treants:
-			treant.modulate.a = 1
+		for creature in $Map.villagers + $Map.druids + $Map.treants + $Map.treantlings:
+			creature.modulate.a = 1
 
 func set_game_state(state: GameState):
 	# round up unfinished business
+	var resuming = false
 	match game_state:
 		GameState.playing:
-			stop_gameplay()
+			if state != GameState.in_game_menu:
+				stop_run()
+		GameState.in_game_menu:
+			resuming = true
 	
 	# hide everything for now, makes this method shorter
 	$MapOverlay/MainMenu.visible = false
 	$MapOverlay/LevelSelection.visible = false
+	$MapOverlay/InGameMenu.visible = false
 	$MapOverlay/PostGame.visible = false
 	$Sidebar/Records.visible = false
 	$Sidebar/InGameUI.visible = false
@@ -191,7 +194,12 @@ func set_game_state(state: GameState):
 			$Map.reload_level()
 		GameState.playing:
 			$Sidebar/InGameUI.visible = true
-			start_gameplay()
+			if not resuming:
+				start_run()
+		GameState.in_game_menu:
+			play_success_sound()
+			$MapOverlay/InGameMenu.visible = true
+			$Sidebar/Records.visible = true
 		GameState.post_game:
 			$MapOverlay/PostGame/ToLevelSelection.enable_after(1)
 			$MapOverlay/PostGame.visible = true
@@ -521,7 +529,7 @@ func lose_game():
 		
 		set_game_state(GameState.post_game)
 
-func start_gameplay():
+func start_run():
 	play_success_sound()
 	
 	action_factory.reset()
@@ -533,7 +541,7 @@ func start_gameplay():
 	_on_map_transition_done()
 
 func restart_run():
-	stop_gameplay()
+	stop_run()
 	play_success_sound()
 	
 	action_factory.reset()
@@ -550,7 +558,7 @@ func _on_map_transition_done():
 		unlock_selection()
 		update_highlight()
 
-func stop_gameplay():
+func stop_run():
 	selected_action = null
 	lock_selection(true)
 	$Map.stop()
@@ -604,6 +612,17 @@ func _on_to_level_selection_pressed():
 
 func _on_start_game_pressed():
 	set_game_state(GameState.playing)
+
+func _on_resume_button_pressed():
+	play_success_sound()
+	set_game_state(GameState.playing)
+
+func _on_reset_button_pressed():
+	set_game_state(GameState.playing)
+	restart_run()
+
+func _on_run_info_pressed():
+	play_failure_sound()
 
 func _on_exit_pressed():
 	quit()

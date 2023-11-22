@@ -3,7 +3,7 @@ class_name Upgrade
 
 var value = null
 var previous_value = null
-var end_text = ""
+var other_values = []
 
 enum Type {none, villager, treant, treantling, druid, growth, spread, plant, rain, lightning, frost}
 var type: Type = Type.none
@@ -13,26 +13,26 @@ enum Attribute {none, unlock, clicks, strength, actions, minimum,
 var attribute: Attribute = Attribute.none
 
 func _init(type_: Type = Type.none, attribute_: Attribute = Attribute.none,
-			value_ = null, previous_value_ = null, end_text_: String = ""):
+			value_ = null, previous_value_ = null, other_values_ = []):
 	type = type_
 	attribute = attribute_
 	value = value_
 	previous_value = previous_value_
-	end_text = end_text_
+	other_values = other_values_
 
 func reset():
 	type = Type.none
 	attribute = Attribute.none
 	previous_value = null
 	value = null
-	end_text = ""
+	other_values = []
 
 func set_upgrade(other: Upgrade):
 	type = other.type
 	attribute = other.attribute
 	previous_value = other.previous_value
 	value = other.value
-	end_text = other.end_text
+	other_values = other.other_values
 
 func get_text():
 	match type:
@@ -51,13 +51,13 @@ func get_text():
 				Attribute.clicks:
 					return "treantling spawns\n" + str(previous_value) + " -> " + str(value)
 				Attribute.actions:
-					return "treantling actions\n" + str(previous_value) + " -> " + str(value)
+					var lifespan_text = "\nlifespan\n" + str(other_values[0]) + " -> " + str(other_values[1])
+					return "treantling actions\n" + str(previous_value) + " -> " + str(value) + lifespan_text
 				Attribute.strength:
 					return "treantling strength\n" + str(previous_value) + " -> " + str(value)
-				Attribute.lifespan:
-					return "treantling lifespan\n" + str(previous_value) + " -> " + str(value)
 				Attribute.spread:
-					return "treantling death spread\n" + str(previous_value) + " -> " + str(value)
+					var lifespan_text = "\nlifespan\n" + str(other_values[0]) + " -> " + str(other_values[1])
+					return "treantling death spread\n" + str(previous_value) + " -> " + str(value) + lifespan_text
 		Type.druid:
 			match attribute:
 				Attribute.clicks:
@@ -79,9 +79,13 @@ func get_text():
 		Type.spread:
 			match attribute:
 				Attribute.clicks:
-					return "spread\n" + end_text
+					var clickstr_1 = "" if previous_value == 1 else str(previous_value) + "x "
+					var clickstr_2 = "" if value == 1 else str(value) + "x "
+					return "spread\n" + clickstr_1 + str(other_values[0]) + " -> " + clickstr_2 + str(other_values[1])
 				Attribute.strength:
-					return "spread\n" + end_text
+					var clicks = other_values[0]
+					var clickstr = "" if clicks == 1 else str(clicks) + "x "
+					return "spread\n" + clickstr + str(previous_value) + " -> " + clickstr + str(value)
 				Attribute.on_plains:
 					return "enable spreading on all non-buildings"
 				Attribute.on_buildings:
@@ -99,9 +103,15 @@ func get_text():
 				Attribute.strength:
 					return "rain\n+" + str(previous_value) + " -> +" + str(value)
 				Attribute.growth:
-					return "rain growth boost\n+" + str(previous_value) + " -> +" + str(value) + end_text
+					var previous_decay_rate = other_values[0]
+					var new_decay_rate = other_values[1]
+					var decay_text = "" if previous_decay_rate == new_decay_rate else "\nrain tickdown rate\n" + str(previous_decay_rate) + " -> " + str(new_decay_rate)
+					return "rain growth boost\n+" + str(previous_value) + " -> +" + str(value) + decay_text
 				Attribute.frost:
-					return "rain frost boost\n+" + str(previous_value) + " -> +" + str(value) + end_text
+					var previous_decay_rate = other_values[0]
+					var new_decay_rate = other_values[1]
+					var decay_text = "" if previous_decay_rate == new_decay_rate else "\nrain tickdown rate\n" + str(previous_decay_rate) + " -> " + str(new_decay_rate)
+					return "rain frost boost\n+" + str(previous_value) + " -> +" + str(value) + decay_text
 		Type.lightning:
 			match attribute:
 				Attribute.unlock:
@@ -137,10 +147,13 @@ func apply(map: Map, action_factory: ActionFactory):
 			prototype = action_factory.action_prototypes[Action.Type.spawn_treantling]
 			match attribute:
 				Attribute.clicks:	prototype.clicks = value
-				Attribute.actions:	map.treantling_actions = value
+				Attribute.actions:
+					map.treantling_actions = value
+					map.treantling_lifespan = other_values[1]
 				Attribute.strength:	map.treantling_strength = value
-				Attribute.lifespan:	map.treantling_lifespan = value
-				Attribute.spread:	map.treantling_death_spread = value
+				Attribute.spread:
+					map.treantling_death_spread = value
+					map.treantling_lifespan = other_values[1]
 		Type.druid:
 			prototype = action_factory.action_prototypes[Action.Type.spawn_druid]
 			match attribute:
@@ -181,12 +194,10 @@ func apply(map: Map, action_factory: ActionFactory):
 			match attribute:
 				Attribute.growth:
 					map.rain_growth_boost = value
-					if value % 2 == 0:
-						map.rain_decay_rate += 1
+					map.rain_decay_rate = other_values[1]
 				Attribute.frost:
 					map.rain_frost_boost = value
-					if value % 2 == 0:
-						map.rain_decay_rate += 1
+					map.rain_decay_rate = other_values[1]
 				
 				Attribute.strength:	prototype.strength = value
 		Type.lightning:

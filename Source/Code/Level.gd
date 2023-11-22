@@ -71,3 +71,21 @@ func is_identical_tile(cell_position: Vector2i, source_id: int, atlas_coords: Ve
 	var part1 = get_cell_source_id(0, cell_position) == source_id
 	var part2 = get_cell_atlas_coords(0, cell_position) == atlas_coords
 	return part1 and part2
+
+func set_plains(cell_position: Vector2i):
+	set_cell(0, cell_position, TileType.plains, Vector2i(0, 0))
+
+func set_growth(cell_position: Vector2i, amount: int):
+	set_cell(0, cell_position, TileType.growth, Vector2i(amount - 1, 0))
+
+func set_forest(cell_position: Vector2i):
+	set_cell(0, cell_position, TileType.forest, Vector2i(0, 0))
+
+func set_build_site(cell_position: Vector2i, progress: int):
+	set_cell(0, cell_position, TileType.build_site, Vector2i(progress - 1, 0))
+
+func set_house(cell_position: Vector2i):
+	set_cell(0, cell_position, TileType.house, Vector2i(0, 0))
+
+func generate():
+	pass

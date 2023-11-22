@@ -118,9 +118,9 @@ func find_good_spots():
 	
 	var max_value = self_growth + 3 * edge_growth # the highest possible result of the evaluation function
 	var max_distance = map.width + map.height
-	value_threshhold = max_value - max_distance
+	value_threshhold = max_value - max_distance * edge_growth
 	
-	while max_value - spot_distance > value_threshhold:
+	while max_value - spot_distance * edge_growth > value_threshhold:
 		if spot_distance == 0:
 			check_cell(cell_position)
 		
@@ -134,7 +134,7 @@ func find_good_spots():
 func check_cell(cell: Vector2i):
 	var cell_value = evaluate_target_location(cell)
 	if cell_value > 0:
-		var score = cell_value - spot_distance
+		var score = cell_value - spot_distance * edge_growth
 		if score > value_threshhold:
 			good_spots = [cell]
 			value_threshhold = score

@@ -67,17 +67,15 @@ func get_available_upgrades(type: Crystal.Type):
 					Upgrade.new(UT.treantling, UA.clicks, clicks + 1, clicks))
 			
 			available_upgrades.append(
-				Upgrade.new(UT.treantling, UA.actions, map.treantling_actions + 2, map.treantling_actions))
+				Upgrade.new(UT.treantling, UA.actions, map.treantling_actions + 1, map.treantling_actions, [map.treantling_lifespan, map.treantling_lifespan + 3]))
 			
 			if prototype.level >= 1 + pow(map.treantling_strength, 2) + map.treantling_strength:
 				available_upgrades.append(
 					Upgrade.new(UT.treantling, UA.strength, map.treantling_strength + 1, map.treantling_strength))
 			
-			available_upgrades.append(
-				Upgrade.new(UT.treantling, UA.lifespan, map.treantling_lifespan + 5, map.treantling_lifespan))
-			
-			available_upgrades.append(
-				Upgrade.new(UT.treantling, UA.spread, map.treantling_death_spread + 6, map.treantling_death_spread))
+			if map.treantling_lifespan >= map.treantling_actions + 2:
+				available_upgrades.append(
+					Upgrade.new(UT.treantling, UA.spread, map.treantling_death_spread + 16, map.treantling_death_spread, [map.treantling_lifespan, map.treantling_lifespan - 2]))
 			
 			# druid
 			prototype = action_factory.action_prototypes[Action.Type.spawn_druid]
@@ -108,17 +106,14 @@ func get_available_upgrades(type: Crystal.Type):
 			prototype = action_factory.action_prototypes[Action.Type.spread]
 			strength = prototype.strength
 			clicks = prototype.clicks
-			var clickstr = "" if clicks == 1 else str(clicks) + "x "
 			new_strength = strength + 10 * ceili((3 + clicks) / float(clicks))
 			available_upgrades.append(
-				Upgrade.new(UT.spread, UA.strength, new_strength, strength,
-					clickstr + str(strength) + " -> " + clickstr + str(new_strength)))
+				Upgrade.new(UT.spread, UA.strength, new_strength, strength, [clicks]))
 			
 			if total_growth_upgrades >= 5 * clicks:
 				new_strength = 10 * ceili(((strength * clicks) + 40) / (10.0 * (clicks + 1)))
 				available_upgrades.append(
-					Upgrade.new(UT.spread, UA.clicks, clicks + 1, clicks,
-						clickstr + str(strength) + " -> " + str(clicks + 1) + "x " + str(new_strength)))
+					Upgrade.new(UT.spread, UA.clicks, clicks + 1, clicks, [strength, new_strength]))
 			
 			if prototype.level >= 5 and not map.can_spread_on_plains:
 				available_upgrades.append(
@@ -151,14 +146,14 @@ func get_available_upgrades(type: Crystal.Type):
 				Upgrade.new(UT.rain, UA.strength, strength + 1, strength))
 			
 			if prototype.level >= 5 * map.rain_growth_boost:
+				var decay_increase = map.rain_growth_boost % 2
 				available_upgrades.append(
-					Upgrade.new(UT.rain, UA.growth, map.rain_growth_boost + 1, map.rain_growth_boost,
-						"" if map.rain_growth_boost % 2 == 0 else "\nrain tickdown rate\n" + str(map.rain_decay_rate) + " -> " + str(map.rain_decay_rate + 1)))
+					Upgrade.new(UT.rain, UA.growth, map.rain_growth_boost + 1, map.rain_growth_boost, [map.rain_decay_rate, map.rain_decay_rate + decay_increase]))
 			
 			if prototype.level >= 3 + 5 * map.rain_frost_boost:
+				var decay_increase = map.rain_frost_boost % 2
 				available_upgrades.append(
-					Upgrade.new(UT.rain, UA.frost, map.rain_frost_boost + 1, map.rain_frost_boost,
-						"" if map.rain_frost_boost % 2 == 0 else "\nrain tickdown rate\n" + str(map.rain_decay_rate) + " -> " + str(map.rain_decay_rate + 1)))
+					Upgrade.new(UT.rain, UA.frost, map.rain_frost_boost + 1, map.rain_frost_boost, [map.rain_decay_rate, map.rain_decay_rate + decay_increase]))
 			
 			# lightning
 			prototype = action_factory.action_prototypes[Action.Type.lightning_strike]

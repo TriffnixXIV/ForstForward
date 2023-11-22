@@ -1,5 +1,14 @@
-Mechanics:
+Gameplay:
 	- removed the ability to skip a round
+	- treantling:
+		- increased the base lifespan from 20 to 24
+		- action upgrades now also increase lifespan by 3x the gained action amount
+		- removed the lifespan upgrade
+		- increased the base death spread from 6 to 8
+		- increased the death spread upgrade from +8 to +16 per level
+		- the death spread upgrade now also reduces lifespan by 2 per level
+	- druid:
+		- now more reluctant to move further
 	- rain:
 		- every second rain growth or rain frost upgrade increases the rate at which rain ticks down
 			- example: the upgrade "rain growth boost: 1 -> 2" also increases rain duration tickdown by 1
@@ -8,8 +17,15 @@ Mechanics:
 		- now costs 3 rain per strike instead of in total
 		- cost reduction upgrades now occur later
 			- first reduction unlocks at lightning level 3, then, the next ones are unlocked every 3rd level
+	- added two new maps: the ring and labyrinth, the first procedurally generated map
 
 Bug fixes & QoL:
 	- fixed: "spawn treantling" occured even when the treantlings were impossible to place
 	- fixed: crystals that were unable to spawn before the end of a run were spawning at the beginning of the next run
 	- villager count now also updates between plants and spreads
+	- score now also updates after a transition is completed
+
+UI:
+	- added an in-game-menu when pressing ESC while playing
+		- offers the option to resume, reset and quit
+		- will offer a tab with run info and game info soon (tm)
