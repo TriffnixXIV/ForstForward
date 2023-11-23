@@ -94,12 +94,17 @@ func get_action_data(action_type):
 		
 		Action.Type.plant:
 			var plantable_spots = map.count_plantable_spots()
-			is_possible = plantable_spots > 0
-			action.clicks = min(plantable_spots, action.clicks)
+			action.clicks = min(action.clicks, plantable_spots)
+			is_possible = action.clicks > 0
 		
 		Action.Type.lightning_strike:
 			if rain_lightning_conversion_unlocked:
 				action.clicks += floori(map.rain_duration / float(rain_lightning_conversion))
+			if action.cost > 0:
+				action.clicks = min(action.clicks, ceili(map.rain_duration / float(action.cost)))
+			
+			var strikeable_spots = map.count_strikeable_spots()
+			action.clicks = min(action.clicks, strikeable_spots)
 			is_possible = map.is_raining() and action.clicks > 0
 		
 		Action.Type.rain:

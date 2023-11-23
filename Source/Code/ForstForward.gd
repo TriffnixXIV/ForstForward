@@ -1,6 +1,6 @@
 extends Node2D
 
-var version = "v9 dev"
+var version = "v9"
 
 var current_round = 1
 var score = 0
@@ -173,6 +173,7 @@ func set_game_state(state: GameState):
 			resuming = true
 	
 	# hide everything for now, makes this method shorter
+	$MapOverlay/Ornaments.visible = false
 	$MapOverlay/MainMenu.visible = false
 	$MapOverlay/LevelSelection.visible = false
 	$MapOverlay/InGameMenu.visible = false
@@ -185,6 +186,7 @@ func set_game_state(state: GameState):
 	match game_state:
 		GameState.main_menu:
 			play_success_sound()
+			$MapOverlay/Ornaments.visible = true
 			$MapOverlay/MainMenu.visible = true
 			$Map.clear_level()
 		GameState.level_selection:
@@ -198,6 +200,7 @@ func set_game_state(state: GameState):
 				start_run()
 		GameState.in_game_menu:
 			play_success_sound()
+			$MapOverlay/Ornaments.visible = true
 			$MapOverlay/InGameMenu.visible = true
 			$Sidebar/Records.visible = true
 		GameState.post_game:
@@ -209,10 +212,10 @@ func set_game_state(state: GameState):
 
 func next_turn_step():
 	update_UI()
-	if $Sidebar/InGameUI/Options/Bottom/Button.has_focus():
-		$Sidebar/InGameUI/Options/Bottom/Button.release_focus()
-	if $Sidebar/InGameUI/Options/Top/Button.has_focus():
-		$Sidebar/InGameUI/Options/Top/Button.release_focus()
+	if $Sidebar/InGameUI/BottomOption.has_focus():
+		$Sidebar/InGameUI/BottomOption.release_focus()
+	if $Sidebar/InGameUI/TopOption.has_focus():
+		$Sidebar/InGameUI/TopOption.release_focus()
 	if len($Map.crystal_manager.fully_grown_crystals) > 0:
 		upgrading = true
 		next_upgrades()
@@ -233,28 +236,28 @@ func next_upgrades():
 		Crystal.Type.growth:	spark_color = ButtonSparks.SparkColor.green
 		Crystal.Type.weather:	spark_color = ButtonSparks.SparkColor.blue
 	
-	$Sidebar/InGameUI/Options/Top/Button/Label.text = top_upgrade.get_text()
-	$Sidebar/InGameUI/Options/Top/Button/Sparks.visible = true
-	$Sidebar/InGameUI/Options/Top/Button/Sparks.set_color(spark_color)
-	$Sidebar/InGameUI/Options/Bottom/Button/Label.text = bottom_upgrade.get_text()
-	$Sidebar/InGameUI/Options/Bottom/Button/Sparks.visible = true
-	$Sidebar/InGameUI/Options/Bottom/Button/Sparks.set_color(spark_color)
+	$Sidebar/InGameUI/TopOption/Label.text = top_upgrade.get_text()
+	$Sidebar/InGameUI/TopOption/Sparks.visible = true
+	$Sidebar/InGameUI/TopOption/Sparks.set_color(spark_color)
+	$Sidebar/InGameUI/BottomOption/Label.text = bottom_upgrade.get_text()
+	$Sidebar/InGameUI/BottomOption/Sparks.visible = true
+	$Sidebar/InGameUI/BottomOption/Sparks.set_color(spark_color)
 
 func next_actions():
 	var new_actions = action_factory.get_actions()
 	
 	top_action.set_action(new_actions[0])
 	bottom_action.set_action(new_actions[1])
-	$Sidebar/InGameUI/Options/Top/Button/Sparks.visible = false
-	$Sidebar/InGameUI/Options/Bottom/Button/Sparks.visible = false
+	$Sidebar/InGameUI/TopOption/Sparks.visible = false
+	$Sidebar/InGameUI/BottomOption/Sparks.visible = false
 
 func update_top_action_text():
-	$Sidebar/InGameUI/Options/Top/Button/Label.text = top_action.get_full_text()
-	$Sidebar/InGameUI/Options/Top/Button/Label.label_settings.shadow_color = Crystal.get_color(top_action.get_crystal_type())
+	$Sidebar/InGameUI/TopOption/Label.text = top_action.get_full_text()
+	$Sidebar/InGameUI/TopOption/Label.label_settings.shadow_color = Crystal.get_color(top_action.get_crystal_type())
 
 func update_bottom_action_text():
-	$Sidebar/InGameUI/Options/Bottom/Button/Label.text = bottom_action.get_full_text()
-	$Sidebar/InGameUI/Options/Bottom/Button/Label.label_settings.shadow_color = Crystal.get_color(bottom_action.get_crystal_type())
+	$Sidebar/InGameUI/BottomOption/Label.text = bottom_action.get_full_text()
+	$Sidebar/InGameUI/BottomOption/Label.label_settings.shadow_color = Crystal.get_color(bottom_action.get_crystal_type())
 
 func _on_top_option_pressed():
 	enact_top_option()
@@ -263,21 +266,21 @@ func _on_bottom_option_pressed():
 	enact_bottom_option()
 
 func enact_top_option():
-	if not $Sidebar/InGameUI/Options/Top/Button.disabled:
+	if not $Sidebar/InGameUI/TopOption.disabled:
 		if upgrading:
 			apply_upgrade(top_upgrade)
 		else:
-			if not $Sidebar/InGameUI/Options/Top/Button.has_focus():
-				$Sidebar/InGameUI/Options/Top/Button.grab_focus()
+			if not $Sidebar/InGameUI/TopOption.has_focus():
+				$Sidebar/InGameUI/TopOption.grab_focus()
 			enact_action(top_action)
 
 func enact_bottom_option():
-	if not $Sidebar/InGameUI/Options/Bottom/Button.disabled:
+	if not $Sidebar/InGameUI/BottomOption.disabled:
 		if upgrading:
 			apply_upgrade(bottom_upgrade)
 		else:
-			if not $Sidebar/InGameUI/Options/Bottom/Button.has_focus():
-				$Sidebar/InGameUI/Options/Bottom/Button.grab_focus()
+			if not $Sidebar/InGameUI/BottomOption.has_focus():
+				$Sidebar/InGameUI/BottomOption.grab_focus()
 			enact_action(bottom_action)
 
 func apply_upgrade(upgrade: Upgrade):
@@ -315,30 +318,30 @@ func _on_action_advance_failure():
 func lock_selection(full_lock: bool = false):
 	selection_locked = true
 	
-	$Sidebar/InGameUI/Options/Top/Button.disabled = true
-	$Sidebar/InGameUI/Options/Bottom/Button.disabled = true
+	$Sidebar/InGameUI/TopOption.disabled = true
+	$Sidebar/InGameUI/BottomOption.disabled = true
 	
 	if full_lock:
-		$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_NONE)
-		$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_NONE)
+		$Sidebar/InGameUI/TopOption.set_focus_mode(Control.FOCUS_NONE)
+		$Sidebar/InGameUI/BottomOption.set_focus_mode(Control.FOCUS_NONE)
 	else:
 		if selected_action == bottom_action:
-			$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_NONE)
+			$Sidebar/InGameUI/TopOption.set_focus_mode(Control.FOCUS_NONE)
 		else:
-			$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_NONE)
+			$Sidebar/InGameUI/BottomOption.set_focus_mode(Control.FOCUS_NONE)
 
 func unlock_selection():
 	selection_locked = false
 	
-	$Sidebar/InGameUI/Options/Top/Button.disabled = false
-	$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_ALL)
-	$Sidebar/InGameUI/Options/Bottom/Button.disabled = false
-	$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_ALL)
+	$Sidebar/InGameUI/TopOption.disabled = false
+	$Sidebar/InGameUI/TopOption.set_focus_mode(Control.FOCUS_ALL)
+	$Sidebar/InGameUI/BottomOption.disabled = false
+	$Sidebar/InGameUI/BottomOption.set_focus_mode(Control.FOCUS_ALL)
 
 func skip_round():
 	if $Map.current_phase == $Map.Phase.idle:
-		$Sidebar/InGameUI/Options/Top/Button.disabled = true
-		$Sidebar/InGameUI/Options/Bottom/Button.disabled = true
+		$Sidebar/InGameUI/TopOption.disabled = true
+		$Sidebar/InGameUI/BottomOption.disabled = true
 		advance()
 
 func advance():
@@ -351,13 +354,13 @@ func advance():
 	if game_state == GameState.playing:
 		update_UI()
 		
-		$Sidebar/InGameUI/Options/Top/Button.set_focus_mode(Control.FOCUS_NONE)
-		$Sidebar/InGameUI/Options/Top/Button/Label.text = ""
-		$Sidebar/InGameUI/Options/Top/Button/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+		$Sidebar/InGameUI/TopOption.set_focus_mode(Control.FOCUS_NONE)
+		$Sidebar/InGameUI/TopOption/Label.text = ""
+		$Sidebar/InGameUI/TopOption/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 		
-		$Sidebar/InGameUI/Options/Bottom/Button.set_focus_mode(Control.FOCUS_NONE)
-		$Sidebar/InGameUI/Options/Bottom/Button/Label.text = ""
-		$Sidebar/InGameUI/Options/Bottom/Button/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+		$Sidebar/InGameUI/BottomOption.set_focus_mode(Control.FOCUS_NONE)
+		$Sidebar/InGameUI/BottomOption/Label.text = ""
+		$Sidebar/InGameUI/BottomOption/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 		$Map.advance()
 
 func _on_map_score_changed():
@@ -406,20 +409,16 @@ func update_level_change_stuff():
 	$MapOverlay/LevelSelection/LevelName.text = $Map.level_name
 
 func update_highscores():
-	$Sidebar/Records/FastestWin.text = "fastest win\n" + str($Map.save_data.fastest_win) + " rounds"
-	$Sidebar/Records/SlowestWin.text = "slowest win\n" + str($Map.save_data.slowest_win) + " rounds"
-	$Sidebar/Records/SlowestLoss.text = "slowest loss\n" + str($Map.save_data.slowest_loss) + " rounds"
-	$Sidebar/Records/FastestLoss.text = "fastest loss\n" + str($Map.save_data.fastest_loss) + " rounds"
-	if $Map.save_data.fastest_win == -1: $Sidebar/Records/FastestWin.text = "fastest win\n--"
-	if $Map.save_data.slowest_win == -1: $Sidebar/Records/SlowestWin.text = "slowest win\n--"
-	if $Map.save_data.slowest_loss == -1: $Sidebar/Records/SlowestLoss.text = "slowest loss\n--"
-	if $Map.save_data.fastest_loss == -1: $Sidebar/Records/FastestLoss.text = "fastest loss\n--"
+	$Sidebar/Records/Forst/Fastest/Number.text = str($Map.save_data.fastest_win) if $Map.save_data.fastest_win != -1 else "--"
+	$Sidebar/Records/Forst/Slowest/Number.text = str($Map.save_data.slowest_win) if $Map.save_data.slowest_win != -1 else "--"
+	$Sidebar/Records/Horst/Fastest/Number.text = str($Map.save_data.fastest_loss) if $Map.save_data.fastest_loss != -1 else "--"
+	$Sidebar/Records/Horst/Slowest/Number.text = str($Map.save_data.slowest_loss) if $Map.save_data.slowest_loss != -1 else "--"
 
 func reset_highscore_highlighting():
-	$Sidebar/Records/FastestWin.label_settings.shadow_color = Color(0, 0, 0, 0.8)
-	$Sidebar/Records/SlowestWin.label_settings.shadow_color = Color(0, 0, 0, 0.8)
-	$Sidebar/Records/SlowestLoss.label_settings.shadow_color = Color(0, 0, 0, 0.8)
-	$Sidebar/Records/FastestLoss.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/Records/Forst/Fastest/Number.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/Records/Forst/Slowest/Number.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/Records/Horst/Fastest/Number.label_settings.shadow_color = Color(0, 0, 0, 0.8)
+	$Sidebar/Records/Horst/Slowest/Number.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 
 func update_numbers():
 	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.text = str(len($Map.villagers))
@@ -453,22 +452,25 @@ func update_round():
 	$Sidebar/InGameUI/CoreStats/Round.text = "round " + str(current_round)
 
 func update_stats():
-	$MapOverlay/PostGame/Stats/Horst/TreesFelled.text = str($Map.total_felled_trees) + " trees felled"
+	$MapOverlay/PostGame/Stats/Horst/TreesFelled.text = str($Map.felled_trees) + " trees felled"
 	$MapOverlay/PostGame/Stats/Horst/MaxHorsts.text = str($Map.highest_villager_count) + " highest number of villagers"
-	$MapOverlay/PostGame/Stats/Horst/Births.text = str($Map.total_born_villagers) + " villagers born"
-	$MapOverlay/PostGame/Stats/Horst/Deaths.text = str($Map.total_dead_villagers) + " villagers died"
-	$MapOverlay/PostGame/Stats/Horst/DeathsTreant.text = str($Map.total_deaths_to_treants) + " deaths to treants"
-	$MapOverlay/PostGame/Stats/Horst/DeathsLightning.text = str($Map.total_deaths_to_lightning) + " deaths to lightning"
+	$MapOverlay/PostGame/Stats/Horst/Births.text = str($Map.born_villagers) + " villagers born"
+	$MapOverlay/PostGame/Stats/Horst/Deaths.text = str($Map.dead_villagers) + " villagers died"
+	$MapOverlay/PostGame/Stats/Horst/DeathsTreant.text = str($Map.deaths_to_treants) + " deaths to treants"
+	$MapOverlay/PostGame/Stats/Horst/DeathsTreantling.text = str($Map.deaths_to_treantlings) + " deaths to treantlings"
+	$MapOverlay/PostGame/Stats/Horst/DeathsLightning.text = str($Map.deaths_to_lightning) + " deaths to lightning"
 	$MapOverlay/PostGame/Stats/Horst/Frost.text = str($Map.total_coldness) + " total frost level"
 	$MapOverlay/PostGame/Stats/Horst/FrostActions.text = str($Map.actions_lost_to_frost) + " actions lost to frost"
 	
-	$MapOverlay/PostGame/Stats/Forst/Trees.text = str($Map.total_grown_trees) + " trees grown"
-	$MapOverlay/PostGame/Stats/Forst/Plant.text = str($Map.total_planted_trees) + " trees planted"
-	$MapOverlay/PostGame/Stats/Forst/Spread.text = str($Map.total_spread_trees) + " trees spread"
+	$MapOverlay/PostGame/Stats/Forst/Trees.text = str($Map.grown_trees) + " trees grown"
+	$MapOverlay/PostGame/Stats/Forst/Plant.text = str($Map.planted_trees) + " trees planted"
+	$MapOverlay/PostGame/Stats/Forst/Spread.text = str($Map.spread_trees) + " trees spread"
 	$MapOverlay/PostGame/Stats/Forst/Druids.text = str(len($Map.druids)) + " druids spawned"
-	$MapOverlay/PostGame/Stats/Forst/DruidTrees.text = str($Map.total_trees_from_druids) + " trees from druids"
-	$MapOverlay/PostGame/Stats/Forst/Treants.text = str($Map.total_treants_spawned) + " treants spawned"
-	$MapOverlay/PostGame/Stats/Forst/TreantTrees.text = str($Map.total_trees_from_treants) + " trees from treants"
+	$MapOverlay/PostGame/Stats/Forst/DruidTrees.text = str($Map.trees_from_druids) + " trees from druids"
+	$MapOverlay/PostGame/Stats/Forst/Treants.text = str($Map.treants_spawned) + " treants spawned"
+	$MapOverlay/PostGame/Stats/Forst/TreantTrees.text = str($Map.trees_from_treants) + " trees from treants"
+	$MapOverlay/PostGame/Stats/Forst/Treantlings.text = str($Map.treantlings_spawned) + " treantlings spawned"
+	$MapOverlay/PostGame/Stats/Forst/TreantlingTrees.text = str($Map.trees_from_treantlings) + " trees from treantlings"
 	$MapOverlay/PostGame/Stats/Forst/Growth.text = str($Map.total_growth_stages) + " growth stages"
 	$MapOverlay/PostGame/Stats/Forst/Rain.text = str($Map.total_rain_duration) + " rounds of rain"
 	$MapOverlay/PostGame/Stats/Forst/Lightning.text = str($Map.total_lightning_strikes) + " lightning strikes called"
@@ -484,17 +486,17 @@ func win_game():
 		
 		if $Map.save_data.fastest_win == -1 or current_round < $Map.save_data.fastest_win:
 			$Map.save_data.fastest_win = current_round
-			$Sidebar/Records/FastestWin.label_settings.shadow_color = Color(0, 1, 0, 1)
+			$Sidebar/Records/Forst/Fastest/Number.label_settings.shadow_color = Color(0, 1, 0, 1)
 			$Map.save_player_data()
 		elif current_round == $Map.save_data.fastest_win:
-			$Sidebar/Records/FastestWin.label_settings.shadow_color = Color(0.5, 1, 0, 1)
+			$Sidebar/Records/Forst/Fastest/Number.label_settings.shadow_color = Color(0.5, 1, 0, 1)
 		
 		if $Map.save_data.slowest_win == -1 or current_round > $Map.save_data.slowest_win:
 			$Map.save_data.slowest_win = current_round
-			$Sidebar/Records/SlowestWin.label_settings.shadow_color = Color(0, 1, 0, 1)
+			$Sidebar/Records/Forst/Slowest/Number.label_settings.shadow_color = Color(0, 1, 0, 1)
 			$Map.save_player_data()
 		elif current_round == $Map.save_data.slowest_win:
-			$Sidebar/Records/SlowestWin.label_settings.shadow_color = Color(0.5, 1, 0, 1)
+			$Sidebar/Records/Forst/Slowest/Number.label_settings.shadow_color = Color(0.5, 1, 0, 1)
 		
 		$MapOverlay/LevelSelection/Message.label_settings.shadow_color = Color(0, 1, 0, 1)
 		$MapOverlay/LevelSelection/Message.text = "another forest to protect, peace to restore"
@@ -512,17 +514,17 @@ func lose_game():
 		
 		if $Map.save_data.slowest_loss == -1 or current_round > $Map.save_data.slowest_loss:
 			$Map.save_data.slowest_loss = current_round
-			$Sidebar/Records/SlowestLoss.label_settings.shadow_color = Color(0, 1, 0, 1)
+			$Sidebar/Records/Horst/Slowest/Number.label_settings.shadow_color = Color(0, 1, 0, 1)
 			$Map.save_player_data()
 		elif current_round == $Map.save_data.slowest_loss:
-			$Sidebar/Records/SlowestLoss.label_settings.shadow_color = Color(0.5, 1, 0, 1)
+			$Sidebar/Records/Horst/Slowest/Number.label_settings.shadow_color = Color(0.5, 1, 0, 1)
 		
 		if $Map.save_data.fastest_loss == -1 or current_round < $Map.save_data.fastest_loss:
 			$Map.save_data.fastest_loss = current_round
-			$Sidebar/Records/FastestLoss.label_settings.shadow_color = Color(0, 1, 0, 1)
+			$Sidebar/Records/Horst/Fastest/Number.label_settings.shadow_color = Color(0, 1, 0, 1)
 			$Map.save_player_data()
 		elif current_round == $Map.save_data.fastest_loss:
-			$Sidebar/Records/FastestLoss.label_settings.shadow_color = Color(0.5, 1, 0, 1)
+			$Sidebar/Records/Horst/Fastest/Number.label_settings.shadow_color = Color(0.5, 1, 0, 1)
 		
 		$MapOverlay/LevelSelection/Message.label_settings.shadow_color = Color(1, 0, 0, 1)
 		$MapOverlay/LevelSelection/Message.text = "Horst wants to cut down more forests"

@@ -17,7 +17,7 @@ wait_time = 0.25
 one_shot = true
 
 [node name="Sprite" type="Sprite2D" parent="."]
-position = Vector2(10, 10)
 texture = ExtResource("2_lpndy")
+centered = false
 
 [connection signal="timeout" from="Circle/Timer" to="." method="_on_timer_timeout"]

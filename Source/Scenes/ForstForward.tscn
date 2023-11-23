@@ -1,4 +1,4 @@
-[gd_scene load_steps=114 format=3 uid="uid://vsbq62808p6r"]
+[gd_scene load_steps=119 format=3 uid="uid://vsbq62808p6r"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -45,6 +45,7 @@
 [ext_resource type="Texture2D" uid="uid://c7ix3anx83jq7" path="res://Images/Highlights/LargeRedHighlight.png" id="37_k0mh1"]
 [ext_resource type="LabelSettings" uid="uid://bterirwd56o63" path="res://Text/CellNumberLabelSettings.tres" id="41_7rtjq"]
 [ext_resource type="Texture2D" uid="uid://1t3o6p2kvsui" path="res://Images/Treant.png" id="42_e0d5f"]
+[ext_resource type="Texture2D" uid="uid://dbib7gx4a4q03" path="res://Images/MapOverlays/MenuOverlay.png" id="44_g65wn"]
 [ext_resource type="Texture2D" uid="uid://cl1yuroqhceca" path="res://Images/Arrows/ArrowLeft.png" id="47_1d738"]
 [ext_resource type="Texture2D" uid="uid://cnu7bccn28j4s" path="res://Images/Arrows/ArrowLeftPressed.png" id="48_2quy7"]
 [ext_resource type="Texture2D" uid="uid://d2kalc6w76eii" path="res://Images/Separator.png" id="48_ciuft"]
@@ -62,6 +63,7 @@
 [ext_resource type="Texture2D" uid="uid://cenp0qegus1al" path="res://Images/VillagerStuff/Horst.png" id="56_w2pu1"]
 [ext_resource type="Texture2D" uid="uid://cifp3h3pq8ndu" path="res://Images/Exit/XNormal.png" id="57_bn3s8"]
 [ext_resource type="Texture2D" uid="uid://86ldk7gv0ryc" path="res://Images/Arrows/ArrowRightHover.png" id="57_plwts"]
+[ext_resource type="Texture2D" uid="uid://y1vsfu44h5mr" path="res://Images/OptionButton/Neutral.png" id="57_sgf6w"]
 [ext_resource type="Texture2D" uid="uid://boxj06aryddeq" path="res://Images/Exit/XPressed.png" id="58_6p8y3"]
 [ext_resource type="Texture2D" uid="uid://ck4rwbskgjv3l" path="res://Images/Icons/Snow.png" id="58_fvx64"]
 [ext_resource type="Texture2D" uid="uid://b56tnpemcrfjy" path="res://Images/Icons/RainDrop.png" id="59_ksjrr"]
@@ -128,11 +130,6 @@ sources/1 = SubResource("TileSetAtlasSource_slf6v")
 sources/3 = SubResource("TileSetAtlasSource_dg5t2")
 sources/4 = SubResource("TileSetAtlasSource_jxo8u")
 
-[sub_resource type="LabelSettings" id="LabelSettings_o3tlm"]
-line_spacing = 0.0
-font_size = 8
-font_color = Color(1, 1, 1, 0.376471)
-
 [sub_resource type="LabelSettings" id="LabelSettings_w1idl"]
 line_spacing = -36.0
 font_size = 48
@@ -172,17 +169,36 @@ shadow_color = Color(1, 0, 0, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_37y5s"]
 shadow_color = Color(0, 1, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_o3tlm"]
+line_spacing = 0.0
+font_size = 8
+font_color = Color(1, 1, 1, 0.376471)
+
 [sub_resource type="LabelSettings" id="LabelSettings_n5omy"]
 font_size = 24
 shadow_color = Color(0, 1, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_l5fye"]
+shadow_color = Color(0, 1, 0, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_5digx"]
+font_size = 14
+shadow_color = Color(0, 0, 0, 0.819608)
 
-[sub_resource type="LabelSettings" id="LabelSettings_7hbf2"]
+[sub_resource type="LabelSettings" id="LabelSettings_kbdfp"]
+font_size = 24
 
-[sub_resource type="LabelSettings" id="LabelSettings_6ir0u"]
+[sub_resource type="LabelSettings" id="LabelSettings_u8x1h"]
+font_size = 24
 
-[sub_resource type="LabelSettings" id="LabelSettings_g37cd"]
+[sub_resource type="LabelSettings" id="LabelSettings_wfdb8"]
+shadow_color = Color(1, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_61re2"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_ybgoy"]
+font_size = 24
 
 [sub_resource type="LabelSettings" id="LabelSettings_dvba3"]
 shadow_color = Color(1, 0.501961, 0, 1)
@@ -359,21 +375,14 @@ offset_top = 5.0
 offset_right = 585.0
 offset_bottom = 445.0
 
-[node name="Version" type="Label" parent="MapOverlay"]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -20.0
-offset_right = 132.0
-grow_vertical = 0
-size_flags_vertical = 8
-text = "version"
-label_settings = SubResource("LabelSettings_o3tlm")
-vertical_alignment = 2
-max_lines_visible = 1
+[node name="Ornaments" type="TextureRect" parent="MapOverlay"]
+layout_mode = 0
+offset_right = 580.0
+offset_bottom = 440.0
+texture = ExtResource("44_g65wn")
 
 [node name="MainMenu" type="Control" parent="MapOverlay"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -617,6 +626,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="RunInfo" type="TextureButton" parent="MapOverlay/InGameMenu/List"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("51_4nt7v")
@@ -649,17 +659,6 @@ text = "to level selection"
 label_settings = SubResource("LabelSettings_tc1gr")
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="ToLevelSelect" type="TextureButton" parent="MapOverlay/InGameMenu"]
-layout_mode = 1
-offset_left = 5.0
-offset_top = 5.0
-offset_right = 35.0
-offset_bottom = 35.0
-texture_normal = ExtResource("57_bn3s8")
-texture_pressed = ExtResource("58_6p8y3")
-texture_hover = ExtResource("59_s61jp")
-stretch_mode = 3
 
 [node name="PostGame" type="Control" parent="MapOverlay"]
 visible = false
@@ -712,6 +711,7 @@ offset_top = -150.0
 offset_right = 240.0
 offset_bottom = 150.0
 grow_vertical = 2
+theme_override_constants/separation = 0
 
 [node name="Title" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
 layout_mode = 2
@@ -741,6 +741,11 @@ label_settings = ExtResource("48_sowv6")
 [node name="DeathsTreant" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
 layout_mode = 2
 text = "X deaths to treants"
+label_settings = ExtResource("48_sowv6")
+
+[node name="DeathsTreantling" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X deaths to treantlings"
 label_settings = ExtResource("48_sowv6")
 
 [node name="DeathsLightning" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
@@ -785,6 +790,7 @@ offset_top = -150.0
 offset_bottom = 150.0
 grow_horizontal = 0
 grow_vertical = 2
+theme_override_constants/separation = 0
 
 [node name="Title" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
 layout_mode = 2
@@ -824,6 +830,16 @@ label_settings = ExtResource("48_sowv6")
 [node name="TreantTrees" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
 layout_mode = 2
 text = "X treant trees"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Treantlings" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X treantlings"
+label_settings = ExtResource("48_sowv6")
+
+[node name="TreantlingTrees" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X treantling trees"
 label_settings = ExtResource("48_sowv6")
 
 [node name="Growth" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
@@ -892,6 +908,20 @@ script = ExtResource("54_feji7")
 [node name="Timer" type="Timer" parent="MapOverlay/PostGame/ToLevelSelection"]
 one_shot = true
 
+[node name="Version" type="Label" parent="MapOverlay"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+offset_right = 132.0
+grow_vertical = 0
+size_flags_vertical = 8
+text = "version"
+label_settings = SubResource("LabelSettings_o3tlm")
+vertical_alignment = 2
+max_lines_visible = 1
+
 [node name="Sidebar" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -900,7 +930,7 @@ offset_top = 5.0
 offset_right = 795.0
 offset_bottom = 445.0
 
-[node name="Records" type="VBoxContainer" parent="Sidebar"]
+[node name="Records" type="Control" parent="Sidebar"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -910,6 +940,8 @@ grow_vertical = 2
 
 [node name="Title" type="Label" parent="Sidebar/Records"]
 layout_mode = 2
+offset_right = 205.0
+offset_bottom = 55.0
 size_flags_vertical = 1
 size_flags_stretch_ratio = 0.6
 text = "records"
@@ -917,43 +949,327 @@ label_settings = SubResource("LabelSettings_n5omy")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="FastestWin" type="Label" parent="Sidebar/Records"]
-layout_mode = 2
+[node name="Forst" type="TextureRect" parent="Sidebar/Records"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -102.5
+offset_top = -145.5
+offset_right = 102.5
+offset_bottom = -10.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("57_sgf6w")
+
+[node name="Title" type="Label" parent="Sidebar/Records/Forst"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -23.0
+offset_top = 5.0
+offset_right = 23.0
+offset_bottom = 31.0
+grow_horizontal = 2
+text = "forest"
+label_settings = SubResource("LabelSettings_l5fye")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Fastest" type="Control" parent="Sidebar/Records/Forst"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -32.5
+offset_right = 100.0
+offset_bottom = 47.5
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Sidebar/Records/Forst/Fastest"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.5
+offset_right = 42.5
+offset_bottom = 26.0
+grow_horizontal = 2
 size_flags_vertical = 3
-text = "fastest win"
+text = "fastest"
 label_settings = SubResource("LabelSettings_5digx")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SlowestWin" type="Label" parent="Sidebar/Records"]
-layout_mode = 2
+[node name="Number" type="Label" parent="Sidebar/Records/Forst/Fastest"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -42.5
+offset_top = -13.0
+offset_right = 42.5
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 3
-text = "slowest win"
-label_settings = SubResource("LabelSettings_7hbf2")
+text = "32"
+label_settings = SubResource("LabelSettings_kbdfp")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SlowestLoss" type="Label" parent="Sidebar/Records"]
-layout_mode = 2
+[node name="Rounds" type="Label" parent="Sidebar/Records/Forst/Fastest"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -42.5
+offset_top = -26.0
+offset_right = 42.5
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_vertical = 3
-text = "slowest loss"
-label_settings = SubResource("LabelSettings_6ir0u")
+text = "rounds"
+label_settings = SubResource("LabelSettings_5digx")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="FastestLoss" type="Label" parent="Sidebar/Records"]
-layout_mode = 2
+[node name="Slowest" type="Control" parent="Sidebar/Records/Forst"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -32.5
+offset_bottom = 47.5
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Sidebar/Records/Forst/Slowest"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.5
+offset_right = 42.5
+offset_bottom = 26.0
+grow_horizontal = 2
 size_flags_vertical = 3
-text = "fastest loss"
-label_settings = SubResource("LabelSettings_g37cd")
+text = "slowest"
+label_settings = SubResource("LabelSettings_5digx")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Number" type="Label" parent="Sidebar/Records/Forst/Slowest"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -42.5
+offset_top = -13.0
+offset_right = 42.5
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+text = "--"
+label_settings = SubResource("LabelSettings_u8x1h")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Rounds" type="Label" parent="Sidebar/Records/Forst/Slowest"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -42.5
+offset_top = -26.0
+offset_right = 42.5
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 3
+text = "rounds"
+label_settings = SubResource("LabelSettings_5digx")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Horst" type="TextureRect" parent="Sidebar/Records"]
+layout_mode = 2
+offset_top = 230.5
+offset_right = 205.0
+offset_bottom = 365.5
+texture = ExtResource("57_sgf6w")
+
+[node name="Title" type="Label" parent="Sidebar/Records/Horst"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -21.5
+offset_top = 5.0
+offset_right = 21.5
+offset_bottom = 31.0
+grow_horizontal = 2
+text = "Horst"
+label_settings = SubResource("LabelSettings_wfdb8")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Fastest" type="Control" parent="Sidebar/Records/Horst"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -32.5
+offset_right = 100.0
+offset_bottom = 47.5
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Sidebar/Records/Horst/Fastest"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.5
+offset_right = 42.5
+offset_bottom = 26.0
+grow_horizontal = 2
+size_flags_vertical = 3
+text = "fastest"
+label_settings = SubResource("LabelSettings_5digx")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Number" type="Label" parent="Sidebar/Records/Horst/Fastest"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -42.5
+offset_top = -13.0
+offset_right = 42.5
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+text = "32"
+label_settings = SubResource("LabelSettings_61re2")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Rounds" type="Label" parent="Sidebar/Records/Horst/Fastest"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -42.5
+offset_top = -26.0
+offset_right = 42.5
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 3
+text = "rounds"
+label_settings = SubResource("LabelSettings_5digx")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slowest" type="Control" parent="Sidebar/Records/Horst"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -32.5
+offset_bottom = 47.5
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Sidebar/Records/Horst/Slowest"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.5
+offset_right = 42.5
+offset_bottom = 26.0
+grow_horizontal = 2
+size_flags_vertical = 3
+text = "slowest"
+label_settings = SubResource("LabelSettings_5digx")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Number" type="Label" parent="Sidebar/Records/Horst/Slowest"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -42.5
+offset_top = -13.0
+offset_right = 42.5
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+text = "--"
+label_settings = SubResource("LabelSettings_ybgoy")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Rounds" type="Label" parent="Sidebar/Records/Horst/Slowest"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -42.5
+offset_top = -26.0
+offset_right = 42.5
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 3
+text = "rounds"
+label_settings = SubResource("LabelSettings_5digx")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Buttons" type="TextureRect" parent="Sidebar/Records"]
-layout_mode = 2
-size_flags_vertical = 3
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -102.5
+offset_top = -55.0
+offset_right = 102.5
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_stretch_ratio = 0.6
 texture = ExtResource("30_voj48")
+stretch_mode = 3
 
 [node name="MuteButton" type="TextureButton" parent="Sidebar/Records/Buttons"]
 layout_mode = 1
@@ -1212,24 +1528,7 @@ label_settings = SubResource("LabelSettings_3woos")
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="Options" type="VBoxContainer" parent="Sidebar/InGameUI"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_top = -2.0
-offset_bottom = 2.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 156
-
-[node name="Top" type="Control" parent="Sidebar/InGameUI/Options"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Button" type="TextureButton" parent="Sidebar/InGameUI/Options/Top"]
+[node name="TopOption" type="TextureButton" parent="Sidebar/InGameUI"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1237,9 +1536,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -102.5
-offset_top = -67.5
+offset_top = -145.5
 offset_right = 102.5
-offset_bottom = 67.5
+offset_bottom = -10.5
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
@@ -1249,7 +1548,7 @@ texture_hover = ExtResource("52_bcv0s")
 texture_disabled = ExtResource("53_g8171")
 texture_focused = ExtResource("54_ndqc2")
 
-[node name="Sparks" type="TextureRect" parent="Sidebar/InGameUI/Options/Top/Button"]
+[node name="Sparks" type="TextureRect" parent="Sidebar/InGameUI/TopOption"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1262,7 +1561,7 @@ blue_spark_texture = ExtResource("69_d0ki3")
 purple_spark_texture = ExtResource("70_ce7ok")
 yellow_spark_texture = ExtResource("71_11sbm")
 
-[node name="Label" type="Label" parent="Sidebar/InGameUI/Options/Top/Button"]
+[node name="Label" type="Label" parent="Sidebar/InGameUI/TopOption"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1279,11 +1578,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="Bottom" type="Control" parent="Sidebar/InGameUI/Options"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Button" type="TextureButton" parent="Sidebar/InGameUI/Options/Bottom"]
+[node name="BottomOption" type="TextureButton" parent="Sidebar/InGameUI"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1291,9 +1586,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -102.5
-offset_top = -62.0
+offset_top = 10.5
 offset_right = 102.5
-offset_bottom = 62.0
+offset_bottom = 145.5
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
@@ -1303,7 +1598,7 @@ texture_hover = ExtResource("52_bcv0s")
 texture_disabled = ExtResource("53_g8171")
 texture_focused = ExtResource("54_ndqc2")
 
-[node name="Sparks" type="TextureRect" parent="Sidebar/InGameUI/Options/Bottom/Button"]
+[node name="Sparks" type="TextureRect" parent="Sidebar/InGameUI/BottomOption"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1318,7 +1613,7 @@ blue_spark_texture = ExtResource("69_d0ki3")
 purple_spark_texture = ExtResource("70_ce7ok")
 yellow_spark_texture = ExtResource("71_11sbm")
 
-[node name="Label" type="Label" parent="Sidebar/InGameUI/Options/Bottom/Button"]
+[node name="Label" type="Label" parent="Sidebar/InGameUI/BottomOption"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1423,7 +1718,6 @@ stretch_mode = 0
 [connection signal="mouse_entered" from="MapOverlay/InGameMenu/List/ToLevelSelect" to="MapOverlay/InGameMenu/List/ToLevelSelect" method="_on_mouse_entered" flags=18]
 [connection signal="mouse_exited" from="MapOverlay/InGameMenu/List/ToLevelSelect" to="MapOverlay/InGameMenu/List/ToLevelSelect" method="_on_mouse_exited" flags=18]
 [connection signal="pressed" from="MapOverlay/InGameMenu/List/ToLevelSelect" to="." method="_on_to_level_selection_pressed"]
-[connection signal="pressed" from="MapOverlay/InGameMenu/ToLevelSelect" to="." method="_on_to_level_selection_pressed"]
 [connection signal="pressed" from="MapOverlay/PostGame/ToLevelSelection" to="." method="_on_to_level_selection_pressed"]
 [connection signal="timeout" from="MapOverlay/PostGame/ToLevelSelection/Timer" to="MapOverlay/PostGame/ToLevelSelection" method="_on_timer_timeout"]
 [connection signal="pressed" from="Sidebar/Records/Buttons/MuteButton" to="." method="_on_record_mute_button_pressed"]
@@ -1432,6 +1726,6 @@ stretch_mode = 0
 [connection signal="mouse_entered" from="Sidebar/Records/Buttons/Reset" to="Sidebar/Records/Buttons/Reset" method="_on_mouse_entered" flags=18]
 [connection signal="mouse_exited" from="Sidebar/Records/Buttons/Reset" to="Sidebar/Records/Buttons/Reset" method="_on_mouse_exited" flags=18]
 [connection signal="pressed" from="Sidebar/Records/Buttons/Reset" to="." method="_on_reset_records_pressed"]
-[connection signal="pressed" from="Sidebar/InGameUI/Options/Top/Button" to="." method="_on_top_option_pressed"]
-[connection signal="pressed" from="Sidebar/InGameUI/Options/Bottom/Button" to="." method="_on_bottom_option_pressed"]
+[connection signal="pressed" from="Sidebar/InGameUI/TopOption" to="." method="_on_top_option_pressed"]
+[connection signal="pressed" from="Sidebar/InGameUI/BottomOption" to="." method="_on_bottom_option_pressed"]
 [connection signal="pressed" from="Sidebar/InGameUI/CoreStats/MuteButton" to="." method="_on_in_game_mute_button_pressed"]

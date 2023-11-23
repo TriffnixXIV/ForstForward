@@ -40,6 +40,8 @@ var highest_possible_score: int
 
 var base_villager_actions = 12
 var base_treant_actions = 8
+var base_treant_has_lifespan = false
+var base_treant_lifespan = 40
 var base_treant_death_spread = 20
 var base_treantling_actions = 8
 var base_treantling_strength = 1
@@ -58,6 +60,8 @@ var base_min_frost = 0
 
 var villager_actions: int
 var treant_actions: int
+var treant_has_lifespan: bool
+var treant_lifespan: int
 var treant_death_spread: int
 var treantling_actions: int
 var treantling_strength: int
@@ -79,24 +83,27 @@ var remaining_growth_stages = 0
 var rain_duration = 0
 var frost_boost = 0
 
-var total_felled_trees: int = 0
+var felled_trees: int = 0
 var highest_villager_count: int = 0
-var total_born_villagers: int = 0
-var total_dead_villagers: int = 0
-var total_deaths_to_treants: int = 0
-var total_deaths_to_lightning: int = 0
+var born_villagers: int = 0
+var dead_villagers: int = 0
+var deaths_to_treants: int = 0
+var deaths_to_treantlings: int = 0
+var deaths_to_lightning: int = 0
 var total_coldness: int = 0
 var actions_lost_to_frost: int = 0
 
-var total_grown_trees: int = 0
-var total_planted_trees: int = 0
-var total_spread_trees: int = 0
+var grown_trees: int = 0
+var planted_trees: int = 0
+var spread_trees: int = 0
 var total_growth_stages: int = 0
 var total_rain_duration: int = 0
 var total_lightning_strikes: int = 0
-var total_trees_from_druids: int = 0
-var total_treants_spawned: int = 0
-var total_trees_from_treants: int = 0
+var trees_from_druids: int = 0
+var treants_spawned: int = 0
+var trees_from_treants: int = 0
+var treantlings_spawned: int = 0
+var trees_from_treantlings: int = 0
 
 var cell_labels: Array[Array]
 var cell_tree_distance_map: Array[Array]
@@ -266,6 +273,8 @@ func reset():
 func reset_upgrades():
 	villager_actions		= base_villager_actions
 	treant_actions			= base_treant_actions
+	treant_has_lifespan		= base_treant_has_lifespan
+	treant_lifespan			= base_treant_lifespan
 	treant_death_spread		= base_treant_death_spread
 	treantling_actions		= base_treantling_actions
 	treantling_strength		= base_treantling_strength
@@ -283,24 +292,27 @@ func reset_upgrades():
 	min_frost				= base_min_frost
 
 func reset_stats():
-	total_felled_trees = 0
+	felled_trees = 0
 	highest_villager_count = 0
-	total_born_villagers = 0
-	total_dead_villagers = 0
-	total_deaths_to_treants = 0
-	total_deaths_to_lightning = 0
+	born_villagers = 0
+	dead_villagers = 0
+	deaths_to_treants = 0
+	deaths_to_treantlings = 0
+	deaths_to_lightning = 0
 	total_coldness = 0
 	actions_lost_to_frost = 0
 	
-	total_grown_trees = 0
-	total_planted_trees = 0
-	total_spread_trees = 0
+	grown_trees = 0
+	planted_trees = 0
+	spread_trees = 0
 	total_growth_stages = 0
 	total_lightning_strikes = 0
 	total_rain_duration = 0
-	total_trees_from_druids = 0
-	total_treants_spawned = 0
-	total_trees_from_treants = 0
+	trees_from_druids = 0
+	treants_spawned = 0
+	trees_from_treants = 0
+	treantlings_spawned = 0
+	trees_from_treantlings = 0
 
 # forest edge stuff
 
@@ -407,7 +419,7 @@ func advance_growth_phase():
 	for cell in growth_amounts:
 		var previous_yield = get_yield(cell)
 		increase_yield(cell, growth_amounts[cell])
-		total_grown_trees += get_yield(cell) - previous_yield
+		grown_trees += get_yield(cell) - previous_yield
 	
 	update_forest_edges()
 	remaining_growth_stages -= 1
@@ -703,7 +715,7 @@ func spawn_villager(cell_position: Vector2i):
 	add_child(villager)
 	
 	if not current_phase == Phase.transitioning:
-		total_born_villagers += 1
+		born_villagers += 1
 	highest_villager_count = max(highest_villager_count, len(villagers))
 
 func despawn_villager_at(cell_position: Vector2i, also_horst: bool = false):
@@ -719,7 +731,7 @@ func despawn_villager(villager: Villager, also_horst: bool = true):
 		remove_child(villager)
 		villager.queue_free()
 		if not current_phase == Phase.transitioning:
-			total_dead_villagers += 1
+			dead_villagers += 1
 	else:
 		homeless_villagers.append(villager)
 		villager.home_cell = null
@@ -787,7 +799,7 @@ func plant_forest(cell_position: Vector2i):
 		var previous_yield = get_yield(cell_position)
 		increase_yield(cell_position, 20)
 		show_growth_effect(cell_position)
-		total_planted_trees += get_yield(cell_position) - previous_yield
+		planted_trees += get_yield(cell_position) - previous_yield
 		emit_signal("score_changed")
 		return true
 	else:
@@ -804,11 +816,13 @@ func can_spread_forest(cell_position: Vector2i):
 			can_spread_on_buildings and (is_build_site(cell_position) or is_house(cell_position))
 		)
 
-func spread_forest(cell_position: Vector2i, tree_amount: int, from_treant: bool = false):
+func spread_forest(cell_position: Vector2i, tree_amount: int, source: String = "spread"):
 	if can_spread_forest(cell_position):
 		var increase = increase_yield(cell_position, 20)
-		if from_treant:	total_trees_from_treants += increase
-		else:			total_spread_trees += increase
+		match source:
+			"treant":		trees_from_treants += increase
+			"treantling":	trees_from_treantlings += increase
+			"spread":		spread_trees += increase
 		
 		show_growth_effect(cell_position)
 		var distance = 1
@@ -865,8 +879,10 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, from_treant: bool 
 			for cell_entry in cell_entries:
 				increase_yield(cell_entry[0], cell_entry[2])
 				
-				if from_treant:	total_trees_from_treants += cell_entry[2]
-				else:			total_spread_trees += cell_entry[2]
+				match source:
+					"treant":		trees_from_treants += cell_entry[2]
+					"treantling":	trees_from_treantlings += cell_entry[2]
+					"spread":		spread_trees += cell_entry[2]
 			
 			# -1 tree for each ungrowable cell (forest or invalid tile)
 			# 4 * distance is the total amount of cells at that distance
@@ -923,7 +939,7 @@ func strike_with_lightning(cell_position: Vector2i):
 			decrease_building_progress(cell_position + diff, 5)
 		
 		total_lightning_strikes += 1
-		total_deaths_to_lightning += previous_villager_amount - len(villagers)
+		deaths_to_lightning += previous_villager_amount - len(villagers)
 		return true
 	else:
 		return false
@@ -947,14 +963,21 @@ func spawn_treant(cell_position: Vector2i):
 		var treant: Treant = Treant.instantiate()
 		treant.cell_position = cell_position
 		treant.map = self
+		if treant_has_lifespan:
+			treant.set_lifespan(treant_lifespan)
 		treant.update_position()
 		treant.connect("has_died", despawn_treant)
 		treants.append(treant)
 		add_child(treant)
-		total_treants_spawned += 1
+		treants_spawned += 1
 		return true
 	else:
 		return false
+
+func set_treant_lifespan(actions: int):
+	treant_lifespan = actions
+	for treant in treants:
+		treant.set_lifespan(treant_lifespan)
 
 func despawn_treant(treant: Treant):
 	treants.erase(treant)
@@ -972,14 +995,20 @@ func spawn_treantling(cell_position: Vector2i):
 		var treantling: Treantling = Treantling.instantiate()
 		treantling.cell_position = cell_position
 		treantling.map = self
-		treantling.lifespan = treantling_lifespan
+		treantling.set_lifespan(treantling_lifespan)
 		treantling.update_position()
 		treantling.connect("has_died", despawn_treantling)
 		treantlings.append(treantling)
 		add_child(treantling)
+		treantlings_spawned += 1
 		return true
 	else:
 		return false
+
+func set_treantling_lifespan(actions: int):
+	treantling_lifespan = actions
+	for treantling in treantlings:
+		treantling.set_lifespan(treantling_lifespan)
 
 func despawn_treantling(treantling: Treantling):
 	treantlings.erase(treantling)

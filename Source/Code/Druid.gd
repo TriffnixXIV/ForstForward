@@ -36,11 +36,11 @@ func act():
 	match state:
 		State.planting:
 			set_circle_state(CircleState.active)
-			map.total_trees_from_druids += map.increase_yield(cell_position, self_growth)
+			map.trees_from_druids += map.increase_yield(cell_position, self_growth)
 			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-				map.total_trees_from_druids += map.increase_yield(cell_position + diff, edge_growth)
+				map.trees_from_druids += map.increase_yield(cell_position + diff, edge_growth)
 			for diff in [Vector2i(1, 1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, -1)]:
-				map.total_trees_from_druids += map.increase_yield(cell_position + diff, corner_growth)
+				map.trees_from_druids += map.increase_yield(cell_position + diff, corner_growth)
 			state = State.tired
 		State.moving:
 			move(0)
@@ -118,9 +118,9 @@ func find_good_spots():
 	
 	var max_value = self_growth + 3 * edge_growth # the highest possible result of the evaluation function
 	var max_distance = map.width + map.height
-	value_threshhold = max_value - max_distance * edge_growth
+	value_threshhold = max_value - pow(max_distance, 2)
 	
-	while max_value - spot_distance * edge_growth > value_threshhold:
+	while max_value - pow(spot_distance, 2) > value_threshhold:
 		if spot_distance == 0:
 			check_cell(cell_position)
 		
@@ -134,7 +134,7 @@ func find_good_spots():
 func check_cell(cell: Vector2i):
 	var cell_value = evaluate_target_location(cell)
 	if cell_value > 0:
-		var score = cell_value - spot_distance * edge_growth
+		var score = cell_value - pow(spot_distance, 2)
 		if score > value_threshhold:
 			good_spots = [cell]
 			value_threshhold = score

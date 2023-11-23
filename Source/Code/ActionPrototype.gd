@@ -24,7 +24,6 @@ func _init(action_type: Type):
 			base_weight = 4
 			base_clicks = 1
 		Type.spawn_treantling:
-			base_weight = 3
 			base_clicks = 1
 		Type.spawn_druid:
 			base_clicks = 1
@@ -39,6 +38,7 @@ func _init(action_type: Type):
 			base_strength = 3
 		Type.lightning_strike:
 			base_unlocked = false
+			base_weight = 6
 			base_clicks = 1
 			base_cost = 3
 		Type.frost:

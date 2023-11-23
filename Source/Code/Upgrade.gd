@@ -43,9 +43,16 @@ func get_text():
 				Attribute.clicks:
 					return "treant spawns\n" + str(previous_value) + " -> " + str(value)
 				Attribute.actions:
-					return "treant actions\n" + str(previous_value) + " -> " + str(value)
+					if len(other_values) > 0:
+						var lifespan_text = "\nlifespan\n" + str(other_values[0]) + " -> " + str(other_values[1])
+						return "treant actions\n" + str(previous_value) + " -> " + str(value) + lifespan_text
+					else:
+						return "treant actions\n" + str(previous_value) + " -> " + str(value)
+				Attribute.lifespan:
+					return "treant actions\n" + str(previous_value) + " -> " + str(value) + "\ntreants now die after " + str(other_values[0]) + " actions"
 				Attribute.spread:
-					return "treant death spread\n4x" + str(previous_value) + " -> 4x" + str(value)
+					var lifespan_text = "\nlifespan\n" + str(other_values[0]) + " -> " + str(other_values[1])
+					return "treant death spread\n4x" + str(previous_value) + " -> 4x" + str(value) + lifespan_text
 		Type.treantling:
 			match attribute:
 				Attribute.clicks:
@@ -141,19 +148,28 @@ func apply(map: Map, action_factory: ActionFactory):
 			match attribute:
 				Attribute.unlock:	prototype.unlocked = true
 				Attribute.clicks:	prototype.clicks = value
-				Attribute.actions:	map.treant_actions = value
-				Attribute.spread:	map.treant_death_spread = value
+				Attribute.actions:
+					map.treant_actions = value
+					if len(other_values) > 0:
+						map.set_treant_lifespan(other_values[1])
+				Attribute.lifespan:
+					map.treant_has_lifespan = true
+					map.treant_actions = value
+					map.set_treant_lifespan(other_values[0])
+				Attribute.spread:
+					map.treant_death_spread = value
+					map.set_treant_lifespan(other_values[1])
 		Type.treantling:
 			prototype = action_factory.action_prototypes[Action.Type.spawn_treantling]
 			match attribute:
 				Attribute.clicks:	prototype.clicks = value
 				Attribute.actions:
 					map.treantling_actions = value
-					map.treantling_lifespan = other_values[1]
+					map.set_treantling_lifespan(other_values[1])
 				Attribute.strength:	map.treantling_strength = value
 				Attribute.spread:
 					map.treantling_death_spread = value
-					map.treantling_lifespan = other_values[1]
+					map.set_treantling_lifespan(other_values[1])
 		Type.druid:
 			prototype = action_factory.action_prototypes[Action.Type.spawn_druid]
 			match attribute:

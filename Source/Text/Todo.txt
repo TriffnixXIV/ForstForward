@@ -1,20 +1,17 @@
 Mechanics:
-	- druids:
-		make pathing more intuitive (they move too far away for too little benefit)
-		include power in distance calculation
+	- add sand and water for more map variety (high prio)
+		- sand does not allow trees to grow
+		- water does not allow trees to grow and costs 4x the movement
 	- overgrowing houses instead of de-building them (undecided)
 		overgrown houses count as forest and need less steps to recover than currently
 	- maybe replace weight-based random action generation with deck-like drawable actions (undecided)
 		- not that much of a difference at this point?
 
 Bug fixes & QoL:
-	- add dedicated treantling stats
+	--
 
 UI:
-	- change reset record button (high prio)
-	- make record sidebar more fancy (high prio)
-	- add in-game menu when pressing esc (high prio)
-	- add info tab (mid prio)
+	- add info tab (high prio)
 	- re-order: (undecided)
 		- centered map
 		- options below

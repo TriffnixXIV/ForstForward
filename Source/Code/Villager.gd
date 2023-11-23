@@ -72,7 +72,7 @@ func act():
 				move(target_location, 1)
 			else:
 				carried_wood += 1
-				map.total_felled_trees -= map.decrease_yield(target_wood_source, 1)
+				map.felled_trees -= map.decrease_yield(target_wood_source, 1)
 		
 		State.building:
 			if get_distance_to(target_location) > 1:

@@ -52,12 +52,21 @@ func get_available_upgrades(type: Crystal.Type):
 					available_upgrades.append(
 						Upgrade.new(UT.treant, UA.clicks, clicks + 1, clicks))
 				
-				if total_life_upgrades >= map.treant_actions:
+				if not map.treant_has_lifespan:
+					if total_life_upgrades >= map.treant_actions:
+						available_upgrades.append(
+							Upgrade.new(UT.treant, UA.actions, map.treant_actions + 2, map.treant_actions))
+					
 					available_upgrades.append(
-						Upgrade.new(UT.treant, UA.actions, map.treant_actions + 2, map.treant_actions))
-				
-				available_upgrades.append(
-					Upgrade.new(UT.treant, UA.spread, map.treant_death_spread + 10, map.treant_death_spread))
+						Upgrade.new(UT.treant, UA.lifespan, map.treant_actions + 8, map.treant_actions, [5 * (map.treant_actions + 8)]))
+					
+				else:
+					if total_life_upgrades >= map.treant_actions:
+						available_upgrades.append(
+							Upgrade.new(UT.treant, UA.actions, map.treant_actions + 2, map.treant_actions, [map.treant_lifespan, map.treant_lifespan + 10]))
+					
+					available_upgrades.append(
+						Upgrade.new(UT.treant, UA.spread, map.treant_death_spread + 10, map.treant_death_spread, [map.treant_lifespan, map.treant_lifespan - 4]))
 			
 			# treantling
 			prototype = action_factory.action_prototypes[Action.Type.spawn_treantling]
@@ -75,7 +84,7 @@ func get_available_upgrades(type: Crystal.Type):
 			
 			if map.treantling_lifespan >= map.treantling_actions + 2:
 				available_upgrades.append(
-					Upgrade.new(UT.treantling, UA.spread, map.treantling_death_spread + 16, map.treantling_death_spread, [map.treantling_lifespan, map.treantling_lifespan - 2]))
+					Upgrade.new(UT.treantling, UA.spread, map.treantling_death_spread + 12, map.treantling_death_spread, [map.treantling_lifespan, map.treantling_lifespan - 2]))
 			
 			# druid
 			prototype = action_factory.action_prototypes[Action.Type.spawn_druid]

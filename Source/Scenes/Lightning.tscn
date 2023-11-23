@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://bs2ht03dmrdmw" path="res://Sounds/Lightning3.wav" id="5_xfqrm"]
 
 [node name="Lightning" type="Node2D"]
+z_index = 2
 script = ExtResource("1_nhhbt")
 
 [node name="Sprite" type="Sprite2D" parent="."]

@@ -122,7 +122,7 @@ func get_text():
 			if clicks > 1:
 				return "summon " + str(clicks) + " lightning strikes" + progress_text + "\n" + rain_text + " for each"
 			else:
-				return "summon a lightning strike" + "\n" + rain_text + " for each"
+				return "summon a lightning strike" + "\n" + rain_text
 
 func enact(map: Map):
 	if type in [Type.overgrowth, Type.rain, Type.frost]:
