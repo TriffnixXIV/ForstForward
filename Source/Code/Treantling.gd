@@ -64,23 +64,27 @@ func convert_to_forest():
 
 func update_target_location():
 	var closest_valid_targets = map.find_closest_matching_cells(cell_position, is_valid_target, null, 20)
-	if closest_valid_targets == []:
+	var current_value = evaluate_for_buildings(cell_position)
+	
+	if closest_valid_targets == [] and current_value <= 0:
 		target_location = map.find_closest_matching_cell(cell_position, is_good_death_spot, null, 20)
 		if cell_position == target_location or target_location == null:
 			convert_to_forest()
+	elif current_value <= 0:
+		target_location = null
 	
-	var current_best_value = 0
 	for valid_target in closest_valid_targets:
-		var target_value = evaluate_for_buildings(valid_target)
-		if target_location == null or target_value > current_best_value:
+		var target_value = evaluate_for_buildings(valid_target) - pow(map.get_distance(valid_target, cell_position), 2) + 1
+		if target_location == null or target_value > current_value:
 			target_location = valid_target
-			current_best_value = target_value
+			current_value = target_value
 
 func is_valid_target(cell: Vector2i, _extra):
-	return evaluate_for_buildings(cell) > 0
+	return evaluate_for_buildings(cell) > evaluate_for_buildings(cell_position)
 
 func evaluate_for_buildings(cell: Vector2i):
-	return map.get_building_progress(cell)
+	var value = map.get_building_progress(cell)
+	return 0 if value == 0 else 11 - value
 
 func is_good_death_spot(cell: Vector2i, _extra):
 	return not map.is_forest(cell)

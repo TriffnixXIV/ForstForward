@@ -924,6 +924,7 @@ vertical_alignment = 2
 max_lines_visible = 1
 
 [node name="Sidebar" type="Control" parent="."]
+z_index = 2
 layout_mode = 3
 anchors_preset = 0
 offset_left = 590.0

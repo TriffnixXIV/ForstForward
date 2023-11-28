@@ -1,8 +1,11 @@
 Gameplay:
 	- treant
 		- stomping buildings no longer costs actions
-		- now only does 9 damage per action per tile, instead of 10
-			- this way, treants will stay on the same tile for a little longer
+		- now only does 6 damage per action per tile, instead of 10
+			- this way, treants show some more interesting behaviour
+		- simplified target evaluation
+	- treantling
+		- now prioritize buildings that are closer to being destroyed
 
 Bug fixes & QoL:
 	--

@@ -738,6 +738,10 @@ func despawn_villager(villager: Villager, also_horst: bool = true):
 
 # miscellaneous functions
 
+func get_distance(cell_1: Vector2i, cell_2: Vector2i):
+	var path = cell_1 - cell_2
+	return abs(path.x) + abs(path.y)
+
 func find_closest_cell_of_type(cell_position: Vector2i, types, max_distance: int = 50):
 	return find_closest_matching_cell(cell_position, cell_of_type, types, max_distance)
 
@@ -747,7 +751,7 @@ func cell_of_type(cell_position: Vector2i, types):
 func find_closest_matching_cell(cell_position: Vector2i, match_function, extra_argument = null, max_distance = 50):
 	var closest_matching_cells = find_closest_matching_cells(cell_position, match_function, extra_argument, max_distance)
 	if closest_matching_cells != []:
-		return closest_matching_cells[randi_range(0, len(closest_matching_cells)-1)]
+		return closest_matching_cells[0]
 	else:
 		return null
 
@@ -765,6 +769,8 @@ func find_closest_matching_cells(cell_position: Vector2i, match_function, extra_
 				if is_valid_tile(target_cell) and match_function.call(target_cell, extra_argument):
 					closest_matching_cells.append(target_cell)
 		distance += 1
+	
+	closest_matching_cells.shuffle()
 	return closest_matching_cells
 
 func is_raining():

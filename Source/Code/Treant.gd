@@ -42,7 +42,7 @@ func stomp():
 		var cell = cell_position + diff
 		var damage = map.get_building_progress(cell)
 		var growth = map.get_yield(cell)
-		var value = min(9, damage + floori((10 - growth) / 4.0))
+		var value = min(6, damage + floori((10 - growth) / 4.0))
 		map.trees_from_treants += map.increase_yield(cell, value)
 	map.deaths_to_treants += previous_villager_amount - len(map.villagers)
 
@@ -68,26 +68,30 @@ func convert_to_forest():
 
 func update_target_location():
 	var closest_valid_targets = map.find_closest_matching_cells(cell_position, is_valid_target, null, 20)
-	if closest_valid_targets == []:
+	var current_value = evaluate_for_buildings(cell_position)
+	
+	if closest_valid_targets == [] and current_value <= 0:
 		target_location = map.find_closest_matching_cell(cell_position, is_good_death_spot, null, 20)
 		if cell_position == target_location or target_location == null:
 			convert_to_forest()
+	elif current_value <= 0:
+		target_location = null
 	
-	var current_best_value = 0
 	for valid_target in closest_valid_targets:
-		var target_value = evaluate_for_buildings(valid_target)
-		if target_location == null or target_value > current_best_value:
+		var target_value = evaluate_for_buildings(valid_target) - map.get_distance(valid_target, cell_position) + 1
+		if target_location == null or target_value > current_value:
 			target_location = valid_target
-			current_best_value = target_value
+			current_value = target_value
 
 func is_valid_target(cell: Vector2i, _extra = null):
-	return evaluate_for_buildings(cell) > 0
+	return evaluate_for_buildings(cell) > evaluate_for_buildings(cell_position)
 
 func evaluate_for_buildings(cell: Vector2i):
 	var value = 0
 	for diff in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]:
-		value += map.get_building_progress(cell + diff)
-	return value
+		if map.get_building_progress(cell + diff) > 0:
+			value += 1
+	return min(3, value)
 
 func is_good_death_spot(cell: Vector2i, _extra):
 	var value = 0
