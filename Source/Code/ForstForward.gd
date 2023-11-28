@@ -60,7 +60,7 @@ func _input(event):
 			if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 				set_game_state(GameState.main_menu)
 			elif (event is InputEventKey or (event is InputEventMouseButton and not event.button_index == MOUSE_BUTTON_LEFT)) and event.pressed:
-				if $Map.current_phase == $Map.Phase.idle:
+				if $Map.advancement.current_phase == $Map.advancement.Phase.idle:
 					set_game_state(GameState.playing)
 		
 		GameState.playing:
@@ -111,14 +111,14 @@ func update_highlight():
 		update_highlight_color()
 
 func update_hightlight_visibility():
-	if current_map_position != null and $Map.is_valid_tile(current_map_position) and game_state == GameState.playing and $Map.current_phase == $Map.Phase.idle:
+	if current_map_position != null and $Map.is_valid_tile(current_map_position) and game_state == GameState.playing and $Map.advancement.current_phase == $Map.advancement.Phase.idle:
 		$Map/CellHighlight.visible = true
 	else:
 		$Map/CellHighlight.visible = false
 
 func update_highlight_position():
 	update_highlight_color()
-	if $Map.is_valid_tile(current_map_position) and game_state == GameState.playing and $Map.current_phase == $Map.Phase.idle:
+	if $Map.is_valid_tile(current_map_position) and game_state == GameState.playing and $Map.advancement.current_phase == $Map.advancement.Phase.idle:
 		$Map/CellHighlight.position.x = current_map_position.x * $Map.tile_set.tile_size.x
 		$Map/CellHighlight.position.y = current_map_position.y * $Map.tile_set.tile_size.y
 
@@ -339,7 +339,7 @@ func unlock_selection():
 	$Sidebar/InGameUI/BottomOption.set_focus_mode(Control.FOCUS_ALL)
 
 func skip_round():
-	if $Map.current_phase == $Map.Phase.idle:
+	if $Map.advancement.current_phase == $Map.advancement.Phase.idle:
 		$Sidebar/InGameUI/TopOption.disabled = true
 		$Sidebar/InGameUI/BottomOption.disabled = true
 		advance()
@@ -361,16 +361,16 @@ func advance():
 		$Sidebar/InGameUI/BottomOption.set_focus_mode(Control.FOCUS_NONE)
 		$Sidebar/InGameUI/BottomOption/Label.text = ""
 		$Sidebar/InGameUI/BottomOption/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
-		$Map.advance()
+		$Map.advancement.start()
 
 func _on_map_score_changed():
 	update_score()
 
-func _on_map_advancement_step_done():
+func _on_advancement_step_done():
 	update_score()
 	update_numbers()
 
-func _on_map_advancement_done():
+func _on_advancement_done():
 	start_next_round()
 
 func start_next_round():

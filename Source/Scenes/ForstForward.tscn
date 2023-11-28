@@ -1,4 +1,4 @@
-[gd_scene load_steps=119 format=3 uid="uid://vsbq62808p6r"]
+[gd_scene load_steps=120 format=3 uid="uid://vsbq62808p6r"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://dsqtm2uwekqqh" path="res://Sounds/Mid.wav" id="5_o16hq"]
 [ext_resource type="AudioStream" uid="uid://id7di46s4g3d" path="res://Sounds/LowWood.wav" id="6_ybxwl"]
 [ext_resource type="Texture2D" uid="uid://dqiy4yeveobu2" path="res://Images/Tiles/Plains.png" id="7_gswc0"]
+[ext_resource type="Script" path="res://Code/Advancement.gd" id="7_xxdmg"]
 [ext_resource type="PackedScene" uid="uid://204iv18oep35" path="res://Scenes/Villager.tscn" id="8_kr2na"]
 [ext_resource type="Texture2D" uid="uid://c2kj8qomwkvw8" path="res://Images/Tiles/Growth.png" id="8_rvm20"]
 [ext_resource type="Texture2D" uid="uid://d1qg7dksiud0w" path="res://Images/Tiles/Forest.png" id="9_s63f6"]
@@ -286,31 +287,33 @@ LightningStrike = ExtResource("25_g2uic")
 Blast = ExtResource("23_fm4bp")
 GrowthEffect = ExtResource("24_hbdlb")
 
-[node name="Timer" type="Timer" parent="Map"]
-wait_time = 0.25
-one_shot = true
+[node name="Advancement" type="Node" parent="Map"]
+script = ExtResource("7_xxdmg")
 
-[node name="AdvancementStart" type="AudioStreamPlayer" parent="Map"]
+[node name="Timer" type="Timer" parent="Map/Advancement"]
+wait_time = 0.25
+
+[node name="AdvancementStart" type="AudioStreamPlayer" parent="Map/Advancement"]
 stream = ExtResource("4_a7wmd")
 
-[node name="DruidStart" type="AudioStreamPlayer" parent="Map"]
+[node name="DruidStart" type="AudioStreamPlayer" parent="Map/Advancement"]
 stream = ExtResource("24_p5qfq")
 
-[node name="DruidAdvance" type="AudioStreamPlayer" parent="Map"]
+[node name="DruidAdvance" type="AudioStreamPlayer" parent="Map/Advancement"]
 stream = ExtResource("25_ayc6w")
 volume_db = -5.0
 
-[node name="GrowthStart" type="AudioStreamPlayer" parent="Map"]
+[node name="GrowthStart" type="AudioStreamPlayer" parent="Map/Advancement"]
 stream = ExtResource("26_e3qfq")
 
-[node name="GrowthAdvance" type="AudioStreamPlayer" parent="Map"]
+[node name="GrowthAdvance" type="AudioStreamPlayer" parent="Map/Advancement"]
 stream = ExtResource("27_f1rrp")
 volume_db = -5.0
 
-[node name="HorstStart" type="AudioStreamPlayer" parent="Map"]
+[node name="HorstStart" type="AudioStreamPlayer" parent="Map/Advancement"]
 stream = ExtResource("28_hswee")
 
-[node name="HorstAdvance" type="AudioStreamPlayer" parent="Map"]
+[node name="HorstAdvance" type="AudioStreamPlayer" parent="Map/Advancement"]
 stream = ExtResource("29_opsn4")
 volume_db = -7.0
 
@@ -1689,11 +1692,11 @@ texture_normal = ExtResource("62_y5gb0")
 texture_pressed = ExtResource("63_hkoqk")
 stretch_mode = 0
 
-[connection signal="advancement_done" from="Map" to="." method="_on_map_advancement_done"]
-[connection signal="advancement_step_done" from="Map" to="." method="_on_map_advancement_step_done"]
 [connection signal="score_changed" from="Map" to="." method="_on_map_score_changed"]
 [connection signal="transition_done" from="Map" to="." method="_on_map_transition_done"]
-[connection signal="timeout" from="Map/Timer" to="Map" method="_on_timer_timeout"]
+[connection signal="advancement_done" from="Map/Advancement" to="." method="_on_advancement_done"]
+[connection signal="advancement_step_done" from="Map/Advancement" to="." method="_on_advancement_step_done"]
+[connection signal="timeout" from="Map/Advancement/Timer" to="Map/Advancement" method="_on_timer_timeout"]
 [connection signal="pressed" from="MapOverlay/MainMenu/ToLevelSelection" to="." method="_on_to_level_selection_pressed"]
 [connection signal="pressed" from="MapOverlay/MainMenu/Exit" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="MapOverlay/LevelSelection/StartGame" to="." method="_on_start_game_pressed"]

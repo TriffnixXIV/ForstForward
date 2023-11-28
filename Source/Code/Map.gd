@@ -12,14 +12,10 @@ var transition_info = []
 var horizontal_forest_edges = []
 var vertical_forest_edges = []
 
-var still_acting: bool = false
-
 @export var Villager: PackedScene
 var villagers: Array[Villager] = []
 var homeless_villagers = []
 var home_cell_villager_map = {}
-var done_villager_count = 0
-var all_villagers_are_done_with_this_step = false
 
 @export var Druid: PackedScene
 var druids: Array[Druid] = []
@@ -108,17 +104,17 @@ var trees_from_treantlings: int = 0
 var cell_labels: Array[Array]
 var cell_tree_distance_map: Array[Array]
 
-enum Phase {transitioning, idle, starting, druids, growth, villagers}
-var current_phase = Phase.idle
+var advancement: Advancement
 
 signal transition_done
 signal score_changed
-signal advancement_step_done
-signal advancement_done
 
 func _ready():
 	super._ready()
 	reset_upgrades()
+	
+	advancement = $Advancement
+	advancement.map = self
 	
 	crystal_manager = CrystalManager.new(self)
 	highest_possible_score = width * height * 10
@@ -153,8 +149,8 @@ func _process(delta):
 			if is_house(data[1]):
 				spawn_villager(data[1])
 		update_forest_edges()
-	elif current_phase == Phase.transitioning:
-		current_phase = Phase.idle
+	elif advancement.current_phase == advancement.Phase.transitioning:
+		advancement.current_phase = advancement.Phase.idle
 		
 		if len(villagers) > 0:
 			var horst_exists = false
@@ -200,7 +196,7 @@ func load_level(level_number: int):
 				)
 	
 	transition_info.shuffle()
-	current_phase = Phase.transitioning
+	advancement.current_phase = advancement.Phase.transitioning
 
 func set_level(level_number: int):
 	current_level = level_number
@@ -226,18 +222,18 @@ func clear_level():
 				)
 	
 	transition_info.shuffle()
-	current_phase = Phase.transitioning
+	advancement.current_phase = advancement.Phase.transitioning
 
 func stop():
-	$Timer.stop()
+	advancement.stop()
 	growth_boost = 0
 	set_rain(0)
 	frost_boost = 0
 	update_frost_overlay()
-	current_phase = Phase.idle
+	advancement.current_phase = advancement.Phase.idle
 
 func reset():
-	$Timer.stop()
+	advancement.stop()
 	transition_progress = 0.0
 	transition_info = []
 	
@@ -253,19 +249,11 @@ func reset():
 	for villager in villagers:
 		villager.reset()
 	
-	for druid in druids:
-		remove_child(druid)
-		druid.queue_free()
+	for creature in druids + treants + treantlings:
+		remove_child(creature)
+		creature.queue_free()
 	druids = []
-	
-	for treant in treants:
-		remove_child(treant)
-		treant.queue_free()
 	treants = []
-	
-	for treantling in treantlings:
-		remove_child(treantling)
-		treantling.queue_free()
 	treantlings = []
 	
 	crystal_manager.reset()
@@ -354,134 +342,6 @@ func update_horizontal_edge(edge_position: Vector2i):
 			var instance = vertical_forest_edges[edge_position.y][edge_position.x]
 			instance.queue_free()
 			vertical_forest_edges[edge_position.y][edge_position.x] = null
-
-# map update stuff
-
-func advance():
-	$AdvancementStart.play()
-	current_phase = Phase.starting
-	$Timer.start()
-	crystal_manager.advance()
-
-func start_druid_phase():
-	if len(druids) == 0 and len(treantlings) == 0 and len(treants) == 0:
-		start_growth_phase()
-	else:
-		$DruidStart.play()
-		still_acting = true
-		current_phase = Phase.druids
-		
-		for druid in druids:
-			druid.prepare_turn(druid_actions)
-			druid.set_circle_trees(druid_circle_trees)
-		
-		for treant in treants:
-			treant.prepare_turn(treant_actions)
-			treant.set_death_spread(treant_death_spread)
-		
-		for treantling in treantlings:
-			treantling.prepare_turn(treantling_actions)
-			treantling.set_stomp_strength(treantling_strength)
-			treantling.set_death_spread(treantling_death_spread)
-		
-		$Timer.start()
-
-func advance_druid_phase():
-	$DruidAdvance.play()
-	still_acting = false
-	for druid in druids:
-		still_acting = druid.act() or still_acting
-	for treant in treants:
-		still_acting = treant.act() or still_acting
-	for treantling in treantlings:
-		still_acting = treantling.act() or still_acting
-	$Timer.start()
-
-func start_growth_phase():
-	$GrowthStart.play()
-	current_phase = Phase.growth
-	remaining_growth_stages = get_growth_stages()
-	$Timer.start()
-
-func advance_growth_phase():
-	$GrowthAdvance.play()
-	var growth_amounts: Dictionary = {}
-	for x in width:
-		for y in height:
-			if is_forest(Vector2i(x, y)):
-				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-					var cell = Vector2i(x, y) + diff
-					if cell in growth_amounts:
-						growth_amounts[cell] += 1
-					else:
-						growth_amounts[cell] = 1
-	
-	for cell in growth_amounts:
-		var previous_yield = get_yield(cell)
-		increase_yield(cell, growth_amounts[cell])
-		grown_trees += get_yield(cell) - previous_yield
-	
-	update_forest_edges()
-	remaining_growth_stages -= 1
-	total_growth_stages += 1
-	$Timer.start()
-
-func start_villager_phase():
-	$HorstStart.play()
-	done_villager_count = 0
-	current_phase = Phase.villagers
-	var action_loss = get_coldness()
-	for villager in villagers:
-		actions_lost_to_frost += min(villager_actions, action_loss)
-		villager.prepare_turn(villager_actions - action_loss)
-	update_cell_tree_distance_map()
-	all_villagers_are_done_with_this_step = true
-	$Timer.start()
-
-func advance_villager_phase():
-	$HorstAdvance.play()
-	all_villagers_are_done_with_this_step = false
-	$Timer.start()
-	for villager in villagers:
-		villager.act()
-	all_villagers_are_done_with_this_step = true
-	advance_phase()
-
-func _on_villager_done_acting():
-	done_villager_count += 1
-
-func _on_timer_timeout():
-	advance_phase()
-
-func advance_phase():
-	emit_signal("advancement_step_done")
-	match current_phase:
-		Phase.starting:
-			start_druid_phase()
-		Phase.druids:
-			if still_acting:
-				advance_druid_phase()
-			else:
-				start_growth_phase()
-		Phase.growth:
-			if remaining_growth_stages > 0:
-				advance_growth_phase()
-			else:
-				start_villager_phase()
-		Phase.villagers:
-			if $Timer.is_stopped() and all_villagers_are_done_with_this_step:
-				if done_villager_count < len(villagers):
-					advance_villager_phase()
-				else:
-					done_villager_count = 0
-					finish_advancement()
-
-func finish_advancement():
-	current_phase = Phase.idle
-	growth_boost = max(0, floori(0.5 * growth_boost))
-	advance_rain()
-	advance_frost()
-	emit_signal("advancement_done")
 
 # miscellaneous advancement stuff
 
@@ -706,7 +566,7 @@ func spawn_villager(cell_position: Vector2i):
 	villager.home_cell = cell_position
 	villager.map = self
 	villager.update_position()
-	villager.connect("done_acting", _on_villager_done_acting)
+	villager.connect("done_acting", advancement._on_villager_done_acting)
 	
 	home_cell_villager_map[cell_position] = villager
 	villagers.append(villager)
@@ -714,7 +574,7 @@ func spawn_villager(cell_position: Vector2i):
 	
 	add_child(villager)
 	
-	if not current_phase == Phase.transitioning:
+	if not advancement.current_phase == advancement.Phase.transitioning:
 		born_villagers += 1
 	highest_villager_count = max(highest_villager_count, len(villagers))
 
@@ -730,7 +590,7 @@ func despawn_villager(villager: Villager, also_horst: bool = true):
 		homeless_villagers.erase(villager)
 		remove_child(villager)
 		villager.queue_free()
-		if not current_phase == Phase.transitioning:
+		if not advancement.current_phase == advancement.Phase.transitioning:
 			dead_villagers += 1
 	else:
 		homeless_villagers.append(villager)

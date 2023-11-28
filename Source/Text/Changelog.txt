@@ -1,4 +1,8 @@
 Gameplay:
+	- advancement steps
+		- now occur more on-time than before (every 0.25 seconds, there were some deviations before)
+		- most deviations appear to have been slowing advancement steps down, so the game got a little faster
+			(some low-accuracy measurements indicate that the previous average step time was about ~0.266 seconds instead)
 	- crystals
 		- the crystals that are grown by an action are not randomly chosen anymore
 		- now, 2 crystal growth is distributed so that as many crystals as possible are completed with the next growth step
@@ -15,7 +19,7 @@ Gameplay:
 		- now prioritizes buildings that are closer to being destroyed
 
 Bug fixes & QoL:
-	--
+	- fixed: removed the standalone "for each" when lightning does not cost rain
 
 UI:
 	- druid circles are drawn below the background again

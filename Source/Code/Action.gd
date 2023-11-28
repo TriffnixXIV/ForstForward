@@ -120,7 +120,8 @@ func get_text():
 		Type.lightning_strike:
 			var rain_text = "rain " + str(-cost) if cost > 0 else "rain +" + str(-cost) if cost < 0 else ""
 			if clicks > 1:
-				return "summon " + str(clicks) + " lightning strikes" + progress_text + "\n" + rain_text + " for each"
+				if rain_text != "": rain_text += " for each"
+				return "summon " + str(clicks) + " lightning strikes" + progress_text + "\n" + rain_text
 			else:
 				return "summon a lightning strike" + "\n" + rain_text
 
