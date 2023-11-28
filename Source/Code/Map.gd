@@ -39,7 +39,7 @@ var crystal_manager: CrystalManager
 var highest_possible_score: int
 
 var base_villager_actions = 12
-var base_treant_actions = 8
+var base_treant_actions = 6
 var base_treant_has_lifespan = false
 var base_treant_lifespan = 40
 var base_treant_death_spread = 20

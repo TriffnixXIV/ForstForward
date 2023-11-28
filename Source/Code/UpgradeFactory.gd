@@ -58,7 +58,7 @@ func get_available_upgrades(type: Crystal.Type):
 							Upgrade.new(UT.treant, UA.actions, map.treant_actions + 2, map.treant_actions))
 					
 					available_upgrades.append(
-						Upgrade.new(UT.treant, UA.lifespan, map.treant_actions + 8, map.treant_actions, [5 * (map.treant_actions + 8)]))
+						Upgrade.new(UT.treant, UA.lifespan, map.treant_actions * 2, map.treant_actions, [5 * (map.treant_actions * 2)]))
 					
 				else:
 					if total_life_upgrades >= map.treant_actions:

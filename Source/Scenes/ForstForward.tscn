@@ -364,6 +364,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MaskedBackground" type="Sprite2D" parent="."]
+z_index = 2
 texture = ExtResource("27_7p77l")
 centered = false
 

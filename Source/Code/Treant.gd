@@ -20,7 +20,7 @@ func act():
 	if actions <= 0:
 		return false
 	
-	if target_location == null or target_location == cell_position or map.get_building_progress(target_location) == 0:
+	if target_location == null or target_location == cell_position or not is_valid_target(target_location):
 		update_target_location()
 	
 	if target_location != null:
@@ -42,14 +42,8 @@ func stomp():
 		var cell = cell_position + diff
 		var damage = map.get_building_progress(cell)
 		var growth = map.get_yield(cell)
-		var value = damage + floori((10 - growth) / 4.0)
+		var value = min(9, damage + floori((10 - growth) / 4.0))
 		map.trees_from_treants += map.increase_yield(cell, value)
-		if damage >= 10:
-			actions -= 1
-			if lifespan > 0: lifespan_left -= 1
-		elif damage > 0:
-			actions -= 0.5
-			if lifespan > 0: lifespan_left -= 0.5
 	map.deaths_to_treants += previous_villager_amount - len(map.villagers)
 
 func set_death_spread(amount: int):
@@ -86,7 +80,7 @@ func update_target_location():
 			target_location = valid_target
 			current_best_value = target_value
 
-func is_valid_target(cell: Vector2i, _extra):
+func is_valid_target(cell: Vector2i, _extra = null):
 	return evaluate_for_buildings(cell) > 0
 
 func evaluate_for_buildings(cell: Vector2i):

@@ -2,6 +2,8 @@ Mechanics:
 	- add sand and water for more map variety (high prio)
 		- sand does not allow trees to grow
 		- water does not allow trees to grow and costs 4x the movement
+	- druid:
+		- rebrand as growth sprite with lifespan
 	- overgrowing houses instead of de-building them (undecided)
 		overgrown houses count as forest and need less steps to recover than currently
 	- maybe replace weight-based random action generation with deck-like drawable actions (undecided)
@@ -12,6 +14,8 @@ Bug fixes & QoL:
 
 UI:
 	- add info tab (high prio)
+	- make a dedicated Discord (mid prio)
+	- add links to main menu (Itch, GitHub, Wiki, Discord)
 	- re-order: (undecided)
 		- centered map
 		- options below

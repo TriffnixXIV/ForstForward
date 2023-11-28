@@ -1,6 +1,6 @@
 extends Node2D
 
-var version = "v9"
+var version = "v10 dev"
 
 var current_round = 1
 var score = 0
