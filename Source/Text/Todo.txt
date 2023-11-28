@@ -1,7 +1,4 @@
 Mechanics:
-	- crystals:
-		- always increase the highest matching crystal by 2, not a random one
-		- increase all other matching crystals by 1, not one random one
 	- add sand and water for more map variety (high prio)
 		- sand does not allow trees to grow
 		- water does not allow trees to grow and costs 4x the movement

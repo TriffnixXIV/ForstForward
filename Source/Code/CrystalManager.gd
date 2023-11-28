@@ -38,16 +38,15 @@ func add_progress(crystal_type: Crystal.Type, amount: int):
 			crystals_with_type.append(crystal)
 	
 	if crystals_with_type != []:
-		crystals_with_type.shuffle()
-		var i = 0
-		while amount > 0:
-			var crystal = crystals_with_type[i]
-			crystal.grow(amount)
-			amount -= 1
-			i += 1
-			if i >= len(crystals_with_type):
-				crystals_with_type.shuffle()
-				i = 0
+		crystals_with_type.sort_custom(func(a, b): return a.progress > b.progress)
+		
+		for crystal in crystals_with_type:
+			var growth = clampi(7 - crystal.progress, 0, amount)
+			crystal.grow(growth)
+			amount -= growth
+		
+		if amount > 0:
+			crystals_with_type[0].grow(amount)
 	
 	spawn_chances[crystal_type] += 0.02
 

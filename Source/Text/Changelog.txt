@@ -1,11 +1,18 @@
 Gameplay:
+	- crystals
+		- the crystals that are grown by an action are not randomly chosen anymore
+		- now, 2 crystal growth is distributed so that as many crystals as possible are completed with the next growth step
+			- example: if one crystal is at 5/8 and another at 2/8, the 5er is grown to 7.
+			- example 2: if two crystals are at 6/8 and another at 2/8, both 6ers are grown to 7.
+				- not to 8, because 1 growth will be given by the next growth step anyways.
+			- in other words: as many crystals as possible are brought as close to 7/8 as possible.
 	- treant
 		- stomping buildings no longer costs actions
 		- now only does 6 damage per action per tile, instead of 10
 			- this way, treants show some more interesting behaviour
 		- simplified target evaluation
 	- treantling
-		- now prioritize buildings that are closer to being destroyed
+		- now prioritizes buildings that are closer to being destroyed
 
 Bug fixes & QoL:
 	--
