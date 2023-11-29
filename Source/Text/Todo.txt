@@ -17,8 +17,6 @@ Sounds:
 
 Visuals:
 	- distinguish different crystals through shape
-	- add VFX after using an action or upgrade
-	- add VFX to crystals on growth and consumption
 
 UI:
 	- add info when hovering stuff (high prio)

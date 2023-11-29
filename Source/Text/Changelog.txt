@@ -27,3 +27,4 @@ Sounds:
 Visuals:
 	- druid circles are drawn below the background again
 	- when choosing an upgrade or finishing an action, the corresponding button now flashes its sparks
+	- crystals now have sparks that show when the crystal is fully grown and currently the source for an upgrade

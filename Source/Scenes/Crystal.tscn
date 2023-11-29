@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bcdc607uvvqyb"]
+[gd_scene load_steps=18 format=3 uid="uid://bcdc607uvvqyb"]
 
 [ext_resource type="Script" path="res://Code/Crystal.gd" id="1_aiyvn"]
 [ext_resource type="Texture2D" uid="uid://duc45v1chfkqu" path="res://Images/Crystals/CrystalYellow0.png" id="2_rluak"]
@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://cwnyu2pa1dajm" path="res://Images/Crystals/CrystalBlue2.png" id="14_nc8ad"]
 [ext_resource type="Texture2D" uid="uid://c12w6kn125hpr" path="res://Images/Crystals/CrystalBlue3.png" id="15_edtxd"]
 [ext_resource type="Texture2D" uid="uid://c82bnqhtjhkwq" path="res://Images/Crystals/CrystalBlueFull.png" id="16_1d6ba"]
+[ext_resource type="Texture2D" uid="uid://fk8i61cepr3y" path="res://Images/Crystals/SparksBlue.png" id="17_mhc2i"]
 
 [node name="Crystal" type="Node2D"]
 script = ExtResource("1_aiyvn")
@@ -23,6 +24,16 @@ life_crystal_stages = Array[Texture2D]([ExtResource("2_rluak"), ExtResource("3_1
 growth_crystal_stages = Array[Texture2D]([ExtResource("7_4u5eq"), ExtResource("8_a4465"), ExtResource("9_jf8ov"), ExtResource("10_xdpea"), ExtResource("11_8iqn2")])
 weather_crystal_stages = Array[Texture2D]([ExtResource("12_bjrmd"), ExtResource("13_mdp4h"), ExtResource("14_nc8ad"), ExtResource("15_edtxd"), ExtResource("16_1d6ba")])
 
+[node name="Sparks" type="Sprite2D" parent="."]
+position = Vector2(-20, -20)
+texture = ExtResource("17_mhc2i")
+centered = false
+
+[node name="Timer" type="Timer" parent="Sparks"]
+wait_time = 0.25
+
 [node name="Sprite" type="Sprite2D" parent="."]
 texture = ExtResource("12_bjrmd")
 centered = false
+
+[connection signal="timeout" from="Sparks/Timer" to="." method="_on_timer_timeout"]

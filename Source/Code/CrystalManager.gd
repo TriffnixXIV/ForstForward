@@ -133,8 +133,7 @@ func spawn_crystal(cell_position: Vector2i, type: Crystal.Type):
 	
 	crystal.map = map
 	crystal.cell_position = cell_position
-	crystal.type = type
-	crystal.update_texture()
+	crystal.set_type(type)
 	crystals.append(crystal)
 	cell_crystal_map[cell_position] = crystal
 
@@ -147,9 +146,7 @@ func crystal_has_cracked(crystal: Crystal):
 	crystal.queue_free()
 
 func claim_crystal():
-	var crystal: Crystal = fully_grown_crystals.pop_front()
-	crystal.harvest()
-	return crystal.type
+	return fully_grown_crystals.pop_front()
 
 func forest_died_at(cell_position: Vector2i):
 	if cell_position in cell_crystal_map:

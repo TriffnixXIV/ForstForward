@@ -12,6 +12,8 @@ var action_factory: ActionFactory = ActionFactory.new()
 var top_action: Action = Action.new()
 var bottom_action: Action = Action.new()
 
+var crystal: Crystal
+
 var upgrade_factory: UpgradeFactory = UpgradeFactory.new()
 var top_upgrade: Upgrade = Upgrade.new()
 var bottom_upgrade: Upgrade = Upgrade.new()
@@ -212,10 +214,17 @@ func set_game_state(state: GameState):
 
 func next_turn_step():
 	update_UI()
+	
 	if $Sidebar/InGameUI/BottomOption.has_focus():
 		$Sidebar/InGameUI/BottomOption.release_focus()
 	if $Sidebar/InGameUI/TopOption.has_focus():
 		$Sidebar/InGameUI/TopOption.release_focus()
+	
+	if crystal != null:
+		crystal.set_spark_state(Crystal.SparkState.fading)
+		crystal.harvest()
+		crystal = null
+	
 	if len($Map.crystal_manager.fully_grown_crystals) > 0:
 		upgrading = true
 		next_upgrades()
@@ -224,18 +233,19 @@ func next_turn_step():
 		next_actions()
 
 func next_upgrades():
-	var crystal_type = $Map.crystal_manager.claim_crystal()
-	var new_upgrades = upgrade_factory.get_upgrades(crystal_type)
+	crystal = $Map.crystal_manager.claim_crystal()
+	crystal.set_spark_state(Crystal.SparkState.active)
+	var new_upgrades = upgrade_factory.get_upgrades(crystal.type)
 	
 	top_upgrade.set_upgrade(new_upgrades[0])
 	bottom_upgrade.set_upgrade(new_upgrades[1])
 	
 	$Sidebar/InGameUI/TopOption/Label.text = top_upgrade.get_text()
 	$Sidebar/InGameUI/TopOption/Sparks.set_modulate_alpha(0.5)
-	$Sidebar/InGameUI/TopOption/Sparks.set_crystal(crystal_type)
+	$Sidebar/InGameUI/TopOption/Sparks.set_crystal(crystal.type)
 	$Sidebar/InGameUI/BottomOption/Label.text = bottom_upgrade.get_text()
 	$Sidebar/InGameUI/BottomOption/Sparks.set_modulate_alpha(0.5)
-	$Sidebar/InGameUI/BottomOption/Sparks.set_crystal(crystal_type)
+	$Sidebar/InGameUI/BottomOption/Sparks.set_crystal(crystal.type)
 
 func next_actions():
 	var new_actions = action_factory.get_actions()
