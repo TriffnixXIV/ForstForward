@@ -1,4 +1,4 @@
-[gd_scene load_steps=120 format=3 uid="uid://vsbq62808p6r"]
+[gd_scene load_steps=116 format=3 uid="uid://vsbq62808p6r"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -76,11 +76,7 @@
 [ext_resource type="Texture2D" uid="uid://ds1gxf71eg7jm" path="res://Images/MuteButton/MuteButton.png" id="62_y5gb0"]
 [ext_resource type="Texture2D" uid="uid://cyjstqtiplehm" path="res://Images/MuteButton/MuteButtonPressed.png" id="63_hkoqk"]
 [ext_resource type="Texture2D" uid="uid://c82bnqhtjhkwq" path="res://Images/Crystals/CrystalBlueFull.png" id="63_vtxh1"]
-[ext_resource type="Script" path="res://Code/ButtonSparks.gd" id="67_75gqh"]
-[ext_resource type="Texture2D" uid="uid://b6bd7bg0wfhx2" path="res://Images/OptionButton/GreenSparks.png" id="68_bs5cj"]
-[ext_resource type="Texture2D" uid="uid://clagadh0qvmfo" path="res://Images/OptionButton/BlueSparks.png" id="69_d0ki3"]
-[ext_resource type="Texture2D" uid="uid://i6ojj323noyv" path="res://Images/OptionButton/PurpleSparks.png" id="70_ce7ok"]
-[ext_resource type="Texture2D" uid="uid://bf5kaeg2x1e1l" path="res://Images/OptionButton/YellowSparks.png" id="71_11sbm"]
+[ext_resource type="PackedScene" uid="uid://b81j3drpu4b3g" path="res://Scenes/ButtonSparks.tscn" id="77_axurg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ufopn"]
 texture = ExtResource("7_gswc0")
@@ -1560,18 +1556,9 @@ texture_hover = ExtResource("52_bcv0s")
 texture_disabled = ExtResource("53_g8171")
 texture_focused = ExtResource("54_ndqc2")
 
-[node name="Sparks" type="TextureRect" parent="Sidebar/InGameUI/TopOption"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("67_75gqh")
-green_spark_texture = ExtResource("68_bs5cj")
-blue_spark_texture = ExtResource("69_d0ki3")
-purple_spark_texture = ExtResource("70_ce7ok")
-yellow_spark_texture = ExtResource("71_11sbm")
+[node name="Sparks" parent="Sidebar/InGameUI/TopOption" instance=ExtResource("77_axurg")]
+layout_mode = 0
+anchors_preset = 0
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/TopOption"]
 layout_mode = 1
@@ -1610,20 +1597,8 @@ texture_hover = ExtResource("52_bcv0s")
 texture_disabled = ExtResource("53_g8171")
 texture_focused = ExtResource("54_ndqc2")
 
-[node name="Sparks" type="TextureRect" parent="Sidebar/InGameUI/BottomOption"]
+[node name="Sparks" parent="Sidebar/InGameUI/BottomOption" instance=ExtResource("77_axurg")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-flip_h = true
-flip_v = true
-script = ExtResource("67_75gqh")
-green_spark_texture = ExtResource("68_bs5cj")
-blue_spark_texture = ExtResource("69_d0ki3")
-purple_spark_texture = ExtResource("70_ce7ok")
-yellow_spark_texture = ExtResource("71_11sbm")
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/BottomOption"]
 layout_mode = 1

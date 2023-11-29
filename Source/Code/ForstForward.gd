@@ -230,26 +230,21 @@ func next_upgrades():
 	top_upgrade.set_upgrade(new_upgrades[0])
 	bottom_upgrade.set_upgrade(new_upgrades[1])
 	
-	var spark_color = null
-	match crystal_type:
-		Crystal.Type.life:		spark_color = ButtonSparks.SparkColor.yellow
-		Crystal.Type.growth:	spark_color = ButtonSparks.SparkColor.green
-		Crystal.Type.weather:	spark_color = ButtonSparks.SparkColor.blue
-	
 	$Sidebar/InGameUI/TopOption/Label.text = top_upgrade.get_text()
-	$Sidebar/InGameUI/TopOption/Sparks.visible = true
-	$Sidebar/InGameUI/TopOption/Sparks.set_color(spark_color)
+	$Sidebar/InGameUI/TopOption/Sparks.set_modulate_alpha(0.5)
+	$Sidebar/InGameUI/TopOption/Sparks.set_crystal(crystal_type)
 	$Sidebar/InGameUI/BottomOption/Label.text = bottom_upgrade.get_text()
-	$Sidebar/InGameUI/BottomOption/Sparks.visible = true
-	$Sidebar/InGameUI/BottomOption/Sparks.set_color(spark_color)
+	$Sidebar/InGameUI/BottomOption/Sparks.set_modulate_alpha(0.5)
+	$Sidebar/InGameUI/BottomOption/Sparks.set_crystal(crystal_type)
 
 func next_actions():
 	var new_actions = action_factory.get_actions()
 	
 	top_action.set_action(new_actions[0])
 	bottom_action.set_action(new_actions[1])
-	$Sidebar/InGameUI/TopOption/Sparks.visible = false
-	$Sidebar/InGameUI/BottomOption/Sparks.visible = false
+	
+	$Sidebar/InGameUI/TopOption/Sparks.set_modulate_alpha(0.0)
+	$Sidebar/InGameUI/BottomOption/Sparks.set_modulate_alpha(0.0)
 
 func update_top_action_text():
 	$Sidebar/InGameUI/TopOption/Label.text = top_action.get_full_text()
@@ -268,6 +263,7 @@ func _on_bottom_option_pressed():
 func enact_top_option():
 	if not $Sidebar/InGameUI/TopOption.disabled:
 		if upgrading:
+			$Sidebar/InGameUI/TopOption/Sparks.flash()
 			apply_upgrade(top_upgrade)
 		else:
 			if not $Sidebar/InGameUI/TopOption.has_focus():
@@ -277,6 +273,7 @@ func enact_top_option():
 func enact_bottom_option():
 	if not $Sidebar/InGameUI/BottomOption.disabled:
 		if upgrading:
+			$Sidebar/InGameUI/BottomOption/Sparks.flash()
 			apply_upgrade(bottom_upgrade)
 		else:
 			if not $Sidebar/InGameUI/BottomOption.has_focus():
@@ -348,6 +345,13 @@ func advance():
 	lock_selection(true)
 	if selected_action != null:
 		$Map.crystal_manager.add_progress(selected_action.get_crystal_type(), 2)
+		match selected_action:
+			top_action:
+				$Sidebar/InGameUI/TopOption/Sparks.set_crystal(top_action.get_crystal_type())
+				$Sidebar/InGameUI/TopOption/Sparks.flash()
+			bottom_action:
+				$Sidebar/InGameUI/BottomOption/Sparks.set_crystal(bottom_action.get_crystal_type())
+				$Sidebar/InGameUI/BottomOption/Sparks.flash()
 	
 	selected_action = null
 	

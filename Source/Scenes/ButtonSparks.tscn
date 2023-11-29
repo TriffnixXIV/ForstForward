@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://b81j3drpu4b3g"]
+
+[ext_resource type="Script" path="res://Code/ButtonSparks.gd" id="1_3xalk"]
+[ext_resource type="Texture2D" uid="uid://b6bd7bg0wfhx2" path="res://Images/OptionButton/GreenSparks.png" id="2_rur68"]
+[ext_resource type="Texture2D" uid="uid://clagadh0qvmfo" path="res://Images/OptionButton/BlueSparks.png" id="3_6r4i8"]
+[ext_resource type="Texture2D" uid="uid://i6ojj323noyv" path="res://Images/OptionButton/PurpleSparks.png" id="4_t6m65"]
+[ext_resource type="Texture2D" uid="uid://bf5kaeg2x1e1l" path="res://Images/OptionButton/YellowSparks.png" id="5_8fx2j"]
+
+[node name="Sparks" type="TextureRect"]
+modulate = Color(1, 1, 1, 0.501961)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3xalk")
+green_spark_texture = ExtResource("2_rur68")
+blue_spark_texture = ExtResource("3_6r4i8")
+purple_spark_texture = ExtResource("4_t6m65")
+yellow_spark_texture = ExtResource("5_8fx2j")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
