@@ -24,9 +24,9 @@ var target_wood_source
 var target_build_site
 var target_building_spot
 
-var has_signaled_inaction = false
-
-signal done_acting
+signal moved
+signal chopped_tree
+signal built_house
 
 func reset():
 	state = State.idle
@@ -35,7 +35,6 @@ func reset():
 	carried_wood = 0
 	
 	actions = 0
-	has_signaled_inaction = false
 	
 	cell_position = home_cell
 	update_position()
@@ -49,30 +48,25 @@ func reset():
 		unget_real()
 
 func prepare_turn(action_amount: int):
-	has_signaled_inaction = false
 	actions = action_amount
+
+func end_turn():
+	if is_devil:
+		current_blast_cooldown = max(0, current_blast_cooldown - 1)
+		update_sparks()
 
 func act():
 	if actions <= 0:
-		if not has_signaled_inaction:
-			has_signaled_inaction = true
-			emit_signal("done_acting")
-			
-			if is_devil:
-				current_blast_cooldown = max(0, current_blast_cooldown - 1)
-				update_sparks()
-		return null
+		return false
 	
 	update_state()
 	
-	# action space
 	match state:
 		State.getting_wood:
 			if get_distance_to(target_location) > 1:
 				move(target_location, 1)
 			else:
-				carried_wood += 1
-				map.felled_trees -= map.decrease_yield(target_wood_source, 1)
+				chop_tree(target_location)
 		
 		State.building:
 			if get_distance_to(target_location) > 1:
@@ -80,21 +74,18 @@ func act():
 			elif map.get_building_progress(target_location) < 10:
 				if map.get_yield(target_location) > 0:
 					if can_blast() and wants_to_blast(target_location):
-						map.blast_with_fire(target_location)
-						current_blast_cooldown = blast_cooldown
-						update_sparks()
+						blast(target_location)
 					else:
-						carried_wood += 1
-						map.increase_building_progress(target_location, 1)
+						chop_tree(target_location)
 				else:
-					carried_wood -= 1
-					map.increase_building_progress(target_location, 1)
+					build_house(target_location)
 		
 		State.idle:
 			if home_cell != null:
 				move(home_cell, 0)
 	
 	actions -= 1
+	return actions > 0
 
 func update_state():
 	set_state(state)
@@ -129,6 +120,21 @@ func set_state(new_state: State):
 						state = State.idle
 			else:
 				set_state(State.getting_wood)
+
+func chop_tree(cell: Vector2i):
+	carried_wood += 1
+	map.felled_trees -= map.decrease_yield(cell, 1)
+	emit_signal("chopped_tree")
+
+func build_house(cell: Vector2i):
+	carried_wood -= 1
+	map.increase_building_progress(cell, 1)
+	emit_signal("built_house")
+
+func blast(cell: Vector2i):
+	map.blast_with_fire(cell)
+	current_blast_cooldown = blast_cooldown
+	update_sparks()
 
 func update_target_wood_source():
 	# take wood in the immediate vicinity of home
@@ -309,6 +315,7 @@ func move(target_cell: Vector2i, target_distance: int):
 				0: cell_position.x += path.x / abs(path.x)
 				1: cell_position.y += path.y / abs(path.y)
 	
+	emit_signal("moved")
 	update_position()
 
 func update_position():

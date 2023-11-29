@@ -34,7 +34,8 @@ func act():
 	lifespan_left -= 1
 	if lifespan_left <= 0:
 		convert_to_forest()
-	return true
+	
+	return actions > 0
 
 func set_stomp_strength(strength: int):
 	stomp_strength = strength
@@ -56,10 +57,9 @@ func set_death_spread(amount: int):
 
 func convert_to_forest():
 	var previous_villager_amount = len(map.villagers)
-	map.trees_from_treantlings += map.increase_yield(cell_position, 20)
-	map.spread_forest(cell_position, death_spread, "treantling")
-	actions = 0
+	map.spread_forest(cell_position, death_spread, true, "treantling")
 	map.deaths_to_treantlings += previous_villager_amount - len(map.villagers)
+	actions = 0
 	emit_signal("has_died", self)
 
 func update_target_location():

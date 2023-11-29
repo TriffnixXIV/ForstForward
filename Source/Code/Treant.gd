@@ -34,7 +34,9 @@ func act():
 		lifespan_left -= 1
 		if lifespan_left <= 0:
 			convert_to_forest()
-	return true
+			return false
+	
+	return actions > 0
 
 func stomp():
 	var previous_villager_amount = len(map.villagers)
@@ -57,13 +59,11 @@ func set_lifespan(new_lifespan: int):
 func convert_to_forest():
 	var previous_villager_amount = len(map.villagers)
 	var diffs = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]
-	for diff in diffs:
-		var cell = cell_position + diff
-		map.trees_from_treants += map.increase_yield(cell, 20)
 	diffs.shuffle()
 	for diff in diffs:
-		map.spread_forest(cell_position, death_spread, "treant")
+		map.spread_forest(cell_position, death_spread, true, "treant")
 	map.deaths_to_treants += previous_villager_amount - len(map.villagers)
+	actions = 0
 	emit_signal("has_died", self)
 
 func update_target_location():

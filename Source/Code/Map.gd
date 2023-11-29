@@ -566,7 +566,10 @@ func spawn_villager(cell_position: Vector2i):
 	villager.home_cell = cell_position
 	villager.map = self
 	villager.update_position()
-	villager.connect("done_acting", advancement._on_villager_done_acting)
+	
+	villager.connect("moved", advancement._villager_moved)
+	villager.connect("chopped_tree", advancement._villager_chopped)
+	villager.connect("built_house", advancement._villager_built)
 	
 	home_cell_villager_map[cell_position] = villager
 	villagers.append(villager)
@@ -682,13 +685,14 @@ func can_spread_forest(cell_position: Vector2i):
 			can_spread_on_buildings and (is_build_site(cell_position) or is_house(cell_position))
 		)
 
-func spread_forest(cell_position: Vector2i, tree_amount: int, source: String = "spread"):
-	if can_spread_forest(cell_position):
+func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: bool = false, source: String = "spread"):
+	if bypass_condition or can_spread_forest(cell_position):
 		var increase = increase_yield(cell_position, 20)
 		match source:
 			"treant":		trees_from_treants += increase
 			"treantling":	trees_from_treantlings += increase
 			"spread":		spread_trees += increase
+			"plant":		planted_trees += increase
 		
 		show_growth_effect(cell_position)
 		var distance = 1
@@ -749,6 +753,7 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, source: String = "
 					"treant":		trees_from_treants += cell_entry[2]
 					"treantling":	trees_from_treantlings += cell_entry[2]
 					"spread":		spread_trees += cell_entry[2]
+					"plant":		planted_trees += cell_entry[2]
 			
 			# -1 tree for each ungrowable cell (forest or invalid tile)
 			# 4 * distance is the total amount of cells at that distance

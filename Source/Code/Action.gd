@@ -158,7 +158,7 @@ func advance(map: Map, cell_position: Vector2i):
 		Type.plant:
 			success = map.plant_forest(cell_position)
 			if success and strength > 0:
-				map.spread_forest(cell_position, strength)
+				map.spread_forest(cell_position, strength, false, "plant")
 			emit_signal("numbers_changed")
 		Type.lightning_strike:
 			success = map.strike_with_lightning(cell_position)

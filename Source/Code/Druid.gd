@@ -48,7 +48,7 @@ func act():
 			state = State.planting
 	
 	actions -= 1
-	return true
+	return actions > 0
 
 func update_state():
 	set_state(state)

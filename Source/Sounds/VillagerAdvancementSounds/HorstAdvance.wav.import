@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://ivwiikmisbdp"
-path="res://.godot/imported/HorstAdvance.wav-30633b836174896ee941d4ca5416bfa2.sample"
+path="res://.godot/imported/HorstAdvance.wav-427e3752d43942506416876d9d27fcf7.sample"
 
 [deps]
 
-source_file="res://Sounds/HorstAdvance.wav"
-dest_files=["res://.godot/imported/HorstAdvance.wav-30633b836174896ee941d4ca5416bfa2.sample"]
+source_file="res://Sounds/VillagerAdvancementSounds/HorstAdvance.wav"
+dest_files=["res://.godot/imported/HorstAdvance.wav-427e3752d43942506416876d9d27fcf7.sample"]
 
 [params]
 
