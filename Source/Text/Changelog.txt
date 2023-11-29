@@ -21,5 +21,8 @@ Gameplay:
 Bug fixes & QoL:
 	- fixed: removed the standalone "for each" when lightning does not cost rain
 
+Sounds:
+	- added more sound variety to villager advancement steps
+
 UI:
 	- druid circles are drawn below the background again

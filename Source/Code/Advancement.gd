@@ -100,7 +100,7 @@ func next_villager_step():
 		still_acting = villager.act() or still_acting
 	
 	$Sounds/BaseAdvance.play()
-#	if villager_moved:		$Sounds.villager_move()
+	if villager_moved:		$Sounds.villager_move()
 	if villager_chopped:	$Sounds.villager_chop()
 	if villager_built:		$Sounds.villager_build()
 

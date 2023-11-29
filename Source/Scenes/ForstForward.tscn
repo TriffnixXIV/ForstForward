@@ -301,7 +301,7 @@ stream = ExtResource("27_f1rrp")
 volume_db = -5.0
 
 [node name="VillagerMove" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
-volume_db = -2.0
+volume_db = -6.0
 
 [node name="VillagerChop" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 
