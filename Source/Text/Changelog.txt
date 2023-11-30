@@ -24,6 +24,9 @@ Bug fixes & QoL:
 Sounds:
 	- added more sound variety to villager advancement steps
 
+ Visuals:
+	- crystals now have distinct shapes
+
 Visuals:
 	- druid circles are drawn below the background again
 	- when choosing an upgrade or finishing an action, the corresponding button now flashes its sparks

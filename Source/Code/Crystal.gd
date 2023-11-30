@@ -1,10 +1,6 @@
 extends Node2D
 class_name Crystal
 
-@export var life_crystal_stages: Array[Texture2D]
-@export var growth_crystal_stages: Array[Texture2D]
-@export var weather_crystal_stages: Array[Texture2D]
-
 enum Type {life, growth, weather}
 var type: Type
 
@@ -44,11 +40,11 @@ func harvest():
 		update_texture()
 
 func update_texture():
-	var index = min(4, floori(progress / 2.0))
+	var x = 20 * min(4, floori(progress / 2.0))
 	match type:
-		Type.life:		$Sprite.texture = life_crystal_stages[index]
-		Type.growth:	$Sprite.texture = growth_crystal_stages[index]
-		Type.weather:	$Sprite.texture = weather_crystal_stages[index]
+		Type.life:		$Sprite.region_rect = Rect2(x, 0, 20, 20)
+		Type.growth:	$Sprite.region_rect = Rect2(x, 20, 20, 20)
+		Type.weather:	$Sprite.region_rect = Rect2(x, 40, 20, 20)
 
 static func get_color(crystal_type: Crystal.Type):
 	match crystal_type:

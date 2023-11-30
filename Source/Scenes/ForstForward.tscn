@@ -71,11 +71,11 @@
 [ext_resource type="Texture2D" uid="uid://celwycvrm7wv" path="res://Images/Exit/XHovered.png" id="59_s61jp"]
 [ext_resource type="Texture2D" uid="uid://sw1gahi5bvs0" path="res://Images/DruidStuff/Druid.png" id="60_bhp0q"]
 [ext_resource type="Texture2D" uid="uid://bbnperurcnlc8" path="res://Images/Icons/Leaf.png" id="60_i1nh0"]
-[ext_resource type="Texture2D" uid="uid://tdaw3aabw7js" path="res://Images/Crystals/CrystalYellowFull.png" id="61_fbcrw"]
-[ext_resource type="Texture2D" uid="uid://c1eo5ifgm0dat" path="res://Images/Crystals/CrystalGreenFull.png" id="62_y0cet"]
 [ext_resource type="Texture2D" uid="uid://ds1gxf71eg7jm" path="res://Images/MuteButton/MuteButton.png" id="62_y5gb0"]
 [ext_resource type="Texture2D" uid="uid://cyjstqtiplehm" path="res://Images/MuteButton/MuteButtonPressed.png" id="63_hkoqk"]
-[ext_resource type="Texture2D" uid="uid://c82bnqhtjhkwq" path="res://Images/Crystals/CrystalBlueFull.png" id="63_vtxh1"]
+[ext_resource type="Texture2D" uid="uid://xfpsgwkw0n7g" path="res://Images/Crystals/CrystalYellow.png" id="67_8b6px"]
+[ext_resource type="Texture2D" uid="uid://bn1fxdjhsb6ra" path="res://Images/Crystals/CrystalGreen.png" id="68_cbaq0"]
+[ext_resource type="Texture2D" uid="uid://bdiolhpkbwbjj" path="res://Images/Crystals/CrystalBlue.png" id="69_o3eq1"]
 [ext_resource type="PackedScene" uid="uid://b81j3drpu4b3g" path="res://Scenes/ButtonSparks.tscn" id="77_axurg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ufopn"]
@@ -939,6 +939,7 @@ offset_right = 795.0
 offset_bottom = 445.0
 
 [node name="Records" type="Control" parent="Sidebar"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1330,7 +1331,6 @@ text = "reset records"
 label_settings = SubResource("LabelSettings_dvba3")
 
 [node name="InGameUI" type="Control" parent="Sidebar"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1446,7 +1446,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
-texture = ExtResource("61_fbcrw")
+texture = ExtResource("67_8b6px")
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/LifeUpgrades"]
 layout_mode = 2
@@ -1465,7 +1465,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
-texture = ExtResource("62_y0cet")
+texture = ExtResource("68_cbaq0")
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/GrowthUpgrades"]
 layout_mode = 2
@@ -1484,7 +1484,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
-texture = ExtResource("63_vtxh1")
+texture = ExtResource("69_o3eq1")
 
 [node name="Label" type="Label" parent="Sidebar/InGameUI/NumberContainer/Numbers/WeatherUpgrades"]
 layout_mode = 2

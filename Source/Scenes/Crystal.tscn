@@ -1,28 +1,11 @@
-[gd_scene load_steps=18 format=3 uid="uid://bcdc607uvvqyb"]
+[gd_scene load_steps=4 format=3 uid="uid://bcdc607uvvqyb"]
 
-[ext_resource type="Script" path="res://Code/Crystal.gd" id="1_aiyvn"]
-[ext_resource type="Texture2D" uid="uid://duc45v1chfkqu" path="res://Images/Crystals/CrystalYellow0.png" id="2_rluak"]
-[ext_resource type="Texture2D" uid="uid://bae4ow1wwar1u" path="res://Images/Crystals/CrystalYellow1.png" id="3_15dl2"]
-[ext_resource type="Texture2D" uid="uid://cgp3v6676q7fc" path="res://Images/Crystals/CrystalYellow2.png" id="4_5nmuv"]
-[ext_resource type="Texture2D" uid="uid://bjm5ucgxkvchp" path="res://Images/Crystals/CrystalYellow3.png" id="5_r8i0n"]
-[ext_resource type="Texture2D" uid="uid://tdaw3aabw7js" path="res://Images/Crystals/CrystalYellowFull.png" id="6_l1dqi"]
-[ext_resource type="Texture2D" uid="uid://c60mxkfb21kup" path="res://Images/Crystals/CrystalGreen0.png" id="7_4u5eq"]
-[ext_resource type="Texture2D" uid="uid://cagl6sssbu4m0" path="res://Images/Crystals/CrystalGreen1.png" id="8_a4465"]
-[ext_resource type="Texture2D" uid="uid://bt070pm8f10kb" path="res://Images/Crystals/CrystalGreen2.png" id="9_jf8ov"]
-[ext_resource type="Texture2D" uid="uid://dgfylvmkgmpsb" path="res://Images/Crystals/CrystalGreen3.png" id="10_xdpea"]
-[ext_resource type="Texture2D" uid="uid://c1eo5ifgm0dat" path="res://Images/Crystals/CrystalGreenFull.png" id="11_8iqn2"]
-[ext_resource type="Texture2D" uid="uid://vr76g07kec34" path="res://Images/Crystals/CrystalBlue0.png" id="12_bjrmd"]
-[ext_resource type="Texture2D" uid="uid://imvvu23jsnlm" path="res://Images/Crystals/CrystalBlue1.png" id="13_mdp4h"]
-[ext_resource type="Texture2D" uid="uid://cwnyu2pa1dajm" path="res://Images/Crystals/CrystalBlue2.png" id="14_nc8ad"]
-[ext_resource type="Texture2D" uid="uid://c12w6kn125hpr" path="res://Images/Crystals/CrystalBlue3.png" id="15_edtxd"]
-[ext_resource type="Texture2D" uid="uid://c82bnqhtjhkwq" path="res://Images/Crystals/CrystalBlueFull.png" id="16_1d6ba"]
+[ext_resource type="Script" path="res://Code/Crystal.gd" id="1_pvdkx"]
+[ext_resource type="Texture2D" uid="uid://bfakcb02cubvj" path="res://Images/Crystals/Crystals.png" id="2_bowqc"]
 [ext_resource type="Texture2D" uid="uid://fk8i61cepr3y" path="res://Images/Crystals/SparksBlue.png" id="17_mhc2i"]
 
 [node name="Crystal" type="Node2D"]
-script = ExtResource("1_aiyvn")
-life_crystal_stages = Array[Texture2D]([ExtResource("2_rluak"), ExtResource("3_15dl2"), ExtResource("4_5nmuv"), ExtResource("5_r8i0n"), ExtResource("6_l1dqi")])
-growth_crystal_stages = Array[Texture2D]([ExtResource("7_4u5eq"), ExtResource("8_a4465"), ExtResource("9_jf8ov"), ExtResource("10_xdpea"), ExtResource("11_8iqn2")])
-weather_crystal_stages = Array[Texture2D]([ExtResource("12_bjrmd"), ExtResource("13_mdp4h"), ExtResource("14_nc8ad"), ExtResource("15_edtxd"), ExtResource("16_1d6ba")])
+script = ExtResource("1_pvdkx")
 
 [node name="Sparks" type="Sprite2D" parent="."]
 position = Vector2(-20, -20)
@@ -33,7 +16,9 @@ centered = false
 wait_time = 0.25
 
 [node name="Sprite" type="Sprite2D" parent="."]
-texture = ExtResource("12_bjrmd")
+texture = ExtResource("2_bowqc")
 centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 20, 20)
 
 [connection signal="timeout" from="Sparks/Timer" to="." method="_on_timer_timeout"]

@@ -3,7 +3,9 @@ Mechanics:
 		- sand does not allow trees to grow
 		- water does not allow trees to grow and costs 4x the movement
 	- druid:
-		- rebrand as growth sprite with lifespan
+		- rebrand as growth sprite with lifespan (undecided)
+			- would make the human vs. nature more clear (druids are the only forest-side humans)
+			- would make it more magical
 	- overgrowing houses instead of de-building them (undecided)
 		overgrown houses count as forest and need less steps to recover than currently
 	- maybe replace weight-based random action generation with deck-like drawable actions (undecided)
@@ -14,9 +16,7 @@ Bug fixes & QoL:
 
 Sounds:
 	- add distinct sounds for different actions and upgrades
-
-Visuals:
-	- distinguish different crystals through shape
+	- add sound for crystal usage
 
 UI:
 	- add info when hovering stuff (high prio)

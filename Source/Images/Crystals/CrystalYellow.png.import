@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgp3v6676q7fc"
-path="res://.godot/imported/CrystalYellow2.png-f87664df9ab240fdbd7261704cd7ec0a.ctex"
+uid="uid://xfpsgwkw0n7g"
+path="res://.godot/imported/CrystalYellow.png-d844ec7d82756160cf46e81567e75ed4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Crystals/CrystalYellow2.png"
-dest_files=["res://.godot/imported/CrystalYellow2.png-f87664df9ab240fdbd7261704cd7ec0a.ctex"]
+source_file="res://Images/Crystals/CrystalYellow.png"
+dest_files=["res://.godot/imported/CrystalYellow.png-d844ec7d82756160cf46e81567e75ed4.ctex"]
 
 [params]
 

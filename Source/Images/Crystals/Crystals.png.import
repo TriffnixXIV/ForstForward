@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://imvvu23jsnlm"
-path="res://.godot/imported/CrystalBlue1.png-bd6ff6a016183207dfaa19fca273bc8d.ctex"
+uid="uid://bfakcb02cubvj"
+path="res://.godot/imported/Crystals.png-d38cc988008984df7da8139b5bfacd73.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Crystals/CrystalBlue1.png"
-dest_files=["res://.godot/imported/CrystalBlue1.png-bd6ff6a016183207dfaa19fca273bc8d.ctex"]
+source_file="res://Images/Crystals/Crystals.png"
+dest_files=["res://.godot/imported/Crystals.png-d38cc988008984df7da8139b5bfacd73.ctex"]
 
 [params]
 
