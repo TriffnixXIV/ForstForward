@@ -15,8 +15,7 @@ Bug fixes & QoL:
 	--
 
 Sounds:
-	- add distinct sounds for different actions and upgrades
-	- add sound for crystal usage
+	- add distinct sounds for different actions
 
 UI:
 	- add info when hovering stuff (high prio)

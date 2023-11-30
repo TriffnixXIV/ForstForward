@@ -292,7 +292,11 @@ func enact_bottom_option():
 
 func apply_upgrade(upgrade: Upgrade):
 	upgrade.apply($Map, action_factory)
-	play_success_sound()
+	$Sounds.upgrade()
+	match randi_range(0, 2):
+		0: pass
+		1: pass
+		2: pass
 	next_turn_step()
 
 func enact_action(action: Action):
@@ -491,7 +495,7 @@ func update_stats():
 
 func win_game():
 	if game_state == GameState.playing:
-		$VictorySound.play()
+		$Sounds/Victory.play()
 		
 		$MapOverlay/PostGame/Title.label_settings.shadow_color = Color(0, 1, 0, 1)
 		$MapOverlay/PostGame/Title.text = $Map.level_name + " is at peace once more"
@@ -519,7 +523,7 @@ func win_game():
 
 func lose_game():
 	if game_state == GameState.playing:
-		$LoseSound.play()
+		$Sounds/Lose.play()
 		
 		$MapOverlay/PostGame/Title.label_settings.shadow_color = Color(1, 0, 0, 1)
 		$MapOverlay/PostGame/Title.text = $Map.level_name + " is doomed to be civilized"
@@ -602,13 +606,13 @@ func is_muted():
 	return AudioServer.is_bus_mute(0)
 
 func play_advance_sound():
-	$HighPlantSound.play()
+	$Sounds/HighPlant.play()
 
 func play_success_sound():
-	$MidPlantSound.play()
+	$Sounds/MidPlant.play()
 
 func play_failure_sound():
-	$LowPlantSound.play()
+	$Sounds/LowPlant.play()
 
 func _on_prev_level_button_pressed():
 	play_success_sound()

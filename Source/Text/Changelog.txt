@@ -23,6 +23,7 @@ Bug fixes & QoL:
 
 Sounds:
 	- added more sound variety to villager advancement steps
+	- added distinct sounds for upgrades and crystal cracks
 
  Visuals:
 	- crystals now have distinct shapes

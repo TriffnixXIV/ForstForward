@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://fk8i61cepr3y" path="res://Images/Crystals/SparksBlue.png" id="17_mhc2i"]
 
 [node name="Crystal" type="Node2D"]
+z_index = 1
 script = ExtResource("1_pvdkx")
 
 [node name="Sparks" type="Sprite2D" parent="."]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=116 format=3 uid="uid://vsbq62808p6r"]
+[gd_scene load_steps=118 format=3 uid="uid://vsbq62808p6r"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
+[ext_resource type="Script" path="res://Code/CoreSounds.gd" id="2_mjpg1"]
 [ext_resource type="AudioStream" uid="uid://cirec0r0bglc2" path="res://Sounds/DownDing.wav" id="3_av3ok"]
 [ext_resource type="AudioStream" uid="uid://bbvef82qjdjxv" path="res://Sounds/HighWood.wav" id="4_a7wmd"]
 [ext_resource type="PackedScene" path="res://Scenes/ForestEdge.tscn" id="5_4pb2x"]
@@ -32,6 +33,7 @@
 [ext_resource type="AudioStream" uid="uid://cvk8hri2tua3k" path="res://Sounds/GrowthStart.wav" id="26_e3qfq"]
 [ext_resource type="Texture2D" uid="uid://cow75qgx5a5g1" path="res://Images/BorderBackground.png" id="27_7p77l"]
 [ext_resource type="AudioStream" uid="uid://c8tjmfesx640a" path="res://Sounds/GrowthAdvance.wav" id="27_f1rrp"]
+[ext_resource type="Script" path="res://Code/MapSounds.gd" id="28_bmy4v"]
 [ext_resource type="AudioStream" uid="uid://ejnsnl7o54hb" path="res://Sounds/HorstStart.wav" id="28_hswee"]
 [ext_resource type="Script" path="res://Code/Sounds.gd" id="28_m5yo2"]
 [ext_resource type="Texture2D" uid="uid://dyeqdeiowhliu" path="res://Images/Middle.png" id="30_voj48"]
@@ -253,20 +255,25 @@ shadow_color = Color(0, 0, 0, 0.8)
 [node name="ForstForward" type="Node2D"]
 script = ExtResource("1_7u1db")
 
-[node name="VictorySound" type="AudioStreamPlayer" parent="."]
+[node name="Sounds" type="Node" parent="."]
+script = ExtResource("2_mjpg1")
+
+[node name="Victory" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("2_dfqyl")
 
-[node name="LoseSound" type="AudioStreamPlayer" parent="."]
+[node name="Lose" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("3_av3ok")
 
-[node name="HighPlantSound" type="AudioStreamPlayer" parent="."]
+[node name="HighPlant" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("4_a7wmd")
 
-[node name="MidPlantSound" type="AudioStreamPlayer" parent="."]
+[node name="MidPlant" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("5_o16hq")
 
-[node name="LowPlantSound" type="AudioStreamPlayer" parent="."]
+[node name="LowPlant" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("6_ybxwl")
+
+[node name="Upgrade" type="AudioStreamPlayer" parent="Sounds"]
 
 [node name="Map" type="TileMap" parent="."]
 position = Vector2(5, 5)
@@ -283,11 +290,13 @@ LightningStrike = ExtResource("25_g2uic")
 Blast = ExtResource("23_fm4bp")
 GrowthEffect = ExtResource("24_hbdlb")
 
+[node name="Sounds" type="Node" parent="Map"]
+script = ExtResource("28_bmy4v")
+
+[node name="CrystalCrack" type="AudioStreamPlayer" parent="Map/Sounds"]
+
 [node name="Advancement" type="Node" parent="Map"]
 script = ExtResource("7_xxdmg")
-
-[node name="Timer" type="Timer" parent="Map/Advancement"]
-wait_time = 0.25
 
 [node name="Sounds" type="Node" parent="Map/Advancement"]
 script = ExtResource("28_m5yo2")
@@ -319,6 +328,9 @@ stream = ExtResource("26_e3qfq")
 
 [node name="HorstStart" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("28_hswee")
+
+[node name="Timer" type="Timer" parent="Map/Advancement"]
+wait_time = 0.25
 
 [node name="FrostOverlay" type="Sprite2D" parent="Map"]
 visible = false

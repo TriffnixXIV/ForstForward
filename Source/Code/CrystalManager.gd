@@ -138,6 +138,7 @@ func spawn_crystal(cell_position: Vector2i, type: Crystal.Type):
 	cell_crystal_map[cell_position] = crystal
 
 func crystal_has_cracked(crystal: Crystal):
+	map.sounds.crystal_crack()
 	crystals.erase(crystal)
 	cell_crystal_map.erase(crystal.cell_position)
 	if crystal.is_grown():

@@ -105,6 +105,7 @@ var cell_labels: Array[Array]
 var cell_tree_distance_map: Array[Array]
 
 var advancement: Advancement
+var sounds
 
 signal transition_done
 signal score_changed
@@ -115,6 +116,8 @@ func _ready():
 	
 	advancement = $Advancement
 	advancement.map = self
+	
+	sounds = $Sounds
 	
 	crystal_manager = CrystalManager.new(self)
 	highest_possible_score = width * height * 10
