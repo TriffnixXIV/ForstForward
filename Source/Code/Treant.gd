@@ -11,6 +11,9 @@ var death_spread = 0
 
 var target_location
 
+signal moved
+signal attacked
+signal grown_trees
 signal has_died
 
 func prepare_turn(action_amount: int):
@@ -30,7 +33,7 @@ func act():
 	stomp()
 	actions -= 1
 	
-	if lifespan > 0:
+	if map.treants.has_lifespan:
 		lifespan_left -= 1
 		if lifespan_left <= 0:
 			convert_to_forest()
@@ -46,6 +49,8 @@ func stomp():
 		var growth = map.get_yield(cell)
 		var value = min(6, damage + floori((10 - growth) / 4.0))
 		map.trees_from_treants += map.increase_yield(cell, value)
+	
+		if damage > 0: emit_signal("attacked")
 	map.deaths_to_treants += previous_villager_amount - len(map.villagers.villagers)
 
 func set_lifespan(new_lifespan: int):
@@ -61,6 +66,8 @@ func convert_to_forest():
 		map.spread_forest(cell_position, death_spread, true, "treant")
 	map.deaths_to_treants += previous_villager_amount - len(map.villagers.villagers)
 	actions = 0
+	
+	emit_signal("grown_trees")
 	emit_signal("has_died", self)
 
 func update_target_location():
@@ -108,6 +115,8 @@ func move(target_distance: int):
 			match randi_range(0, 1):
 				0: cell_position.x += path.x / abs(path.x)
 				1: cell_position.y += path.y / abs(path.y)
+	
+	emit_signal("moved")
 	update_position()
 
 func get_distance_to(cell: Vector2i):

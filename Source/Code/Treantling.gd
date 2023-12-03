@@ -12,6 +12,9 @@ var death_spread = 0
 
 var target_location
 
+signal moved
+signal attacked
+signal grown_trees
 signal has_died
 
 func prepare_turn(action_amount: int):
@@ -48,12 +51,16 @@ func stomp():
 	var growth = min(strength - damage, floori((10 - map.get_yield(cell_position)) / 4.0))
 	map.trees_from_treantlings += map.increase_yield(cell_position, damage + growth)
 	map.deaths_to_treantlings += previous_villager_amount - len(map.villagers.villagers)
+	
+	if damage > 0: emit_signal("attacked")
 
 func convert_to_forest():
 	var previous_villager_amount = len(map.villagers.villagers)
 	map.spread_forest(cell_position, death_spread, true, "treantling")
 	map.deaths_to_treantlings += previous_villager_amount - len(map.villagers.villagers)
 	actions = 0
+	
+	emit_signal("grown_trees")
 	emit_signal("has_died", self)
 
 func update_target_location():
@@ -94,6 +101,8 @@ func move(target_distance: int):
 			match randi_range(0, 1):
 				0: cell_position.x += path.x / abs(path.x)
 				1: cell_position.y += path.y / abs(path.y)
+	
+	emit_signal("moved")
 	update_position()
 
 func get_distance_to(cell: Vector2i):

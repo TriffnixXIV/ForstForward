@@ -39,11 +39,13 @@ func add_progress(crystal_type: Crystal.Type, amount: int):
 		
 		for crystal in crystals_with_type:
 			var growth = clampi(7 - crystal.progress, 0, amount)
-			crystal.grow(growth)
+			crystal.grow(growth, true)
 			amount -= growth
+			if amount <= 0:
+				break
 		
 		if amount > 0:
-			crystals_with_type[0].grow(amount)
+			crystals_with_type[0].grow(amount, true)
 	
 	spawn_chances[crystal_type] += 0.02
 

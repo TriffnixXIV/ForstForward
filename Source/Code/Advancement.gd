@@ -10,12 +10,18 @@ var actions_left: bool = false
 
 var step_done = false
 
-var villager_moved = false
-var villager_chopped = false
-var villager_built = false
+var moved = false
+var grown = false
+var chopped = false
+var built = false
 
 signal advancement_step_done
 signal advancement_done
+
+func _moved():		moved = true
+func _grown():		grown = true
+func _chopped():	chopped = true
+func _built():		built = true
 
 func start():
 	$Timer.start()
@@ -29,18 +35,26 @@ func stop():
 
 func start_druid_phase():
 	$Sounds/DruidStart.play()
-	actions_left = true
 	current_phase = Phase.druids
+	actions_left = true
 	
 	map.treants.prepare_turn()
 	map.treantlings.prepare_turn()
 	map.druids.prepare_turn()
 
 func next_druid_step():
-	$Sounds/DruidAdvance.play()
+	moved = false
+	chopped = false
+	grown = false
+	
 	actions_left = false
 	for creature in map.druids.druids + map.treants.treants + map.treantlings.treantlings:
 		actions_left = creature.act() or actions_left
+	
+	$Sounds/Base.play()
+	if moved:	$Sounds.move()
+	if chopped:	$Sounds.chop()
+	if grown:	$Sounds.grow()
 
 func start_growth_phase():
 	$Sounds/GrowthStart.play()
@@ -48,7 +62,7 @@ func start_growth_phase():
 	map.remaining_growth_stages = map.get_growth_stages()
 
 func next_growth_step():
-	$Sounds/BaseAdvance.play()
+	$Sounds/Base.play()
 	var growth_amounts: Dictionary = {}
 	for x in map.width:
 		for y in map.height:
@@ -71,25 +85,21 @@ func next_growth_step():
 
 func start_villager_phase():
 	$Sounds/HorstStart.play()
-	actions_left = true
 	current_phase = Phase.villagers
+	actions_left = true
 	map.villagers.prepare_turn()
 
 func next_villager_step():
-	villager_moved = false
-	villager_chopped = false
-	villager_built = false
+	moved = false
+	chopped = false
+	built = false
 	
 	actions_left = map.villagers.act()
 	
-	$Sounds/BaseAdvance.play()
-	if villager_moved:		$Sounds.villager_move()
-	if villager_chopped:	$Sounds.villager_chop()
-	if villager_built:		$Sounds.villager_build()
-
-func _villager_moved():		villager_moved = true
-func _villager_chopped():	villager_chopped = true
-func _villager_built():		villager_built = true
+	$Sounds/Base.play()
+	if moved:	$Sounds.move()
+	if chopped:	$Sounds.chop()
+	if built:	$Sounds.build()
 
 func _on_timer_timeout():
 	next_step()

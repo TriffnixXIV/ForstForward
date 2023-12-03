@@ -293,27 +293,27 @@ script = ExtResource("7_xxdmg")
 [node name="Sounds" type="Node" parent="Map/Advancement"]
 script = ExtResource("28_m5yo2")
 
-[node name="BaseAdvance" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+[node name="Base" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("27_f1rrp")
 volume_db = -5.0
 
-[node name="VillagerMove" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+[node name="Move" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 volume_db = -6.0
 
-[node name="VillagerChop" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+[node name="Chop" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 
-[node name="VillagerBuild" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+[node name="Build" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 volume_db = 5.0
+
+[node name="Grow" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+stream = ExtResource("25_ayc6w")
+volume_db = -5.0
 
 [node name="AdvancementStart" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("4_a7wmd")
 
 [node name="DruidStart" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("24_p5qfq")
-
-[node name="DruidAdvance" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
-stream = ExtResource("25_ayc6w")
-volume_db = -5.0
 
 [node name="GrowthStart" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("26_e3qfq")

@@ -22,6 +22,9 @@ var self_growth = 4
 var edge_growth = 2
 var corner_growth = 1
 
+signal moved
+signal grown_trees
+
 func _ready():
 	update_circle_state()
 
@@ -42,6 +45,7 @@ func act():
 			for diff in [Vector2i(1, 1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, -1)]:
 				map.trees_from_druids += map.increase_yield(cell_position + diff, corner_growth)
 			state = State.tired
+			emit_signal("grown_trees")
 		State.moving:
 			move(0)
 		State.tired:
@@ -178,6 +182,8 @@ func move(target_distance: int):
 			match randi_range(0, 1):
 				0: cell_position.x += path.x / abs(path.x)
 				1: cell_position.y += path.y / abs(path.y)
+	
+	emit_signal("moved")
 	update_position()
 
 func get_distance_to(cell: Vector2i):

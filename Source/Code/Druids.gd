@@ -38,6 +38,10 @@ func spawn(cell_position: Vector2i):
 		var druid: Druid = DruidScene.instantiate()
 		druid.cell_position = cell_position
 		druid.map = map
+		
+		druid.connect("moved", map.advancement._moved)
+		druid.connect("grown_trees", map.advancement._grown)
+		
 		druid.update_position()
 		druids.append(druid)
 		add_child(druid)

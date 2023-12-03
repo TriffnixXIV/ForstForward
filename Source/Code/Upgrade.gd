@@ -149,7 +149,7 @@ func apply(map: Map, action_factory: ActionFactory):
 				Attribute.unlock:	prototype.unlocked = true
 				Attribute.clicks:	prototype.clicks = value
 				Attribute.actions:
-					map.treant_actions = value
+					map.treants.actions = value
 					if len(other_values) > 0:
 						map.treants.set_lifespan(other_values[1])
 				Attribute.lifespan:

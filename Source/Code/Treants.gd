@@ -53,11 +53,16 @@ func spawn(cell_position: Vector2i):
 		var treant: Treant = TreantScene.instantiate()
 		treant.cell_position = cell_position
 		treant.map = map
-		if map.treant_has_lifespan:
-			treant.set_lifespan(map.treant_lifespan)
+		if has_lifespan:
+			treant.set_lifespan(lifespan)
 		treant.death_spread = death_spread
-		treant.update_position()
+		
+		treant.connect("moved", map.advancement._moved)
+		treant.connect("attacked", map.advancement._chopped)
+		treant.connect("grown_trees", map.advancement._grown)
 		treant.connect("has_died", despawn)
+		
+		treant.update_position()
 		treants.append(treant)
 		add_child(treant)
 		map.treants_spawned += 1

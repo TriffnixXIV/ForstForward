@@ -57,8 +57,13 @@ func spawn(cell_position: Vector2i):
 		treantling.set_lifespan(lifespan)
 		treantling.strength = strength
 		treantling.death_spread = death_spread
-		treantling.update_position()
+		
+		treantling.connect("moved", map.advancement._moved)
+		treantling.connect("attacked", map.advancement._chopped)
+		treantling.connect("grown_trees", map.advancement._grown)
 		treantling.connect("has_died", despawn)
+		
+		treantling.update_position()
 		treantlings.append(treantling)
 		add_child(treantling)
 		map.treantlings_spawned += 1

@@ -9,12 +9,14 @@ Gameplay:
 			- example: if one crystal is at 5/8 and another at 2/8, the 5er is grown to 7.
 			- example 2: if two crystals are at 6/8 and another at 2/8, both 6ers are grown to 7.
 				- not to 8, because 1 growth will be given by the next growth step anyways.
+			- example 3: if one crystal is at 2/8 and another at 1/8, the 2er is grown to 4.
 			- in other words: as many crystals as possible are brought as close to 7/8 as possible.
 	- treant
 		- stomping buildings no longer costs actions
 		- now only does 6 damage per action per tile, instead of 10
 			- this way, treants show some more interesting behaviour
 		- simplified target evaluation
+		- made action upgrades only give +1 action while immortal, and +2 while mortal
 	- treantling
 		- now prioritizes buildings that are closer to being destroyed
 
@@ -23,12 +25,11 @@ Bug fixes & QoL:
 
 Sounds:
 	- added more sound variety to villager advancement steps
-	- added distinct sounds for upgrades and crystal cracks
-
- Visuals:
-	- crystals now have distinct shapes
+	- added sounds for upgrades and crystal cracks
 
 Visuals:
 	- druid circles are drawn below the background again
 	- when choosing an upgrade or finishing an action, the corresponding button now flashes its sparks
 	- crystals now have sparks that show when the crystal is fully grown and currently the source for an upgrade
+	- crystals also show those sparks when growing through the selected action
+	- crystals now have distinct shapes

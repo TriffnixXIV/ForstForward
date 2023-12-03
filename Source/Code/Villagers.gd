@@ -66,9 +66,9 @@ func spawn(cell_position: Vector2i):
 	villager.map = map
 	villager.update_position()
 	
-	villager.connect("moved", map.advancement._villager_moved)
-	villager.connect("chopped_tree", map.advancement._villager_chopped)
-	villager.connect("built_house", map.advancement._villager_built)
+	villager.connect("moved", map.advancement._moved)
+	villager.connect("chopped_tree", map.advancement._chopped)
+	villager.connect("built_house", map.advancement._built)
 	
 	home_cell_villager_map[cell_position] = villager
 	villagers.append(villager)

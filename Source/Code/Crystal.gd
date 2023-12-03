@@ -24,10 +24,13 @@ func set_type(crystal_type: Type):
 		Type.weather:	$Sparks.texture = preload("res://Images/Crystals/SparksBlue.png")
 	update_texture()
 
-func grow(amount: int = 1):
+func grow(amount: int = 1, spark: bool = false):
 	if map.is_forest(cell_position):
 		progress += amount
 		update_texture()
+		if spark:
+			set_spark_state(SparkState.active)
+			$Sparks/Timer.start()
 	else:
 		emit_signal("cracked", self)
 
