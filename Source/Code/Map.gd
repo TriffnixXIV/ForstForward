@@ -21,16 +21,6 @@ var GrowthEffect: PackedScene = preload("res://Scenes/GrowthEffect.tscn")
 
 var highest_possible_score: int
 
-var base_treant_actions = 6
-var base_treant_has_lifespan = false
-var base_treant_lifespan = 40
-var base_treant_death_spread = 20
-var base_treantling_actions = 8
-var base_treantling_strength = 1
-var base_treantling_lifespan = 24
-var base_treantling_death_spread = 8
-var base_druid_actions = 8
-var base_druid_circle_trees = 16
 var base_min_growth = 1
 var base_can_spread_on_plains = false
 var base_can_spread_on_buildings = false
@@ -40,16 +30,6 @@ var base_rain_growth_boost = 0
 var base_rain_frost_boost = 0
 var base_min_frost = 0
 
-var treant_actions: int
-var treant_has_lifespan: bool
-var treant_lifespan: int
-var treant_death_spread: int
-var treantling_actions: int
-var treantling_strength: int
-var treantling_lifespan: int
-var treantling_death_spread: int
-var druid_actions: int
-var druid_circle_trees: int
 var min_growth: int
 var can_spread_on_plains: bool
 var can_spread_on_buildings: bool
@@ -238,16 +218,6 @@ func reset():
 	treantlings.reset()
 
 func reset_upgrades():
-	treant_actions			= base_treant_actions
-	treant_has_lifespan		= base_treant_has_lifespan
-	treant_lifespan			= base_treant_lifespan
-	treant_death_spread		= base_treant_death_spread
-	treantling_actions		= base_treantling_actions
-	treantling_strength		= base_treantling_strength
-	treantling_lifespan		= base_treantling_lifespan
-	treantling_death_spread = base_treantling_death_spread
-	druid_actions			= base_druid_actions
-	druid_circle_trees		= base_druid_circle_trees
 	min_growth				= base_min_growth
 	can_spread_on_plains	= base_can_spread_on_plains
 	can_spread_on_buildings	= base_can_spread_on_buildings
@@ -694,7 +664,7 @@ func strike_with_lightning(cell_position: Vector2i):
 		add_child(lightning)
 		lightning.summon()
 		
-		var previous_villager_amount = len(villagers)
+		var previous_villager_amount = len(villagers.villagers)
 		set_building_progress(cell_position, 0)
 		for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 			set_building_progress(cell_position + diff, 0)
@@ -702,7 +672,7 @@ func strike_with_lightning(cell_position: Vector2i):
 			decrease_building_progress(cell_position + diff, 5)
 		
 		total_lightning_strikes += 1
-		deaths_to_lightning += previous_villager_amount - len(villagers)
+		deaths_to_lightning += previous_villager_amount - len(villagers.villagers)
 		return true
 	else:
 		return false

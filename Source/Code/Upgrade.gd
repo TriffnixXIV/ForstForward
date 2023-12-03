@@ -153,29 +153,29 @@ func apply(map: Map, action_factory: ActionFactory):
 					if len(other_values) > 0:
 						map.treants.set_lifespan(other_values[1])
 				Attribute.lifespan:
-					map.treant_has_lifespan = true
-					map.treant_actions = value
+					map.treants.has_lifespan = true
+					map.treants.actions = value
 					map.treants.set_lifespan(other_values[0])
 				Attribute.spread:
-					map.treant_death_spread = value
+					map.treants.set_death_spread(value)
 					map.treants.set_lifespan(other_values[1])
 		Type.treantling:
 			prototype = action_factory.action_prototypes[Action.Type.spawn_treantling]
 			match attribute:
 				Attribute.clicks:	prototype.clicks = value
 				Attribute.actions:
-					map.treantling_actions = value
+					map.treantlings.actions = value
 					map.treantlings.set_lifespan(other_values[1])
-				Attribute.strength:	map.treantling_strength = value
+				Attribute.strength:	map.treantlings.set_strength(value)
 				Attribute.spread:
-					map.treantling_death_spread = value
+					map.treantlings.set_death_spread(value)
 					map.treantlings.set_lifespan(other_values[1])
 		Type.druid:
 			prototype = action_factory.action_prototypes[Action.Type.spawn_druid]
 			match attribute:
 				Attribute.clicks:	prototype.clicks = value
-				Attribute.actions:	map.druid_actions = value
-				Attribute.strength:	map.druid_circle_trees = value
+				Attribute.actions:	map.druids.actions = value
+				Attribute.strength:	map.druids.circle_trees = value
 		Type.villager:
 			match attribute:
 				Attribute.actions:	map.villagers.actions = value

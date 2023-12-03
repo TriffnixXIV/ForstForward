@@ -32,18 +32,9 @@ func start_druid_phase():
 	actions_left = true
 	current_phase = Phase.druids
 	
-	for druid in map.druids.druids:
-		druid.prepare_turn(map.druid_actions)
-		druid.set_circle_trees(map.druid_circle_trees)
-	
-	for treant in map.treants.treants:
-		treant.prepare_turn(map.treant_actions)
-		treant.set_death_spread(map.treant_death_spread)
-	
-	for treantling in map.treantlings.treantlings:
-		treantling.prepare_turn(map.treantling_actions)
-		treantling.set_stomp_strength(map.treantling_strength)
-		treantling.set_death_spread(map.treantling_death_spread)
+	map.treants.prepare_turn()
+	map.treantlings.prepare_turn()
+	map.druids.prepare_turn()
 
 func next_druid_step():
 	$Sounds/DruidAdvance.play()
@@ -82,8 +73,7 @@ func start_villager_phase():
 	$Sounds/HorstStart.play()
 	actions_left = true
 	current_phase = Phase.villagers
-	
-	map.villagers.prepare()
+	map.villagers.prepare_turn()
 
 func next_villager_step():
 	villager_moved = false

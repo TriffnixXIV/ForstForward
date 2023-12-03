@@ -21,7 +21,7 @@ func reset():
 	for villager in villagers:
 		villager.reset()
 
-func prepare():
+func prepare_turn():
 	var action_loss = map.get_coldness()
 	for villager in villagers:
 		map.actions_lost_to_frost += min(actions, action_loss)

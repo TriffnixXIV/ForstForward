@@ -48,9 +48,6 @@ func stomp():
 		map.trees_from_treants += map.increase_yield(cell, value)
 	map.deaths_to_treants += previous_villager_amount - len(map.villagers.villagers)
 
-func set_death_spread(amount: int):
-	death_spread = amount
-
 func set_lifespan(new_lifespan: int):
 	lifespan_left += max(0, new_lifespan - lifespan)
 	lifespan = new_lifespan

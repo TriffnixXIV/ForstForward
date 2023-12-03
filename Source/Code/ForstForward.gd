@@ -488,7 +488,7 @@ func update_stats():
 	$MapOverlay/PostGame/Stats/Forst/Trees.text = str($Map.grown_trees) + " trees grown"
 	$MapOverlay/PostGame/Stats/Forst/Plant.text = str($Map.planted_trees) + " trees planted"
 	$MapOverlay/PostGame/Stats/Forst/Spread.text = str($Map.spread_trees) + " trees spread"
-	$MapOverlay/PostGame/Stats/Forst/Druids.text = str(len($Map.druids)) + " druids spawned"
+	$MapOverlay/PostGame/Stats/Forst/Druids.text = str(len($Map.druids.druids)) + " druids spawned"
 	$MapOverlay/PostGame/Stats/Forst/DruidTrees.text = str($Map.trees_from_druids) + " trees from druids"
 	$MapOverlay/PostGame/Stats/Forst/Treants.text = str($Map.treants_spawned) + " treants spawned"
 	$MapOverlay/PostGame/Stats/Forst/TreantTrees.text = str($Map.trees_from_treants) + " trees from treants"

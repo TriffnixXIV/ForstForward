@@ -6,11 +6,40 @@ var map: Map
 var TreantScene: PackedScene = preload("res://Scenes/Treant.tscn")
 var treants: Array[Treant] = []
 
+var base_actions = 6
+var base_has_lifespan = false
+var base_lifespan = 40
+var base_death_spread = 20
+
+var actions: int
+var has_lifespan: bool
+var lifespan: int
+var death_spread: int
+
 func reset():
+	actions			= base_actions
+	has_lifespan	= base_has_lifespan
+	lifespan		= base_lifespan
+	death_spread	= base_death_spread
+	
 	for treant in treants:
 		remove_child(treant)
 		treant.queue_free()
 	treants = []
+
+func prepare_turn():
+	for treant in treants:
+		treant.prepare_turn(actions)
+
+func set_lifespan(duration: int):
+	lifespan = duration
+	for treant in treants:
+		treant.set_lifespan(lifespan)
+
+func set_death_spread(spread: int):
+	death_spread = spread
+	for treant in treants:
+		treant.death_spread = death_spread
 
 func can_spawn(cell_position: Vector2i):
 	for diff in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]:
@@ -26,6 +55,7 @@ func spawn(cell_position: Vector2i):
 		treant.map = map
 		if map.treant_has_lifespan:
 			treant.set_lifespan(map.treant_lifespan)
+		treant.death_spread = death_spread
 		treant.update_position()
 		treant.connect("has_died", despawn)
 		treants.append(treant)
@@ -34,11 +64,6 @@ func spawn(cell_position: Vector2i):
 		return true
 	else:
 		return false
-
-func set_lifespan(actions: int):
-	map.treant_lifespan = actions
-	for treant in treants:
-		treant.set_lifespan(map.treant_lifespan)
 
 func despawn(treant: Treant):
 	treants.erase(treant)
