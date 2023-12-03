@@ -273,6 +273,7 @@ stream = ExtResource("5_o16hq")
 stream = ExtResource("6_ybxwl")
 
 [node name="Upgrade" type="AudioStreamPlayer" parent="Sounds"]
+volume_db = -3.0
 
 [node name="Map" type="TileMap" parent="."]
 position = Vector2(5, 5)
@@ -286,6 +287,7 @@ levels = Array[PackedScene]([ExtResource("15_407iu"), ExtResource("16_6jsyv"), E
 script = ExtResource("28_bmy4v")
 
 [node name="CrystalCrack" type="AudioStreamPlayer" parent="Map/Sounds"]
+volume_db = -3.0
 
 [node name="Advancement" type="Node" parent="Map"]
 script = ExtResource("7_xxdmg")
@@ -307,19 +309,19 @@ volume_db = 5.0
 
 [node name="Grow1" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("25_ayc6w")
-volume_db = -5.0
+volume_db = -7.0
 
 [node name="Grow2" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("25_ayc6w")
-volume_db = -5.0
+volume_db = -7.0
 
 [node name="Grow3" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("25_ayc6w")
-volume_db = -5.0
+volume_db = -7.0
 
 [node name="Grow4" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("25_ayc6w")
-volume_db = -5.0
+volume_db = -7.0
 
 [node name="AdvancementStart" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("4_a7wmd")
