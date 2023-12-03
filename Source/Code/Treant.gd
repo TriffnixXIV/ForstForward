@@ -39,14 +39,14 @@ func act():
 	return actions > 0
 
 func stomp():
-	var previous_villager_amount = len(map.villagers)
+	var previous_villager_amount = len(map.villagers.villagers)
 	for diff in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]:
 		var cell = cell_position + diff
 		var damage = map.get_building_progress(cell)
 		var growth = map.get_yield(cell)
 		var value = min(6, damage + floori((10 - growth) / 4.0))
 		map.trees_from_treants += map.increase_yield(cell, value)
-	map.deaths_to_treants += previous_villager_amount - len(map.villagers)
+	map.deaths_to_treants += previous_villager_amount - len(map.villagers.villagers)
 
 func set_death_spread(amount: int):
 	death_spread = amount
@@ -57,12 +57,12 @@ func set_lifespan(new_lifespan: int):
 	lifespan_left = min(lifespan_left, lifespan)
 
 func convert_to_forest():
-	var previous_villager_amount = len(map.villagers)
+	var previous_villager_amount = len(map.villagers.villagers)
 	var diffs = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]
 	diffs.shuffle()
 	for diff in diffs:
 		map.spread_forest(cell_position, death_spread, true, "treant")
-	map.deaths_to_treants += previous_villager_amount - len(map.villagers)
+	map.deaths_to_treants += previous_villager_amount - len(map.villagers.villagers)
 	actions = 0
 	emit_signal("has_died", self)
 

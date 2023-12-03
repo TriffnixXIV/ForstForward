@@ -1,5 +1,5 @@
-extends Node
-class_name CrystalManager
+extends Node2D
+class_name Crystals
 
 var map: Map
 
@@ -14,12 +14,9 @@ var spawn_chances = {
 var fully_grown_crystals: Array[Crystal] = []
 var pending_crystal_spawns: Array[Crystal.Type] = []
 
-func _init(map_: Map):
-	self.map = map_
-
 func reset():
 	for crystal in crystals:
-		map.remove_child(crystal)
+		remove_child(crystal)
 		crystal.queue_free()
 	crystals = []
 	cell_crystal_map = {}
@@ -129,7 +126,7 @@ func spawn_crystal(cell_position: Vector2i, type: Crystal.Type):
 	crystal.position.x = cell_position.x * map.tile_set.tile_size.x
 	crystal.position.y = cell_position.y * map.tile_set.tile_size.y
 	crystal.connect("cracked", crystal_has_cracked)
-	map.add_child(crystal)
+	add_child(crystal)
 	
 	crystal.map = map
 	crystal.cell_position = cell_position
@@ -143,7 +140,7 @@ func crystal_has_cracked(crystal: Crystal):
 	cell_crystal_map.erase(crystal.cell_position)
 	if crystal.is_grown():
 		fully_grown_crystals.erase(crystal)
-	map.remove_child(crystal)
+	remove_child(crystal)
 	crystal.queue_free()
 
 func claim_crystal():

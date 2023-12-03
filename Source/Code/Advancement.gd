@@ -21,7 +21,7 @@ func start():
 	$Timer.start()
 	$Sounds/AdvancementStart.play()
 	current_phase = Phase.starting
-	map.crystal_manager.advance()
+	map.crystals.advance()
 	step_done = true
 
 func stop():
@@ -84,7 +84,7 @@ func start_villager_phase():
 	current_phase = Phase.villagers
 	
 	var action_loss = map.get_coldness()
-	for villager in map.villagers:
+	for villager in map.villagers.villagers:
 		map.actions_lost_to_frost += min(map.villager_actions, action_loss)
 		villager.prepare_turn(map.villager_actions - action_loss)
 	
@@ -96,7 +96,7 @@ func next_villager_step():
 	villager_built = false
 	
 	still_acting = false
-	for villager in map.villagers:
+	for villager in map.villagers.villagers:
 		still_acting = villager.act() or still_acting
 	
 	$Sounds/BaseAdvance.play()
@@ -140,7 +140,7 @@ func next_step():
 
 func finish():
 	$Timer.stop()
-	for villager in map.villagers:
+	for villager in map.villagers.villagers:
 		villager.end_turn()
 	
 	current_phase = Phase.idle

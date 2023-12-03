@@ -12,10 +12,7 @@ var transition_info = []
 var horizontal_forest_edges = []
 var vertical_forest_edges = []
 
-@export var Villager: PackedScene
-var villagers: Array[Villager] = []
-var homeless_villagers = []
-var home_cell_villager_map = {}
+var villagers: Villagers
 
 @export var Druid: PackedScene
 var druids: Array[Druid] = []
@@ -26,7 +23,7 @@ var treants: Array[Treant] = []
 var Treantling: PackedScene = preload("res://Scenes/Treantling.tscn")
 var treantlings: Array[Treantling] = []
 
-var crystal_manager: CrystalManager
+var crystals: Crystals
 
 @export var LightningStrike: PackedScene
 @export var Blast: PackedScene
@@ -119,7 +116,12 @@ func _ready():
 	
 	sounds = $Sounds
 	
-	crystal_manager = CrystalManager.new(self)
+	crystals = $Crystals
+	crystals.map = self
+	
+	villagers = $Villagers
+	villagers.map = self
+	
 	highest_possible_score = width * height * 10
 	
 	var array = []
@@ -145,33 +147,26 @@ func _process(delta):
 		for i in range(start_index, end_index):
 			var data = transition_info[i]
 			
-			despawn_villager_at(data[1], true)
+			villagers.despawn_at(data[1], true)
 			
 			set_cell(data[0], data[1], data[2], data[3])
 			
 			if is_house(data[1]):
-				spawn_villager(data[1])
+				villagers.spawn(data[1])
 		update_forest_edges()
 	elif advancement.current_phase == advancement.Phase.transitioning:
 		advancement.current_phase = advancement.Phase.idle
 		
-		if len(villagers) > 0:
-			var horst_exists = false
-			for villager in villagers:
-				if villager.is_devil:
-					horst_exists = true
-					break
-			if not horst_exists:
-				villagers[0].get_real()
+		villagers.check_horst_amount()
 		
 		for _i in random_starting_crystals:
-			crystal_manager.find_spot_and_spawn_crystal(randi_range(0, 2))
+			crystals.find_spot_and_spawn_crystal(randi_range(0, 2))
 		for _i in base_life_crystals:
-			crystal_manager.find_spot_and_spawn_crystal(Crystal.Type.life)
+			crystals.find_spot_and_spawn_crystal(Crystal.Type.life)
 		for _i in base_growth_crystals:
-			crystal_manager.find_spot_and_spawn_crystal(Crystal.Type.growth)
+			crystals.find_spot_and_spawn_crystal(Crystal.Type.growth)
 		for _i in base_weather_crystals:
-			crystal_manager.find_spot_and_spawn_crystal(Crystal.Type.weather)
+			crystals.find_spot_and_spawn_crystal(Crystal.Type.weather)
 		
 		emit_signal("transition_done")
 		emit_signal("score_changed")
@@ -247,10 +242,7 @@ func reset():
 	frost_boost = 0
 	update_frost_overlay()
 	
-	for villager in homeless_villagers:
-		despawn_villager(villager, true)
-	for villager in villagers:
-		villager.reset()
+	villagers.reset()
 	
 	for creature in druids + treants + treantlings:
 		remove_child(creature)
@@ -259,7 +251,7 @@ func reset():
 	treants = []
 	treantlings = []
 	
-	crystal_manager.reset()
+	crystals.reset()
 
 func reset_upgrades():
 	villager_actions		= base_villager_actions
@@ -407,17 +399,17 @@ func get_coldness():
 
 func update_rain_overlay():
 	if rain_duration > 0:
-		$RainOverlay.visible = true
+		$Overlays/Rain.visible = true
 	else:
-		$RainOverlay.visible = false
+		$Overlays/Rain.visible = false
 
 func update_frost_overlay():
 	var coldness = get_coldness()
 	if coldness > 0:
-		$FrostOverlay.visible = true
-		$FrostOverlay.modulate.a = min(1, coldness / float(villager_actions))
+		$Overlays/Frost.visible = true
+		$Overlays/Frost.modulate.a = min(1, coldness / float(villager_actions))
 	else:
-		$FrostOverlay.visible = false
+		$Overlays/Frost.visible = false
 
 func initialize_cell_labels():
 	var array = []
@@ -519,7 +511,7 @@ func set_yield(cell_position: Vector2i, amount: int):
 			set_plains(cell_position)
 		if previous_yield >= 10 and amount < 10:
 			update_cell_forest_edges(cell_position)
-			crystal_manager.forest_died_at(cell_position)
+			crystals.forest_died_at(cell_position)
 
 func get_building_progress(cell_position: Vector2i):
 	if is_house(cell_position):
@@ -552,55 +544,10 @@ func set_building_progress(cell_position: Vector2i, progress: int):
 			set_build_site(cell_position, progress)
 		elif progress >= 10:
 			set_house(cell_position)
-			if not cell_position in home_cell_villager_map:
-				if len(homeless_villagers) > 0:
-					var villager = homeless_villagers.pop_back()
-					villager.home_cell = cell_position
-					home_cell_villager_map[cell_position] = villager
-				else:
-					spawn_villager(cell_position)
+			villagers.occupy(cell_position)
 		else:
 			set_plains(cell_position)
-			despawn_villager_at(cell_position)
-
-func spawn_villager(cell_position: Vector2i):
-	var villager: Villager = Villager.instantiate()
-	villager.cell_position = cell_position
-	villager.home_cell = cell_position
-	villager.map = self
-	villager.update_position()
-	
-	villager.connect("moved", advancement._villager_moved)
-	villager.connect("chopped_tree", advancement._villager_chopped)
-	villager.connect("built_house", advancement._villager_built)
-	
-	home_cell_villager_map[cell_position] = villager
-	villagers.append(villager)
-	villager.actions = villagers[0].actions
-	
-	add_child(villager)
-	
-	if not advancement.current_phase == advancement.Phase.transitioning:
-		born_villagers += 1
-	highest_villager_count = max(highest_villager_count, len(villagers))
-
-func despawn_villager_at(cell_position: Vector2i, also_horst: bool = false):
-	if cell_position in home_cell_villager_map:
-		var villager = home_cell_villager_map[cell_position]
-		despawn_villager(villager, also_horst)
-
-func despawn_villager(villager: Villager, also_horst: bool = true):
-	home_cell_villager_map.erase(villager.home_cell)
-	if also_horst or not villager.is_devil:
-		villagers.erase(villager)
-		homeless_villagers.erase(villager)
-		remove_child(villager)
-		villager.queue_free()
-		if not advancement.current_phase == advancement.Phase.transitioning:
-			dead_villagers += 1
-	else:
-		homeless_villagers.append(villager)
-		villager.home_cell = null
+			villagers.despawn_at(cell_position)
 
 # miscellaneous functions
 

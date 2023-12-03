@@ -46,19 +46,19 @@ func set_lifespan(new_lifespan: int):
 	lifespan_left = min(lifespan_left, lifespan)
 
 func stomp():
-	var previous_villager_amount = len(map.villagers)
+	var previous_villager_amount = len(map.villagers.villagers)
 	var damage = min(stomp_strength, map.get_building_progress(cell_position))
 	var growth = min(stomp_strength - damage, floori((10 - map.get_yield(cell_position)) / 4.0))
 	map.trees_from_treantlings += map.increase_yield(cell_position, damage + growth)
-	map.deaths_to_treantlings += previous_villager_amount - len(map.villagers)
+	map.deaths_to_treantlings += previous_villager_amount - len(map.villagers.villagers)
 
 func set_death_spread(amount: int):
 	death_spread = amount
 
 func convert_to_forest():
-	var previous_villager_amount = len(map.villagers)
+	var previous_villager_amount = len(map.villagers.villagers)
 	map.spread_forest(cell_position, death_spread, true, "treantling")
-	map.deaths_to_treantlings += previous_villager_amount - len(map.villagers)
+	map.deaths_to_treantlings += previous_villager_amount - len(map.villagers.villagers)
 	actions = 0
 	emit_signal("has_died", self)
 

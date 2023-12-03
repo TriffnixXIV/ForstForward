@@ -99,7 +99,7 @@ func _input(event):
 
 func get_cell_from_position(coords: Vector2i):
 	var map_position = $Map.to_local(coords)
-	if $Map/CellHighlight.is_large():
+	if $Map/Overlays/CellHighlight.is_large():
 		map_position.x -= floori($Map.tile_set.tile_size.x / 2.0)
 		map_position.y -= floori($Map.tile_set.tile_size.y / 2.0)
 	map_position.x = floori(map_position.x / $Map.tile_set.tile_size.x)
@@ -108,26 +108,26 @@ func get_cell_from_position(coords: Vector2i):
 
 func update_highlight():
 	update_hightlight_visibility()
-	if $Map/CellHighlight.visible:
+	if $Map/Overlays/CellHighlight.visible:
 		update_highlight_position()
 		update_highlight_color()
 
 func update_hightlight_visibility():
 	if current_map_position != null and $Map.is_valid_tile(current_map_position) and game_state == GameState.playing and $Map.advancement.current_phase == $Map.advancement.Phase.idle:
-		$Map/CellHighlight.visible = true
+		$Map/Overlays/CellHighlight.visible = true
 	else:
-		$Map/CellHighlight.visible = false
+		$Map/Overlays/CellHighlight.visible = false
 
 func update_highlight_position():
 	update_highlight_color()
 	if $Map.is_valid_tile(current_map_position) and game_state == GameState.playing and $Map.advancement.current_phase == $Map.advancement.Phase.idle:
-		$Map/CellHighlight.position.x = current_map_position.x * $Map.tile_set.tile_size.x
-		$Map/CellHighlight.position.y = current_map_position.y * $Map.tile_set.tile_size.y
+		$Map/Overlays/CellHighlight.position.x = current_map_position.x * $Map.tile_set.tile_size.x
+		$Map/Overlays/CellHighlight.position.y = current_map_position.y * $Map.tile_set.tile_size.y
 
 func update_highlight_color():
 	if selected_action == null:
-		$Map/CellHighlight.set_normal()
-		$Map/CellHighlight.set_neutral()
+		$Map/Overlays/CellHighlight.set_normal()
+		$Map/Overlays/CellHighlight.set_neutral()
 	else:
 		var valid_click_target = false
 		match selected_action.get_active_type():
@@ -146,22 +146,22 @@ func update_highlight_color():
 		
 		match selected_action.get_active_type():
 			Action.Type.spawn_treant:
-				$Map/CellHighlight.set_large()
+				$Map/Overlays/CellHighlight.set_large()
 			_:
-				$Map/CellHighlight.set_normal()
+				$Map/Overlays/CellHighlight.set_normal()
 		
 		if valid_click_target:
-			$Map/CellHighlight.set_positive()
+			$Map/Overlays/CellHighlight.set_positive()
 		else:
-			$Map/CellHighlight.set_negative()
+			$Map/Overlays/CellHighlight.set_negative()
 
 func set_character_transparency(boolean: bool):
 	characters_are_transparent = boolean
 	if characters_are_transparent:
-		for creature in $Map.villagers + $Map.druids + $Map.treants + $Map.treantlings:
+		for creature in $Map.villagers.villagers + $Map.druids + $Map.treants + $Map.treantlings:
 			creature.modulate.a = 0.2
 	else:
-		for creature in $Map.villagers + $Map.druids + $Map.treants + $Map.treantlings:
+		for creature in $Map.villagers.villagers + $Map.druids + $Map.treants + $Map.treantlings:
 			creature.modulate.a = 1
 
 func set_game_state(state: GameState):
@@ -225,7 +225,7 @@ func next_turn_step():
 		crystal.harvest()
 		crystal = null
 	
-	if len($Map.crystal_manager.fully_grown_crystals) > 0:
+	if len($Map.crystals.fully_grown_crystals) > 0:
 		upgrading = true
 		next_upgrades()
 	else:
@@ -233,7 +233,7 @@ func next_turn_step():
 		next_actions()
 
 func next_upgrades():
-	crystal = $Map.crystal_manager.claim_crystal()
+	crystal = $Map.crystals.claim_crystal()
 	crystal.set_spark_state(Crystal.SparkState.active)
 	var new_upgrades = upgrade_factory.get_upgrades(crystal.type)
 	
@@ -358,7 +358,7 @@ func skip_round():
 func advance():
 	lock_selection(true)
 	if selected_action != null:
-		$Map.crystal_manager.add_progress(selected_action.get_crystal_type(), 2)
+		$Map.crystals.add_progress(selected_action.get_crystal_type(), 2)
 		match selected_action:
 			top_action:
 				$Sidebar/InGameUI/TopOption/Sparks.set_crystal(top_action.get_crystal_type())
@@ -439,7 +439,7 @@ func reset_highscore_highlighting():
 	$Sidebar/Records/Horst/Slowest/Number.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 
 func update_numbers():
-	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.text = str(len($Map.villagers))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.text = str(len($Map.villagers.villagers))
 	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.text = str($Map.get_coldness())
 	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8) if $Map.get_coldness() == $Map.min_frost else Color(0.5, 1, 1, 1) if $Map.frost_boost > 0 else Color(0, 0.5, 1, 1)

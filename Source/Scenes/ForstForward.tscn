@@ -1,4 +1,4 @@
-[gd_scene load_steps=118 format=3 uid="uid://vsbq62808p6r"]
+[gd_scene load_steps=119 format=3 uid="uid://vsbq62808p6r"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -10,7 +10,6 @@
 [ext_resource type="AudioStream" uid="uid://id7di46s4g3d" path="res://Sounds/LowWood.wav" id="6_ybxwl"]
 [ext_resource type="Texture2D" uid="uid://dqiy4yeveobu2" path="res://Images/Tiles/Plains.png" id="7_gswc0"]
 [ext_resource type="Script" path="res://Code/Advancement.gd" id="7_xxdmg"]
-[ext_resource type="PackedScene" uid="uid://204iv18oep35" path="res://Scenes/Villager.tscn" id="8_kr2na"]
 [ext_resource type="Texture2D" uid="uid://c2kj8qomwkvw8" path="res://Images/Tiles/Growth.png" id="8_rvm20"]
 [ext_resource type="Texture2D" uid="uid://d1qg7dksiud0w" path="res://Images/Tiles/Forest.png" id="9_s63f6"]
 [ext_resource type="PackedScene" uid="uid://c7tt164thkk3e" path="res://Scenes/Druid.tscn" id="9_y30ib"]
@@ -45,6 +44,8 @@
 [ext_resource type="Texture2D" uid="uid://dnsatdhdbguxs" path="res://Images/Highlights/RedHighlight.png" id="34_70uow"]
 [ext_resource type="Texture2D" uid="uid://xk3vg20yrq4e" path="res://Images/Highlights/LargeGreenHighlight.png" id="35_3tfe7"]
 [ext_resource type="Texture2D" uid="uid://cqu2nut45lepw" path="res://Images/Highlights/LargeHighlight.png" id="36_1cjcc"]
+[ext_resource type="Script" path="res://Code/Crystals.gd" id="36_utnoc"]
+[ext_resource type="Script" path="res://Code/Villagers.gd" id="37_cce84"]
 [ext_resource type="Texture2D" uid="uid://c7ix3anx83jq7" path="res://Images/Highlights/LargeRedHighlight.png" id="37_k0mh1"]
 [ext_resource type="LabelSettings" uid="uid://bterirwd56o63" path="res://Text/CellNumberLabelSettings.tres" id="41_7rtjq"]
 [ext_resource type="Texture2D" uid="uid://1t3o6p2kvsui" path="res://Images/Treant.png" id="42_e0d5f"]
@@ -283,7 +284,6 @@ layer_0/tile_data = PackedInt32Array(65540, 2, 0, 65541, 2, 0, 65542, 2, 0, 6554
 script = ExtResource("12_6qirj")
 levels = Array[PackedScene]([ExtResource("15_407iu"), ExtResource("16_6jsyv"), ExtResource("17_qqkob"), ExtResource("18_ngmoe"), ExtResource("19_qo6jg"), ExtResource("18_m1f27"), ExtResource("19_p7cwc")])
 ForestEdge = ExtResource("5_4pb2x")
-Villager = ExtResource("8_kr2na")
 Druid = ExtResource("9_y30ib")
 Treant = ExtResource("17_rglu0")
 LightningStrike = ExtResource("25_g2uic")
@@ -332,21 +332,38 @@ stream = ExtResource("28_hswee")
 [node name="Timer" type="Timer" parent="Map/Advancement"]
 wait_time = 0.25
 
-[node name="FrostOverlay" type="Sprite2D" parent="Map"]
+[node name="Crystals" type="Node2D" parent="Map"]
+script = ExtResource("36_utnoc")
+
+[node name="Villagers" type="Node2D" parent="Map"]
+script = ExtResource("37_cce84")
+
+[node name="Treants" type="Node2D" parent="Map"]
+
+[node name="Druids" type="Node2D" parent="Map"]
+
+[node name="Treantlings" type="Node2D" parent="Map"]
+
+[node name="Overlays" type="Node2D" parent="Map"]
+
+[node name="Frost" type="Sprite2D" parent="Map/Overlays"]
 visible = false
 z_index = 2
+position = Vector2(5, 5)
 texture = ExtResource("31_ctvyl")
 centered = false
 
-[node name="RainOverlay" type="Sprite2D" parent="Map"]
+[node name="Rain" type="Sprite2D" parent="Map/Overlays"]
 visible = false
 z_index = 2
+position = Vector2(5, 5)
 texture = ExtResource("32_dub1y")
 centered = false
 
-[node name="CellHighlight" type="Sprite2D" parent="Map"]
+[node name="CellHighlight" type="Sprite2D" parent="Map/Overlays"]
 visible = false
 z_index = 2
+position = Vector2(5, 5)
 texture = ExtResource("31_3mgxn")
 centered = false
 script = ExtResource("33_013ga")
