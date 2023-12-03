@@ -8,10 +8,7 @@ var transition_duration: float = 0.25
 var transition_progress: float = 0.0
 var transition_info = []
 
-@export var ForestEdge: PackedScene
-var horizontal_forest_edges = []
-var vertical_forest_edges = []
-
+var forest_edges: ForestEdges
 var villagers: Villagers
 
 @export var Druid: PackedScene
@@ -111,27 +108,22 @@ func _ready():
 	super._ready()
 	reset_upgrades()
 	
-	advancement = $Advancement
-	advancement.map = self
-	
 	sounds = $Sounds
-	
+	advancement = $Advancement
+	forest_edges = $ForestEdges
 	crystals = $Crystals
-	crystals.map = self
-	
 	villagers = $Villagers
+	
+	advancement.map = self
+	forest_edges.map = self
+	crystals.map = self
 	villagers.map = self
 	
 	highest_possible_score = width * height * 10
 	
-	var array = []
-	array.resize(height)
-	for x in width + 1:
-		horizontal_forest_edges.append(array.duplicate())
-	array.resize(width)
-	for y in height + 1:
-		vertical_forest_edges.append(array.duplicate())
+	forest_edges.resize()
 	
+	var array = []
 	cell_tree_distance_map = []
 	array.resize(height)
 	array.fill(width + height)
@@ -153,7 +145,7 @@ func _process(delta):
 			
 			if is_house(data[1]):
 				villagers.spawn(data[1])
-		update_forest_edges()
+		forest_edges.update()
 	elif advancement.current_phase == advancement.Phase.transitioning:
 		advancement.current_phase = advancement.Phase.idle
 		
@@ -296,47 +288,6 @@ func reset_stats():
 	trees_from_treants = 0
 	treantlings_spawned = 0
 	trees_from_treantlings = 0
-
-# forest edge stuff
-
-func update_forest_edges():
-	for x in width + 1:
-		for y in height + 1:
-			update_horizontal_edge(Vector2i(x, y))
-			update_vertical_edge(Vector2i(x, y))
-
-func update_cell_forest_edges(cell_position: Vector2i):
-	update_horizontal_edge(cell_position)
-	update_horizontal_edge(cell_position + Vector2i(0, 1))
-	update_vertical_edge(cell_position)
-	update_vertical_edge(cell_position + Vector2i(1, 0))
-
-func update_vertical_edge(edge_position: Vector2i):
-	if edge_position.x < len(horizontal_forest_edges) and edge_position.y < len(horizontal_forest_edges[edge_position.x]):
-		var show_edge = (get_cell_source_id(0, edge_position) in [-1, 2]) != (get_cell_source_id(0, Vector2i(edge_position.x-1, edge_position.y)) in [-1, 2])
-		if show_edge and horizontal_forest_edges[edge_position.x][edge_position.y] == null:
-			var instance = ForestEdge.instantiate()
-			instance.position = Vector2i(edge_position.x * tile_set.tile_size.x, int((edge_position.y + 0.5) * tile_set.tile_size.y))
-			horizontal_forest_edges[edge_position.x][edge_position.y] = instance
-			add_child(instance)
-		if not show_edge and not horizontal_forest_edges[edge_position.x][edge_position.y] == null:
-			var instance = horizontal_forest_edges[edge_position.x][edge_position.y]
-			instance.queue_free()
-			horizontal_forest_edges[edge_position.x][edge_position.y] = null
-
-func update_horizontal_edge(edge_position: Vector2i):
-	if edge_position.y < len(vertical_forest_edges) and edge_position.x < len(vertical_forest_edges[edge_position.y]):
-		var show_edge = (get_cell_source_id(0, edge_position) in [-1, 2]) != (get_cell_source_id(0, Vector2i(edge_position.x, edge_position.y-1)) in [-1, 2])
-		if show_edge and vertical_forest_edges[edge_position.y][edge_position.x] == null:
-			var instance = ForestEdge.instantiate()
-			instance.position = Vector2i(int((edge_position.x + 0.5) * tile_set.tile_size.x), edge_position.y * tile_set.tile_size.y)
-			instance.rotation = PI / 2
-			vertical_forest_edges[edge_position.y][edge_position.x] = instance
-			add_child(instance)
-		if not show_edge and not vertical_forest_edges[edge_position.y][edge_position.x] == null:
-			var instance = vertical_forest_edges[edge_position.y][edge_position.x]
-			instance.queue_free()
-			vertical_forest_edges[edge_position.y][edge_position.x] = null
 
 # miscellaneous advancement stuff
 
@@ -506,11 +457,11 @@ func set_yield(cell_position: Vector2i, amount: int):
 			set_growth(cell_position, amount)
 		elif amount >= 10:
 			set_forest(cell_position)
-			update_cell_forest_edges(cell_position)
+			forest_edges.update_cell(cell_position)
 		else:
 			set_plains(cell_position)
 		if previous_yield >= 10 and amount < 10:
-			update_cell_forest_edges(cell_position)
+			forest_edges.update_cell(cell_position)
 			crystals.forest_died_at(cell_position)
 
 func get_building_progress(cell_position: Vector2i):
