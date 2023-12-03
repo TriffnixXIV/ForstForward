@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://cq7pqe3iw80wp" path="res://Images/Treantling.png" id="2_14xa4"]
 
 [node name="Treantling" type="Node2D"]
-z_index = 1
 script = ExtResource("1_ouokp")
 
 [node name="Sprite" type="Sprite2D" parent="."]

@@ -4,7 +4,6 @@
 [ext_resource type="Script" path="res://Code/Treant.gd" id="1_qw5fn"]
 
 [node name="Treant" type="Node2D"]
-z_index = 1
 script = ExtResource("1_qw5fn")
 
 [node name="Sprite" type="Sprite2D" parent="."]

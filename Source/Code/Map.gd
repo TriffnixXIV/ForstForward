@@ -9,26 +9,18 @@ var transition_progress: float = 0.0
 var transition_info = []
 
 var forest_edges: ForestEdges
-var villagers: Villagers
-
-@export var Druid: PackedScene
-var druids: Array[Druid] = []
-
-@export var Treant: PackedScene
-var treants: Array[Treant] = []
-
-var Treantling: PackedScene = preload("res://Scenes/Treantling.tscn")
-var treantlings: Array[Treantling] = []
-
 var crystals: Crystals
+var villagers: Villagers
+var treants: Treants
+var treantlings: Treantlings
+var druids: Druids
 
-@export var LightningStrike: PackedScene
-@export var Blast: PackedScene
-@export var GrowthEffect: PackedScene
+var LightningStrike: PackedScene = preload("res://Scenes/Lightning.tscn")
+var Blast: PackedScene = preload("res://Scenes/Blast.tscn")
+var GrowthEffect: PackedScene = preload("res://Scenes/GrowthEffect.tscn")
 
 var highest_possible_score: int
 
-var base_villager_actions = 12
 var base_treant_actions = 6
 var base_treant_has_lifespan = false
 var base_treant_lifespan = 40
@@ -48,7 +40,6 @@ var base_rain_growth_boost = 0
 var base_rain_frost_boost = 0
 var base_min_frost = 0
 
-var villager_actions: int
 var treant_actions: int
 var treant_has_lifespan: bool
 var treant_lifespan: int
@@ -113,11 +104,17 @@ func _ready():
 	forest_edges = $ForestEdges
 	crystals = $Crystals
 	villagers = $Villagers
+	treants = $Treants
+	treantlings = $Treantlings
+	druids = $Druids
 	
 	advancement.map = self
 	forest_edges.map = self
 	crystals.map = self
 	villagers.map = self
+	treants.map = self
+	treantlings.map = self
+	druids.map = self
 	
 	highest_possible_score = width * height * 10
 	
@@ -234,19 +231,13 @@ func reset():
 	frost_boost = 0
 	update_frost_overlay()
 	
-	villagers.reset()
-	
-	for creature in druids + treants + treantlings:
-		remove_child(creature)
-		creature.queue_free()
-	druids = []
-	treants = []
-	treantlings = []
-	
 	crystals.reset()
+	villagers.reset()
+	druids.reset()
+	treants.reset()
+	treantlings.reset()
 
 func reset_upgrades():
-	villager_actions		= base_villager_actions
 	treant_actions			= base_treant_actions
 	treant_has_lifespan		= base_treant_has_lifespan
 	treant_lifespan			= base_treant_lifespan
@@ -358,7 +349,7 @@ func update_frost_overlay():
 	var coldness = get_coldness()
 	if coldness > 0:
 		$Overlays/Frost.visible = true
-		$Overlays/Frost.modulate.a = min(1, coldness / float(villager_actions))
+		$Overlays/Frost.modulate.a = min(1, coldness / float(villagers.actions))
 	else:
 		$Overlays/Frost.visible = false
 
@@ -721,89 +712,13 @@ func remove_lightning(lightning_strike: LightningStrike):
 	lightning_strike.queue_free()
 
 func count_treant_spawn_spots():
-	return count_spots(can_spawn_treant)
-
-func can_spawn_treant(cell_position: Vector2i):
-	for diff in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]:
-		var cell = cell_position + diff
-		if not is_forest(cell):
-			return false
-	return true
-
-func spawn_treant(cell_position: Vector2i):
-	if can_spawn_treant(cell_position):
-		var treant: Treant = Treant.instantiate()
-		treant.cell_position = cell_position
-		treant.map = self
-		if treant_has_lifespan:
-			treant.set_lifespan(treant_lifespan)
-		treant.update_position()
-		treant.connect("has_died", despawn_treant)
-		treants.append(treant)
-		add_child(treant)
-		treants_spawned += 1
-		return true
-	else:
-		return false
-
-func set_treant_lifespan(actions: int):
-	treant_lifespan = actions
-	for treant in treants:
-		treant.set_lifespan(treant_lifespan)
-
-func despawn_treant(treant: Treant):
-	treants.erase(treant)
-	remove_child(treant)
-	treant.queue_free()
+	return count_spots(treants.can_spawn)
 
 func count_treantling_spawn_spots():
-	return count_spots(can_spawn_treantling)
-
-func can_spawn_treantling(cell_position: Vector2i):
-	return is_forest(cell_position)
-
-func spawn_treantling(cell_position: Vector2i):
-	if can_spawn_treantling(cell_position):
-		var treantling: Treantling = Treantling.instantiate()
-		treantling.cell_position = cell_position
-		treantling.map = self
-		treantling.set_lifespan(treantling_lifespan)
-		treantling.update_position()
-		treantling.connect("has_died", despawn_treantling)
-		treantlings.append(treantling)
-		add_child(treantling)
-		treantlings_spawned += 1
-		return true
-	else:
-		return false
-
-func set_treantling_lifespan(actions: int):
-	treantling_lifespan = actions
-	for treantling in treantlings:
-		treantling.set_lifespan(treantling_lifespan)
-
-func despawn_treantling(treantling: Treantling):
-	treantlings.erase(treantling)
-	remove_child(treantling)
-	treantling.queue_free()
+	return count_spots(treantlings.can_spawn)
 
 func count_druid_spawn_spots():
-	return count_spots(can_spawn_druid)
-
-func can_spawn_druid(cell_position: Vector2i):
-	return is_forest(cell_position)
-
-func spawn_druid(cell_position: Vector2i):
-	if can_spawn_druid(cell_position):
-		var druid: Druid = Druid.instantiate()
-		druid.cell_position = cell_position
-		druid.map = self
-		druid.update_position()
-		druids.append(druid)
-		add_child(druid)
-		return true
-	else:
-		return false
+	return count_spots(druids.can_spawn)
 
 func blast_with_fire(cell_position: Vector2i):
 	var blast: Blast = Blast.instantiate()

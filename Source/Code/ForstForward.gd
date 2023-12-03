@@ -132,11 +132,11 @@ func update_highlight_color():
 		var valid_click_target = false
 		match selected_action.get_active_type():
 			Action.Type.spawn_treant:
-				valid_click_target = $Map.can_spawn_treant(current_map_position)
+				valid_click_target = $Map.treants.can_spawn(current_map_position)
 			Action.Type.spawn_treantling:
-				valid_click_target = $Map.can_spawn_treantling(current_map_position)
+				valid_click_target = $Map.treantlings.can_spawn(current_map_position)
 			Action.Type.spawn_druid:
-				valid_click_target = $Map.can_spawn_druid(current_map_position)
+				valid_click_target = $Map.druids.can_spawn(current_map_position)
 			Action.Type.plant:
 				valid_click_target = $Map.can_plant_forest(current_map_position)
 			Action.Type.spread:
@@ -392,6 +392,11 @@ func _on_advancement_done():
 	start_next_round()
 
 func start_next_round():
+	if len($Map.crystals.fully_grown_crystals) > 0:
+		$Sounds.upgrade()
+	else:
+		play_advance_sound()
+	
 	current_round += 1
 	next_turn_step()
 	unlock_selection()
@@ -453,9 +458,9 @@ func update_numbers():
 	$Sidebar/InGameUI/NumberContainer/Numbers/GrowthUpgrades/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 	$Sidebar/InGameUI/NumberContainer/Numbers/WeatherUpgrades/Label.text = str(upgrade_factory.total_weather_upgrades)
 	$Sidebar/InGameUI/NumberContainer/Numbers/WeatherUpgrades/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
-	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.text = str(len($Map.druids))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.text = str(len($Map.druids.druids))
 	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
-	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.text = str(len($Map.treants))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.text = str(len($Map.treants.treants))
 	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 
 func update_score():

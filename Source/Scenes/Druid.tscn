@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://sw1gahi5bvs0" path="res://Images/DruidStuff/Druid.png" id="2_lpndy"]
 
 [node name="Druid" type="Node2D"]
-z_index = 1
 script = ExtResource("1_0dedn")
 
 [node name="Circle" type="Sprite2D" parent="."]

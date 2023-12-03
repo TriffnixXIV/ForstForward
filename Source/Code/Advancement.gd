@@ -6,7 +6,7 @@ var map
 enum Phase {transitioning, idle, starting, druids, growth, villagers}
 var current_phase = Phase.idle
 
-var still_acting: bool = false
+var actions_left: bool = false
 
 var step_done = false
 
@@ -29,27 +29,27 @@ func stop():
 
 func start_druid_phase():
 	$Sounds/DruidStart.play()
-	still_acting = true
+	actions_left = true
 	current_phase = Phase.druids
 	
-	for druid in map.druids:
+	for druid in map.druids.druids:
 		druid.prepare_turn(map.druid_actions)
 		druid.set_circle_trees(map.druid_circle_trees)
 	
-	for treant in map.treants:
+	for treant in map.treants.treants:
 		treant.prepare_turn(map.treant_actions)
 		treant.set_death_spread(map.treant_death_spread)
 	
-	for treantling in map.treantlings:
+	for treantling in map.treantlings.treantlings:
 		treantling.prepare_turn(map.treantling_actions)
 		treantling.set_stomp_strength(map.treantling_strength)
 		treantling.set_death_spread(map.treantling_death_spread)
 
 func next_druid_step():
 	$Sounds/DruidAdvance.play()
-	still_acting = false
-	for creature in map.druids + map.treants + map.treantlings:
-		still_acting = creature.act() or still_acting
+	actions_left = false
+	for creature in map.druids.druids + map.treants.treants + map.treantlings.treantlings:
+		actions_left = creature.act() or actions_left
 
 func start_growth_phase():
 	$Sounds/GrowthStart.play()
@@ -74,30 +74,23 @@ func next_growth_step():
 		map.increase_yield(cell, growth_amounts[cell])
 		map.grown_trees += map.get_yield(cell) - previous_yield
 	
-	map.update_forest_edges()
+	map.forest_edges.update()
 	map.remaining_growth_stages -= 1
 	map.total_growth_stages += 1
 
 func start_villager_phase():
 	$Sounds/HorstStart.play()
-	still_acting = true
+	actions_left = true
 	current_phase = Phase.villagers
 	
-	var action_loss = map.get_coldness()
-	for villager in map.villagers.villagers:
-		map.actions_lost_to_frost += min(map.villager_actions, action_loss)
-		villager.prepare_turn(map.villager_actions - action_loss)
-	
-	map.update_cell_tree_distance_map()
+	map.villagers.prepare()
 
 func next_villager_step():
 	villager_moved = false
 	villager_chopped = false
 	villager_built = false
 	
-	still_acting = false
-	for villager in map.villagers.villagers:
-		still_acting = villager.act() or still_acting
+	actions_left = map.villagers.act()
 	
 	$Sounds/BaseAdvance.play()
 	if villager_moved:		$Sounds.villager_move()
@@ -117,12 +110,12 @@ func next_step():
 		step_done = false
 		match current_phase:
 			Phase.starting:
-				if len(map.druids) == 0 and len(map.treantlings) == 0 and len(map.treants) == 0:
+				if len(map.druids.druids) == 0 and len(map.treantlings.treantlings) == 0 and len(map.treants.treants) == 0:
 					start_growth_phase()
 				else:
 					start_druid_phase()
 			Phase.druids:
-				if still_acting:
+				if actions_left:
 					next_druid_step()
 				else:
 					start_growth_phase()
@@ -132,7 +125,7 @@ func next_step():
 				else:
 					start_villager_phase()
 			Phase.villagers:
-				if still_acting:
+				if actions_left:
 					next_villager_step()
 				else:
 					finish()

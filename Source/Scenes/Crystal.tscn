@@ -1,12 +1,11 @@
 [gd_scene load_steps=4 format=3 uid="uid://bcdc607uvvqyb"]
 
-[ext_resource type="Script" path="res://Code/Crystal.gd" id="1_pvdkx"]
+[ext_resource type="Script" path="res://Code/Crystal.gd" id="1_avkhr"]
 [ext_resource type="Texture2D" uid="uid://bfakcb02cubvj" path="res://Images/Crystals/Crystals.png" id="2_bowqc"]
 [ext_resource type="Texture2D" uid="uid://fk8i61cepr3y" path="res://Images/Crystals/SparksBlue.png" id="17_mhc2i"]
 
 [node name="Crystal" type="Node2D"]
-z_index = 1
-script = ExtResource("1_pvdkx")
+script = ExtResource("1_avkhr")
 
 [node name="Sparks" type="Sprite2D" parent="."]
 position = Vector2(-20, -20)

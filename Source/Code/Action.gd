@@ -147,11 +147,11 @@ func advance(map: Map, cell_position: Vector2i):
 	var success = false
 	match type:
 		Type.spawn_treant:
-			success = map.spawn_treant(cell_position)
+			success = map.treants.spawn(cell_position)
 		Type.spawn_treantling:
-			success = map.spawn_treantling(cell_position)
+			success = map.treantlings.spawn(cell_position)
 		Type.spawn_druid:
-			success = map.spawn_druid(cell_position)
+			success = map.druids.spawn(cell_position)
 		Type.spread:
 			success = map.spread_forest(cell_position, strength)
 			emit_signal("numbers_changed")

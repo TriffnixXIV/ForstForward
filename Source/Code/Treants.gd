@@ -1,0 +1,46 @@
+extends Node2D
+class_name Treants
+
+var map: Map
+
+var TreantScene: PackedScene = preload("res://Scenes/Treant.tscn")
+var treants: Array[Treant] = []
+
+func reset():
+	for treant in treants:
+		remove_child(treant)
+		treant.queue_free()
+	treants = []
+
+func can_spawn(cell_position: Vector2i):
+	for diff in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]:
+		var cell = cell_position + diff
+		if not map.is_forest(cell):
+			return false
+	return true
+
+func spawn(cell_position: Vector2i):
+	if can_spawn(cell_position):
+		var treant: Treant = TreantScene.instantiate()
+		treant.cell_position = cell_position
+		treant.map = map
+		if map.treant_has_lifespan:
+			treant.set_lifespan(map.treant_lifespan)
+		treant.update_position()
+		treant.connect("has_died", despawn)
+		treants.append(treant)
+		add_child(treant)
+		map.treants_spawned += 1
+		return true
+	else:
+		return false
+
+func set_lifespan(actions: int):
+	map.treant_lifespan = actions
+	for treant in treants:
+		treant.set_lifespan(map.treant_lifespan)
+
+func despawn(treant: Treant):
+	treants.erase(treant)
+	remove_child(treant)
+	treant.queue_free()

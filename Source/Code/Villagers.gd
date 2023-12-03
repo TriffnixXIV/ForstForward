@@ -10,11 +10,30 @@ var home_cell_villager_map = {}
 
 var horst_amount: int = 1
 
+var base_actions: int = 12
+var actions: int
+
 func reset():
+	actions = base_actions
+	
 	for villager in homeless_villagers:
 		despawn(villager, true)
 	for villager in villagers:
 		villager.reset()
+
+func prepare():
+	var action_loss = map.get_coldness()
+	for villager in villagers:
+		map.actions_lost_to_frost += min(actions, action_loss)
+		villager.prepare_turn(actions - action_loss)
+	
+	map.update_cell_tree_distance_map()
+
+func act():
+	var actions_left = false
+	for villager in villagers:
+		actions_left = villager.act() or actions_left
+	return actions_left
 
 func check_horst_amount():
 	if len(villagers) > 0:
