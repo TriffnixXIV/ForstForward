@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://ctm6yo8wbtpdu"
-path="res://.godot/imported/Chop2.wav-8ad21ed21dac11ab204fb1aea446c00f.sample"
+path="res://.godot/imported/Chop2.wav-76c2a3a23147eb512b72222c4170718c.sample"
 
 [deps]
 
-source_file="res://Sounds/VillagerAdvancementSounds/Chop2.wav"
-dest_files=["res://.godot/imported/Chop2.wav-8ad21ed21dac11ab204fb1aea446c00f.sample"]
+source_file="res://Sounds/AdvancementSounds/Chop2.wav"
+dest_files=["res://.godot/imported/Chop2.wav-76c2a3a23147eb512b72222c4170718c.sample"]
 
 [params]
 

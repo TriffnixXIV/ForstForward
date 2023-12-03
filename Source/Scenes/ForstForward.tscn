@@ -305,7 +305,19 @@ volume_db = -6.0
 [node name="Build" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 volume_db = 5.0
 
-[node name="Grow" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+[node name="Grow1" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+stream = ExtResource("25_ayc6w")
+volume_db = -5.0
+
+[node name="Grow2" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+stream = ExtResource("25_ayc6w")
+volume_db = -5.0
+
+[node name="Grow3" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+stream = ExtResource("25_ayc6w")
+volume_db = -5.0
+
+[node name="Grow4" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("25_ayc6w")
 volume_db = -5.0
 

@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://cb72qv0m3svrc"
-path="res://.godot/imported/Step2.wav-90f4dda859e6b19c6a0177efc613bb43.sample"
+path="res://.godot/imported/Step2.wav-3e5b723d446599035a2cad3b2e848b48.sample"
 
 [deps]
 
-source_file="res://Sounds/VillagerAdvancementSounds/Step2.wav"
-dest_files=["res://.godot/imported/Step2.wav-90f4dda859e6b19c6a0177efc613bb43.sample"]
+source_file="res://Sounds/AdvancementSounds/Step2.wav"
+dest_files=["res://.godot/imported/Step2.wav-3e5b723d446599035a2cad3b2e848b48.sample"]
 
 [params]
 

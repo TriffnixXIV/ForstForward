@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://baecb70xpr2gt"
-path="res://.godot/imported/Build2.wav-dfab38875473a05b256b0f302d988c36.sample"
+path="res://.godot/imported/Build2.wav-c1b061abf615f0269f07c85e926c5682.sample"
 
 [deps]
 
-source_file="res://Sounds/VillagerAdvancementSounds/Build2.wav"
-dest_files=["res://.godot/imported/Build2.wav-dfab38875473a05b256b0f302d988c36.sample"]
+source_file="res://Sounds/AdvancementSounds/Build2.wav"
+dest_files=["res://.godot/imported/Build2.wav-c1b061abf615f0269f07c85e926c5682.sample"]
 
 [params]
 
