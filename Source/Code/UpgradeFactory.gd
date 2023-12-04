@@ -245,7 +245,7 @@ func get_available_upgrades(type: Crystal.Type):
 			
 			if prototype.level >= 5 * map.rain_growth_boost:
 				text = "rain growth boost\n+" + str(map.rain_growth_boost) + " -> +" + str(map.rain_growth_boost + 1)
-				text += "" if map.rain_growth_boost % 2 else "\nrain tickdown rate\n" + get_change_text(map.rain_decay_rate, 1)
+				text += "" if map.rain_growth_boost % 2 == 0 else "\nrain tickdown rate\n" + get_change_text(map.rain_decay_rate, 1)
 				callback = func(m: Map, _af: ActionFactory, _ap: ActionPrototype):
 					m.rain_decay_rate = m.rain_decay_rate + (m.rain_growth_boost % 2)
 					m.rain_growth_boost = m.rain_growth_boost + 1
@@ -254,7 +254,7 @@ func get_available_upgrades(type: Crystal.Type):
 			
 			if prototype.level >= 3 + 5 * map.rain_frost_boost:
 				text = "rain frost boost\n+" + str(map.rain_frost_boost) + " -> +" + str(map.rain_frost_boost + 1)
-				text += "" if map.rain_frost_boost % 2 else "\nrain tickdown rate\n" + get_change_text(map.rain_decay_rate, 1)
+				text += "" if map.rain_frost_boost % 2 == 0 else "\nrain tickdown rate\n" + get_change_text(map.rain_decay_rate, 1)
 				callback = func(m: Map, _af: ActionFactory, _ap: ActionPrototype):
 					m.rain_decay_rate = m.rain_decay_rate + (m.rain_frost_boost % 2)
 					m.rain_frost_boost = m.rain_frost_boost + 1
