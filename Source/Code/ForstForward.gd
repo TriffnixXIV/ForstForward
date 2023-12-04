@@ -15,8 +15,8 @@ var bottom_action: Action = Action.new()
 var crystal: Crystal
 
 var upgrade_factory: UpgradeFactory = UpgradeFactory.new()
-var top_upgrade: Upgrade = Upgrade.new()
-var bottom_upgrade: Upgrade = Upgrade.new()
+var top_upgrade: Upgrade = Upgrade.new("", func(): return null, null)
+var bottom_upgrade: Upgrade = Upgrade.new("", func(): return null, null)
 var upgrading = false
 
 var characters_are_transparent

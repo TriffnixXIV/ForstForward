@@ -37,4 +37,3 @@ UI:
 
 Code:
 	- move creature stats to corresponding classes
-	- put upgrades in one place
