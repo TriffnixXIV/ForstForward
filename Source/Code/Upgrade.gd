@@ -5,7 +5,7 @@ var text: String
 var callback: Callable
 var prototype: ActionPrototype
 
-func _init(text_: String, callback_: Callable, action_prototype: ActionPrototype):
+func _init(text_: String = "", callback_: Callable = func(): return null, action_prototype: ActionPrototype = null):
 	text = text_
 	callback = callback_
 	prototype = action_prototype

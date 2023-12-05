@@ -1,4 +1,5 @@
 extends Node2D
+class_name Root
 
 var version = "v10 dev"
 
@@ -15,8 +16,8 @@ var bottom_action: Action = Action.new()
 var crystal: Crystal
 
 var upgrade_factory: UpgradeFactory = UpgradeFactory.new()
-var top_upgrade: Upgrade = Upgrade.new("", func(): return null, null)
-var bottom_upgrade: Upgrade = Upgrade.new("", func(): return null, null)
+var top_upgrade: Upgrade = Upgrade.new()
+var bottom_upgrade: Upgrade = Upgrade.new()
 var upgrading = false
 
 var characters_are_transparent
@@ -28,6 +29,8 @@ var game_state = GameState.main_menu
 func _ready():
 	# initialize the things
 	$MapOverlay/Version.text = version
+	$Map/Overlays/CellHighlight.root = self
+	$Map/Overlays/CellHighlight.map = $Map
 	action_factory.map = $Map
 	upgrade_factory.map = $Map
 	upgrade_factory.action_factory = action_factory
@@ -48,7 +51,7 @@ func _process(_delta):
 	var map_position = get_cell_from_position(mouse_position)
 	if map_position != current_map_position:
 		current_map_position = map_position
-		update_highlight()
+		$Map/Overlays/CellHighlight.update()
 
 func _input(event):
 	match game_state:
@@ -105,55 +108,6 @@ func get_cell_from_position(coords: Vector2i):
 	map_position.x = floori(map_position.x / $Map.tile_set.tile_size.x)
 	map_position.y = floori(map_position.y / $Map.tile_set.tile_size.y)
 	return map_position
-
-func update_highlight():
-	update_hightlight_visibility()
-	if $Map/Overlays/CellHighlight.visible:
-		update_highlight_position()
-		update_highlight_color()
-
-func update_hightlight_visibility():
-	if current_map_position != null and $Map.is_valid_tile(current_map_position) and game_state == GameState.playing and $Map.advancement.current_phase == $Map.advancement.Phase.idle:
-		$Map/Overlays/CellHighlight.visible = true
-	else:
-		$Map/Overlays/CellHighlight.visible = false
-
-func update_highlight_position():
-	update_highlight_color()
-	if $Map.is_valid_tile(current_map_position) and game_state == GameState.playing and $Map.advancement.current_phase == $Map.advancement.Phase.idle:
-		$Map/Overlays/CellHighlight.position.x = current_map_position.x * $Map.tile_set.tile_size.x
-		$Map/Overlays/CellHighlight.position.y = current_map_position.y * $Map.tile_set.tile_size.y
-
-func update_highlight_color():
-	if selected_action == null:
-		$Map/Overlays/CellHighlight.set_normal()
-		$Map/Overlays/CellHighlight.set_neutral()
-	else:
-		var valid_click_target = false
-		match selected_action.get_active_type():
-			Action.Type.spawn_treant:
-				valid_click_target = $Map.treants.can_spawn(current_map_position)
-			Action.Type.spawn_treantling:
-				valid_click_target = $Map.treantlings.can_spawn(current_map_position)
-			Action.Type.spawn_druid:
-				valid_click_target = $Map.druids.can_spawn(current_map_position)
-			Action.Type.plant:
-				valid_click_target = $Map.can_plant_forest(current_map_position)
-			Action.Type.spread:
-				valid_click_target = $Map.can_spread_forest(current_map_position)
-			Action.Type.lightning_strike:
-				valid_click_target = $Map.can_lightning_strike(current_map_position)
-		
-		match selected_action.get_active_type():
-			Action.Type.spawn_treant:
-				$Map/Overlays/CellHighlight.set_large()
-			_:
-				$Map/Overlays/CellHighlight.set_normal()
-		
-		if valid_click_target:
-			$Map/Overlays/CellHighlight.set_positive()
-		else:
-			$Map/Overlays/CellHighlight.set_negative()
 
 func set_character_transparency(boolean: bool):
 	characters_are_transparent = boolean
@@ -308,7 +262,7 @@ func enact_action(action: Action):
 	else:
 		play_success_sound()
 	
-	update_highlight()
+	$Map/Overlays/CellHighlight.update()
 
 func _on_action_advance_success():
 	if not selection_locked:
@@ -320,7 +274,7 @@ func _on_action_advance_success():
 		elif selected_action.type != Action.Type.lightning_strike:
 			play_success_sound()
 		
-		update_highlight()
+		$Map/Overlays/CellHighlight.update()
 
 func _on_action_advance_failure():
 	if $Map.is_valid_tile(current_map_position):
@@ -402,7 +356,7 @@ func start_next_round():
 	unlock_selection()
 
 func update_UI():
-	update_highlight()
+	$Map/Overlays/CellHighlight.update()
 	match game_state:
 		GameState.main_menu:
 			pass
@@ -562,7 +516,7 @@ func start_run():
 	current_round = 1
 	next_turn_step()
 	
-	update_highlight()
+	$Map/Overlays/CellHighlight.update()
 	_on_map_transition_done()
 
 func restart_run():
@@ -576,12 +530,12 @@ func restart_run():
 	current_round = 1
 	next_turn_step()
 	
-	update_highlight()
+	$Map/Overlays/CellHighlight.update()
 
 func _on_map_transition_done():
 	if game_state == GameState.playing:
 		unlock_selection()
-		update_highlight()
+		$Map/Overlays/CellHighlight.update()
 
 func stop_run():
 	selected_action = null

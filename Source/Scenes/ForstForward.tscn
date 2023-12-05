@@ -1,4 +1,4 @@
-[gd_scene load_steps=117 format=3 uid="uid://vsbq62808p6r"]
+[gd_scene load_steps=112 format=3 uid="uid://vsbq62808p6r"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -34,15 +34,10 @@
 [ext_resource type="Texture2D" uid="uid://c6imxygtnlk5g" path="res://Images/MapOverlays/SnowOverlay.png" id="31_ctvyl"]
 [ext_resource type="Texture2D" uid="uid://c56838mmyrs1r" path="res://Images/MapOverlays/RainOverlay.png" id="32_dub1y"]
 [ext_resource type="Script" path="res://Code/CellHighlight.gd" id="33_013ga"]
-[ext_resource type="Texture2D" uid="uid://htocvri6t264" path="res://Images/Highlights/GreenHighlight.png" id="33_yyet2"]
-[ext_resource type="Texture2D" uid="uid://dnsatdhdbguxs" path="res://Images/Highlights/RedHighlight.png" id="34_70uow"]
-[ext_resource type="Texture2D" uid="uid://xk3vg20yrq4e" path="res://Images/Highlights/LargeGreenHighlight.png" id="35_3tfe7"]
 [ext_resource type="Script" path="res://Code/ForestEdges.gd" id="35_skp1v"]
-[ext_resource type="Texture2D" uid="uid://cqu2nut45lepw" path="res://Images/Highlights/LargeHighlight.png" id="36_1cjcc"]
 [ext_resource type="Script" path="res://Code/Crystals.gd" id="36_utnoc"]
 [ext_resource type="Script" path="res://Code/Treants.gd" id="37_0al7l"]
 [ext_resource type="Script" path="res://Code/Villagers.gd" id="37_cce84"]
-[ext_resource type="Texture2D" uid="uid://c7ix3anx83jq7" path="res://Images/Highlights/LargeRedHighlight.png" id="37_k0mh1"]
 [ext_resource type="Script" path="res://Code/Treantlings.gd" id="38_l3m2f"]
 [ext_resource type="Script" path="res://Code/Druids.gd" id="39_7ykrn"]
 [ext_resource type="LabelSettings" uid="uid://bterirwd56o63" path="res://Text/CellNumberLabelSettings.tres" id="41_7rtjq"]
@@ -373,12 +368,6 @@ visible = false
 texture = ExtResource("31_3mgxn")
 centered = false
 script = ExtResource("33_013ga")
-positive_highlight = ExtResource("33_yyet2")
-neutral_highlight = ExtResource("31_3mgxn")
-negative_highlight = ExtResource("34_70uow")
-large_positive_highlight = ExtResource("35_3tfe7")
-large_neutral_highlight = ExtResource("36_1cjcc")
-large_negative_highlight = ExtResource("37_k0mh1")
 
 [node name="CellNumbers" type="Control" parent="Map"]
 visible = false

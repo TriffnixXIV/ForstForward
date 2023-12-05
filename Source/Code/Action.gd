@@ -72,7 +72,7 @@ func get_crystal_type():
 		Type.plant:				return Crystal.Type.growth
 		Type.rain:				return Crystal.Type.weather
 		Type.lightning_strike:	return Crystal.Type.weather
-		Type.frost:				return Crystal.Type.weather # this will make sense once frost becomes snow
+		Type.frost:				return Crystal.Type.weather
 
 func get_full_text():
 	var full_text = get_text()
@@ -138,6 +138,21 @@ func enact(map: Map):
 		Type.frost:
 			map.frost_boost += strength
 			map.update_frost_overlay()
+
+func can_be_performed_on(map: Map, cell_position: Vector2i):
+	match get_active_type():
+		Type.spawn_treant:
+			return map.treants.can_spawn(cell_position)
+		Type.spawn_treantling:
+			return map.treantlings.can_spawn(cell_position)
+		Type.spawn_druid:
+			return map.druids.can_spawn(cell_position)
+		Type.plant:
+			return map.can_plant_forest(cell_position)
+		Type.spread:
+			return map.can_spread_forest(cell_position)
+		Type.lightning_strike:
+			return map.can_lightning_strike(cell_position)
 
 func advance(map: Map, cell_position: Vector2i):
 	if progress >= clicks:

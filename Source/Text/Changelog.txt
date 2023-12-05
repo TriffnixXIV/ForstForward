@@ -33,3 +33,4 @@ Visuals:
 	- crystals now have sparks that show when the crystal is fully grown and currently the source for an upgrade
 	- crystals also show those sparks when growing through the selected action
 	- crystals now have distinct shapes
+	- added a cross to red highlights to make the visual less dependant on color
