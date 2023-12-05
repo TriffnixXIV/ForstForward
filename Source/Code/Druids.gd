@@ -6,13 +6,21 @@ var map: Map
 var DruidScene: PackedScene = preload("res://Scenes/Druid.tscn")
 var druids: Array[Druid] = []
 
-var base_actions = 8
-var base_circle_trees = 16
+var spawns: int = 0
+var kills: int = 0
+var trees: int = 0
+
+var base_actions: int = 8
+var base_circle_trees: int = 16
 
 var actions: int
 var circle_trees: int
 
 func reset():
+	spawns = 0
+	kills = 0
+	trees = 0
+	
 	actions			= base_actions
 	circle_trees	= base_circle_trees
 	
@@ -45,6 +53,7 @@ func spawn(cell_position: Vector2i):
 		druid.update_position()
 		druids.append(druid)
 		add_child(druid)
+		spawns += 1
 		return true
 	else:
 		return false

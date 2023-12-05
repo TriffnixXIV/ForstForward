@@ -123,7 +123,7 @@ func set_state(new_state: State):
 
 func chop_tree(cell: Vector2i):
 	carried_wood += 1
-	map.felled_trees -= map.decrease_yield(cell, 1)
+	map.villagers.chops -= map.decrease_yield(cell, 1)
 	emit_signal("chopped_tree")
 
 func build_house(cell: Vector2i):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=112 format=3 uid="uid://vsbq62808p6r"]
+[gd_scene load_steps=113 format=3 uid="uid://vsbq62808p6r"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -52,6 +52,7 @@
 [ext_resource type="Script" path="res://Code/TextButton.gd" id="51_4nt7v"]
 [ext_resource type="Texture2D" uid="uid://be2wlg0tx77t0" path="res://Images/OptionButton/ButtonPressed.png" id="51_bldow"]
 [ext_resource type="Texture2D" uid="uid://c78y4f10kqh5d" path="res://Images/OptionButton/ButtonHover.png" id="52_bcv0s"]
+[ext_resource type="Script" path="res://Code/Stats.gd" id="52_fmowh"]
 [ext_resource type="Texture2D" uid="uid://jyd1d7c52kov" path="res://Images/OptionButton/ButtonDisabled.png" id="53_g8171"]
 [ext_resource type="Script" path="res://Code/ToLevelSelection.gd" id="54_feji7"]
 [ext_resource type="Texture2D" uid="uid://dbyt1ovuq165m" path="res://Images/OptionButton/ButtonFocused.png" id="54_ndqc2"]
@@ -691,7 +692,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PostGame" type="Control" parent="MapOverlay"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -730,6 +730,7 @@ offset_right = 250.0
 offset_bottom = 170.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("52_fmowh")
 
 [node name="Horst" type="VBoxContainer" parent="MapOverlay/PostGame/Stats"]
 layout_mode = 1
@@ -775,6 +776,11 @@ label_settings = ExtResource("48_sowv6")
 [node name="DeathsTreantling" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
 layout_mode = 2
 text = "X deaths to treantlings"
+label_settings = ExtResource("48_sowv6")
+
+[node name="DeathsDruid" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
+layout_mode = 2
+text = "X deaths to druids"
 label_settings = ExtResource("48_sowv6")
 
 [node name="DeathsLightning" type="Label" parent="MapOverlay/PostGame/Stats/Horst"]
@@ -841,16 +847,6 @@ layout_mode = 2
 text = "X trees spread"
 label_settings = ExtResource("48_sowv6")
 
-[node name="Druids" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
-layout_mode = 2
-text = "X druids"
-label_settings = ExtResource("48_sowv6")
-
-[node name="DruidTrees" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
-layout_mode = 2
-text = "X druid trees"
-label_settings = ExtResource("48_sowv6")
-
 [node name="Treants" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
 layout_mode = 2
 text = "X treants"
@@ -869,6 +865,16 @@ label_settings = ExtResource("48_sowv6")
 [node name="TreantlingTrees" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
 layout_mode = 2
 text = "X treantling trees"
+label_settings = ExtResource("48_sowv6")
+
+[node name="Druids" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X druids"
+label_settings = ExtResource("48_sowv6")
+
+[node name="DruidTrees" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]
+layout_mode = 2
+text = "X druid trees"
 label_settings = ExtResource("48_sowv6")
 
 [node name="Growth" type="Label" parent="MapOverlay/PostGame/Stats/Forst"]

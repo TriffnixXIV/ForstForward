@@ -48,10 +48,10 @@ func stomp():
 		var damage = map.get_building_progress(cell)
 		var growth = map.get_yield(cell)
 		var value = min(6, damage + floori((10 - growth) / 4.0))
-		map.trees_from_treants += map.increase_yield(cell, value)
+		map.treants.trees += map.increase_yield(cell, value)
 	
 		if damage > 0: emit_signal("attacked")
-	map.deaths_to_treants += previous_villager_amount - len(map.villagers.villagers)
+	map.treants.kills += previous_villager_amount - len(map.villagers.villagers)
 
 func set_lifespan(new_lifespan: int):
 	lifespan_left += max(0, new_lifespan - lifespan)
@@ -64,7 +64,7 @@ func convert_to_forest():
 	diffs.shuffle()
 	for diff in diffs:
 		map.spread_forest(cell_position, death_spread, true, "treant")
-	map.deaths_to_treants += previous_villager_amount - len(map.villagers.villagers)
+	map.treants.kills += previous_villager_amount - len(map.villagers.villagers)
 	actions = 0
 	
 	emit_signal("grown_trees")

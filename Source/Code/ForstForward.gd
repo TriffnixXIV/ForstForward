@@ -429,28 +429,36 @@ func update_round():
 	$Sidebar/InGameUI/CoreStats/Round.text = "round " + str(current_round)
 
 func update_stats():
-	$MapOverlay/PostGame/Stats/Horst/TreesFelled.text = str($Map.felled_trees) + " trees felled"
-	$MapOverlay/PostGame/Stats/Horst/MaxHorsts.text = str($Map.highest_villager_count) + " highest number of villagers"
-	$MapOverlay/PostGame/Stats/Horst/Births.text = str($Map.born_villagers) + " villagers born"
-	$MapOverlay/PostGame/Stats/Horst/Deaths.text = str($Map.dead_villagers) + " villagers died"
-	$MapOverlay/PostGame/Stats/Horst/DeathsTreant.text = str($Map.deaths_to_treants) + " deaths to treants"
-	$MapOverlay/PostGame/Stats/Horst/DeathsTreantling.text = str($Map.deaths_to_treantlings) + " deaths to treantlings"
-	$MapOverlay/PostGame/Stats/Horst/DeathsLightning.text = str($Map.deaths_to_lightning) + " deaths to lightning"
-	$MapOverlay/PostGame/Stats/Horst/Frost.text = str($Map.total_coldness) + " total frost level"
-	$MapOverlay/PostGame/Stats/Horst/FrostActions.text = str($Map.actions_lost_to_frost) + " actions lost to frost"
+	var stats = $MapOverlay/PostGame/Stats
+	var stat_array: Array[String] = [
+		str($Map.villagers.chops) + " tree" + ("s" if $Map.villagers.chops != 1 else "") + " chopped",
+		str($Map.villagers.highest_count) + " highest number of villagers",
+		str($Map.villagers.born) + " villager" + ("s" if $Map.villagers.born != 1 else "") + " born",
+		str($Map.villagers.died) + " villager" + ("s" if $Map.villagers.died != 1 else "") + " died",
+		str($Map.treants.kills) + " death" + ("s" if $Map.treants.kills != 1 else "") + " to treants",
+		str($Map.treantlings.kills) + " death" + ("s" if $Map.treantlings.kills != 1 else "") + " to treantlings",
+		str($Map.druids.kills) + " death" + ("s" if $Map.druids.kills != 1 else "") + " to druids",
+		str($Map.deaths_to_lightning) + " death" + ("s" if $Map.deaths_to_lightning != 1 else "") + " to lightning",
+		str($Map.total_coldness) + " total frost level",
+		str($Map.actions_lost_to_frost) + " action" + ("s" if $Map.actions_lost_to_frost != 1 else "") + " lost to frost"
+	]
+	stats.update_stats(stats.Type.Horst, stat_array)
 	
-	$MapOverlay/PostGame/Stats/Forst/Trees.text = str($Map.grown_trees) + " trees grown"
-	$MapOverlay/PostGame/Stats/Forst/Plant.text = str($Map.planted_trees) + " trees planted"
-	$MapOverlay/PostGame/Stats/Forst/Spread.text = str($Map.spread_trees) + " trees spread"
-	$MapOverlay/PostGame/Stats/Forst/Druids.text = str(len($Map.druids.druids)) + " druids spawned"
-	$MapOverlay/PostGame/Stats/Forst/DruidTrees.text = str($Map.trees_from_druids) + " trees from druids"
-	$MapOverlay/PostGame/Stats/Forst/Treants.text = str($Map.treants_spawned) + " treants spawned"
-	$MapOverlay/PostGame/Stats/Forst/TreantTrees.text = str($Map.trees_from_treants) + " trees from treants"
-	$MapOverlay/PostGame/Stats/Forst/Treantlings.text = str($Map.treantlings_spawned) + " treantlings spawned"
-	$MapOverlay/PostGame/Stats/Forst/TreantlingTrees.text = str($Map.trees_from_treantlings) + " trees from treantlings"
-	$MapOverlay/PostGame/Stats/Forst/Growth.text = str($Map.total_growth_stages) + " growth stages"
-	$MapOverlay/PostGame/Stats/Forst/Rain.text = str($Map.total_rain_duration) + " rounds of rain"
-	$MapOverlay/PostGame/Stats/Forst/Lightning.text = str($Map.total_lightning_strikes) + " lightning strikes called"
+	stat_array = [
+		str($Map.grown_trees) + " tree" + ("s" if $Map.grown_trees != 1 else "") + " grown",
+		str($Map.planted_trees) + " tree" + ("s" if $Map.planted_trees != 1 else "") + " planted",
+		str($Map.spread_trees) + " tree" + ("s" if $Map.spread_trees != 1 else "") + " spread",
+		str($Map.treants.spawns) + " treant" + ("s" if $Map.treants.spawns != 1 else "") + " spawned",
+		str($Map.treants.trees) + " tree" + ("s" if $Map.treants.trees != 1 else "") + " from treants",
+		str($Map.treantlings.spawns) + " treantling" + ("s" if $Map.treantlings.spawns != 1 else "") + " spawned",
+		str($Map.treantlings.trees) + " tree" + ("s" if $Map.treantlings.trees != 1 else "") + " from treantlings",
+		str($Map.druids.spawns) + " druid" + ("s" if $Map.druids.spawns != 1 else "") + " spawned",
+		str($Map.druids.trees) + " tree" + ("s" if $Map.druids.trees != 1 else "") + " from druids",
+		str($Map.total_growth_stages) + " growth stage" + ("s" if $Map.total_growth_stages != 1 else "") + "",
+		str($Map.total_rain_duration) + " round" + ("s" if $Map.total_rain_duration != 1 else "") + " of rain",
+		str($Map.total_lightning_strikes) + " lightning strike" + ("s" if $Map.total_lightning_strikes != 1 else "") + " called",
+	]
+	stats.update_stats(stats.Type.Forst, stat_array)
 
 func win_game():
 	if game_state == GameState.playing:

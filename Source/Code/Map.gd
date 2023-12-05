@@ -44,12 +44,6 @@ var remaining_growth_stages = 0
 var rain_duration = 0
 var frost_boost = 0
 
-var felled_trees: int = 0
-var highest_villager_count: int = 0
-var born_villagers: int = 0
-var dead_villagers: int = 0
-var deaths_to_treants: int = 0
-var deaths_to_treantlings: int = 0
 var deaths_to_lightning: int = 0
 var total_coldness: int = 0
 var actions_lost_to_frost: int = 0
@@ -60,11 +54,6 @@ var spread_trees: int = 0
 var total_growth_stages: int = 0
 var total_rain_duration: int = 0
 var total_lightning_strikes: int = 0
-var trees_from_druids: int = 0
-var treants_spawned: int = 0
-var trees_from_treants: int = 0
-var treantlings_spawned: int = 0
-var trees_from_treantlings: int = 0
 
 var cell_labels: Array[Array]
 var cell_tree_distance_map: Array[Array]
@@ -228,12 +217,6 @@ func reset_upgrades():
 	min_frost				= base_min_frost
 
 func reset_stats():
-	felled_trees = 0
-	highest_villager_count = 0
-	born_villagers = 0
-	dead_villagers = 0
-	deaths_to_treants = 0
-	deaths_to_treantlings = 0
 	deaths_to_lightning = 0
 	total_coldness = 0
 	actions_lost_to_frost = 0
@@ -244,11 +227,6 @@ func reset_stats():
 	total_growth_stages = 0
 	total_lightning_strikes = 0
 	total_rain_duration = 0
-	trees_from_druids = 0
-	treants_spawned = 0
-	trees_from_treants = 0
-	treantlings_spawned = 0
-	trees_from_treantlings = 0
 
 # miscellaneous advancement stuff
 
@@ -551,8 +529,8 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: 
 	if bypass_condition or can_spread_forest(cell_position):
 		var increase = increase_yield(cell_position, 20)
 		match source:
-			"treant":		trees_from_treants += increase
-			"treantling":	trees_from_treantlings += increase
+			"treant":		treants.trees += increase
+			"treantling":	treantlings.trees += increase
 			"spread":		spread_trees += increase
 			"plant":		planted_trees += increase
 		
@@ -612,8 +590,8 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: 
 				increase_yield(cell_entry[0], cell_entry[2])
 				
 				match source:
-					"treant":		trees_from_treants += cell_entry[2]
-					"treantling":	trees_from_treantlings += cell_entry[2]
+					"treant":		treants.trees += cell_entry[2]
+					"treantling":	treantlings.trees += cell_entry[2]
 					"spread":		spread_trees += cell_entry[2]
 					"plant":		planted_trees += cell_entry[2]
 			

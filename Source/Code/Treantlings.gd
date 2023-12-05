@@ -6,10 +6,14 @@ var map: Map
 var TreantlingScene: PackedScene = preload("res://Scenes/Treantling.tscn")
 var treantlings: Array[Treantling] = []
 
-var base_actions = 8
-var base_strength = 1
-var base_lifespan = 24
-var base_death_spread = 8
+var spawns: int = 0
+var kills: int = 0
+var trees: int = 0
+
+var base_actions: int = 8
+var base_strength: int = 1
+var base_lifespan: int = 24
+var base_death_spread: int = 8
 
 var actions: int
 var strength: int
@@ -17,6 +21,10 @@ var lifespan: int
 var death_spread: int
 
 func reset():
+	spawns = 0
+	kills = 0
+	trees = 0
+
 	actions			= base_actions
 	strength		= base_strength
 	lifespan		= base_lifespan
@@ -66,7 +74,7 @@ func spawn(cell_position: Vector2i):
 		treantling.update_position()
 		treantlings.append(treantling)
 		add_child(treantling)
-		map.treantlings_spawned += 1
+		spawns += 1
 		return true
 	else:
 		return false

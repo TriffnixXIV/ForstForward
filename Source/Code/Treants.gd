@@ -6,10 +6,14 @@ var map: Map
 var TreantScene: PackedScene = preload("res://Scenes/Treant.tscn")
 var treants: Array[Treant] = []
 
-var base_actions = 6
-var base_has_lifespan = false
-var base_lifespan = 40
-var base_death_spread = 20
+var spawns: int = 0
+var kills: int = 0
+var trees: int = 0
+
+var base_actions: int = 6
+var base_has_lifespan: bool = false
+var base_lifespan: int = 40
+var base_death_spread: int = 20
 
 var actions: int
 var has_lifespan: bool
@@ -17,6 +21,10 @@ var lifespan: int
 var death_spread: int
 
 func reset():
+	spawns = 0
+	kills = 0
+	trees = 0
+	
 	actions			= base_actions
 	has_lifespan	= base_has_lifespan
 	lifespan		= base_lifespan
@@ -65,7 +73,7 @@ func spawn(cell_position: Vector2i):
 		treant.update_position()
 		treants.append(treant)
 		add_child(treant)
-		map.treants_spawned += 1
+		spawns += 1
 		return true
 	else:
 		return false

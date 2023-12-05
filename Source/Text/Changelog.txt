@@ -22,6 +22,7 @@ Gameplay:
 
 Bug fixes & QoL:
 	- fixed: removed the standalone "for each" when lightning does not cost rain
+	- stats now use singular and plural
 
 Sounds:
 	- added more sound variety to advancement steps

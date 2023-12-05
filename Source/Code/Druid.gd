@@ -39,12 +39,14 @@ func act():
 	match state:
 		State.planting:
 			set_circle_state(CircleState.active)
-			map.trees_from_druids += map.increase_yield(cell_position, self_growth)
+			var previous_villager_amount = len(map.villagers.villagers)
+			map.druids.trees += map.increase_yield(cell_position, self_growth)
 			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-				map.trees_from_druids += map.increase_yield(cell_position + diff, edge_growth)
+				map.druids.trees += map.increase_yield(cell_position + diff, edge_growth)
 			for diff in [Vector2i(1, 1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, -1)]:
-				map.trees_from_druids += map.increase_yield(cell_position + diff, corner_growth)
+				map.druids.trees += map.increase_yield(cell_position + diff, corner_growth)
 			state = State.tired
+			map.druids.kills += previous_villager_amount - len(map.villagers.villagers)
 			emit_signal("grown_trees")
 		State.moving:
 			move(0)

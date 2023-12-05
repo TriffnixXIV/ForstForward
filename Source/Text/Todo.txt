@@ -9,6 +9,26 @@ Mechanics:
 		- when looking for build sites, make them travel based on their home cell until they find a good spot in range
 		- make villagers start building sooner when close to a good spot
 		- make Horst use his blast more liberally
+	- add few distinct generation options for maps
+		- separate records for each option
+		- "free" option to make all crystals random
+		- "normal" normal run, like now (adjusted to have more unique crystal distributions)
+		- "hard" more villagers and/or Horsts at start
+		- "hard 2" hard + introduce hostile features (see below)
+	- add more stuff to villagers
+		- more unique villagers with distinct actions
+			- unique buildings?
+			- necromancer: kills creatures and destroys forests to summon destructive ghouls
+				- those then just mow down forests, with a short lifespan
+			- child laborers:
+				- many of them, spawning from houses occasionally
+				- take wood from villagers to build for them
+				- have a chance of dying on a build site
+		- a crystal equivalent to force the player to choose upgrades for the village
+			- unique villager spawns as above
+			- village events?
+				- festival: villagers are drunk for a short while, then they have more actions than before
+				- blood rite: villagers become capable of killing creatures for a short while
 	- frost:
 		- add upgrade to give houses a chance to crack during high frost amounts
 		- add upgrade to give more frost bonus through paying rain
@@ -41,6 +61,3 @@ UI:
 		- forest stats left
 		- village stats right
 		- common stats top
-
-Code:
-	- move creature stats to corresponding classes

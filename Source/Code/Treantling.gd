@@ -49,15 +49,15 @@ func stomp():
 	var previous_villager_amount = len(map.villagers.villagers)
 	var damage = min(strength, map.get_building_progress(cell_position))
 	var growth = min(strength - damage, floori((10 - map.get_yield(cell_position)) / 4.0))
-	map.trees_from_treantlings += map.increase_yield(cell_position, damage + growth)
-	map.deaths_to_treantlings += previous_villager_amount - len(map.villagers.villagers)
+	map.treantlings.trees += map.increase_yield(cell_position, damage + growth)
+	map.treantlings.kills += previous_villager_amount - len(map.villagers.villagers)
 	
 	if damage > 0: emit_signal("attacked")
 
 func convert_to_forest():
 	var previous_villager_amount = len(map.villagers.villagers)
 	map.spread_forest(cell_position, death_spread, true, "treantling")
-	map.deaths_to_treantlings += previous_villager_amount - len(map.villagers.villagers)
+	map.treantlings.kills += previous_villager_amount - len(map.villagers.villagers)
 	actions = 0
 	
 	emit_signal("grown_trees")

@@ -8,12 +8,22 @@ var villagers: Array[Villager] = []
 var homeless_villagers = []
 var home_cell_villager_map = {}
 
+var born: int = 0
+var died: int = 0
+var highest_count: int = 0
+var chops: int = 0
+
 var horst_amount: int = 1
 
 var base_actions: int = 12
 var actions: int
 
 func reset():
+	born = 0
+	died = 0
+	highest_count = 0
+	chops = 0
+	
 	actions = base_actions
 	
 	for villager in homeless_villagers:
@@ -77,8 +87,8 @@ func spawn(cell_position: Vector2i):
 	add_child(villager)
 	
 	if not map.advancement.current_phase == map.advancement.Phase.transitioning:
-		map.born_villagers += 1
-	map.highest_villager_count = max(map.highest_villager_count, len(villagers))
+		born += 1
+	highest_count = max(highest_count, len(villagers))
 
 func despawn_at(cell_position: Vector2i, also_horst: bool = false):
 	if cell_position in home_cell_villager_map:
@@ -93,7 +103,7 @@ func despawn(villager: Villager, also_horst: bool = true):
 		remove_child(villager)
 		villager.queue_free()
 		if not map.advancement.current_phase == map.advancement.Phase.transitioning:
-			map.dead_villagers += 1
+			died += 1
 	else:
 		homeless_villagers.append(villager)
 		villager.home_cell = null

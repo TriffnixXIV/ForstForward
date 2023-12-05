@@ -77,24 +77,19 @@ func get_action_data(action_type):
 	action.set_action(action_prototypes[action_type])
 	match action_type:
 		Action.Type.spawn_treant:
-			var treant_spawn_spots = map.count_treant_spawn_spots()
-			is_possible = treant_spawn_spots > 0
+			is_possible = map.count_treant_spawn_spots() > 0
 		
 		Action.Type.spawn_treantling:
-			var treant_spawn_spots = map.count_treantling_spawn_spots()
-			is_possible = treant_spawn_spots > 0
+			is_possible = map.count_treantling_spawn_spots() > 0
 		
 		Action.Type.spawn_druid:
-			var druid_spawn_spots = map.count_druid_spawn_spots()
-			is_possible = druid_spawn_spots > 0
+			is_possible = map.count_druid_spawn_spots() > 0
 		
 		Action.Type.spread:
-			var spreadable_spots = map.count_spreadable_spots()
-			is_possible = spreadable_spots > 0
+			is_possible = map.count_spreadable_spots() > 0
 		
 		Action.Type.plant:
-			var plantable_spots = map.count_plantable_spots()
-			action.clicks = min(action.clicks, plantable_spots)
+			action.clicks = min(action.clicks, map.count_plantable_spots())
 			is_possible = action.clicks > 0
 		
 		Action.Type.lightning_strike:
@@ -103,9 +98,7 @@ func get_action_data(action_type):
 			if action.cost > 0:
 				action.clicks = min(action.clicks, ceili(map.rain_duration / float(action.cost)))
 			
-			var strikeable_spots = map.count_strikeable_spots()
-			action.clicks = min(action.clicks, strikeable_spots)
-			is_possible = map.is_raining() and action.clicks > 0
+			is_possible = map.is_raining() and action.clicks > 0 and map.count_strikeable_spots() > 0
 		
 		Action.Type.rain:
 			weight -= floori(map.rain_duration / action.strength)
