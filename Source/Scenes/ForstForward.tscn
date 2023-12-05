@@ -319,6 +319,9 @@ volume_db = -7.0
 stream = ExtResource("25_ayc6w")
 volume_db = -7.0
 
+[node name="Plant" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
+volume_db = -5.0
+
 [node name="AdvancementStart" type="AudioStreamPlayer" parent="Map/Advancement/Sounds"]
 stream = ExtResource("4_a7wmd")
 

@@ -24,6 +24,12 @@ var grow_sounds = [
 	preload("res://Sounds/AdvancementSounds/Grow3.wav"),
 	preload("res://Sounds/AdvancementSounds/Grow4.wav")
 ]
+var plant_sounds = [
+	preload("res://Sounds/AdvancementSounds/Plant1.wav"),
+	preload("res://Sounds/AdvancementSounds/Plant2.wav"),
+	preload("res://Sounds/AdvancementSounds/Plant3.wav"),
+	preload("res://Sounds/AdvancementSounds/Plant4.wav")
+]
 
 func _ready():
 	$Grow1.stream = grow_sounds[0]
@@ -49,3 +55,7 @@ func grow():
 		1: $Grow2.play()
 		2: $Grow3.play()
 		3: $Grow4.play()
+
+func plant():
+	$Plant.stream = plant_sounds[randi_range(0, len(plant_sounds) - 1)]
+	$Plant.play()

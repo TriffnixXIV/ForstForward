@@ -67,7 +67,7 @@ func spawn(cell_position: Vector2i):
 		
 		treant.connect("moved", map.advancement._moved)
 		treant.connect("attacked", map.advancement._chopped)
-		treant.connect("grown_trees", map.advancement._grown)
+		treant.connect("grown_trees", map.advancement._planted)
 		treant.connect("has_died", despawn)
 		
 		treant.update_position()

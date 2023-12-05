@@ -12,6 +12,7 @@ var step_done = false
 
 var moved = false
 var grown = false
+var planted = false
 var chopped = false
 var built = false
 
@@ -20,6 +21,7 @@ signal advancement_done
 
 func _moved():		moved = true
 func _grown():		grown = true
+func _planted():	planted = true
 func _chopped():	chopped = true
 func _built():		built = true
 
@@ -44,8 +46,9 @@ func start_druid_phase():
 
 func next_druid_step():
 	moved = false
-	chopped = false
 	grown = false
+	planted = false
+	chopped = false
 	
 	actions_left = false
 	for creature in map.druids.druids + map.treants.treants + map.treantlings.treantlings:
@@ -53,8 +56,9 @@ func next_druid_step():
 	
 	$Sounds/Base.play()
 	if moved:	$Sounds.move()
-	if chopped:	$Sounds.chop()
 	if grown:	$Sounds.grow()
+	if planted:	$Sounds.plant()
+	if chopped:	$Sounds.chop()
 
 func start_growth_phase():
 	$Sounds/GrowthStart.play()
