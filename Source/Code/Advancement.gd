@@ -63,7 +63,7 @@ func next_druid_step():
 
 func start_growth_phase():
 	$Sounds/GrowthStart.play()
-	$Sounds/Base.pitch_scale = pow(2, 2.0/12.0)
+	$Sounds/Base.pitch_scale = 1.0
 	current_phase = Phase.growth
 	map.remaining_growth_stages = map.get_growth_stages()
 
@@ -91,7 +91,7 @@ func next_growth_step():
 
 func start_villager_phase():
 	$Sounds/HorstStart.play()
-	$Sounds/Base.pitch_scale = 1.0
+	$Sounds/Base.pitch_scale = pow(2, 2.0/12.0)
 	current_phase = Phase.villagers
 	actions_left = true
 	map.villagers.prepare_turn()

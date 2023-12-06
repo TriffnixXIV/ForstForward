@@ -20,7 +20,6 @@ var actions: int
 
 func reset():
 	born = 0
-	died = 0
 	highest_count = 0
 	chops = 0
 	
@@ -30,6 +29,8 @@ func reset():
 		despawn(villager, true)
 	for villager in villagers:
 		villager.reset()
+	
+	died = 0
 
 func prepare_turn():
 	var action_loss = map.get_coldness()
