@@ -44,12 +44,6 @@ Mechanics:
 Bug fixes & QoL:
 	--
 
-Sounds:
-	- add distinct sounds for different actions
-
-Visuals:
-	--
-
 UI:
 	- add info when hovering stuff (high prio)
 	- add info tab (high prio)

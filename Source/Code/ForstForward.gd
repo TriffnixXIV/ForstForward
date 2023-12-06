@@ -1,7 +1,7 @@
 extends Node2D
 class_name Root
 
-var version = "v10 dev"
+var version = "v10"
 
 var current_round = 1
 var score = 0
@@ -258,6 +258,9 @@ func enact_action(action: Action):
 	selected_action.enact($Map)
 	
 	if action.is_done():
+		match selected_action.type:
+			Action.Type.rain:	$Map/Advancement/Sounds.grow()
+			Action.Type.frost:	$Sounds.frost()
 		advance()
 	else:
 		play_success_sound()
@@ -269,11 +272,15 @@ func _on_action_advance_success():
 		lock_selection()
 	
 	if game_state == GameState.playing:
+		if selected_action.type != Action.Type.lightning_strike:
+			match selected_action.type:
+				Action.Type.spawn_treant:		$Map/Advancement/Sounds.chop()
+				Action.Type.spawn_treantling:	$Map/Advancement/Sounds.chop()
+				Action.Type.spawn_druid:		$Map/Advancement/Sounds.grow()
+				_: play_success_sound() if not selected_action.is_done() else null
+		
 		if selected_action.is_done():
 			advance()
-		elif selected_action.type != Action.Type.lightning_strike:
-			play_success_sound()
-		
 		$Map/Overlays/CellHighlight.update()
 
 func _on_action_advance_failure():

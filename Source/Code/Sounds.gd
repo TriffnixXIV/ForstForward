@@ -38,15 +38,15 @@ func _ready():
 	$Grow4.stream = grow_sounds[3]
 
 func move():
-	$Move.stream = move_sounds[randi_range(0, len(move_sounds) - 1)]
+	$Move.stream = move_sounds.pick_random()
 	$Move.play()
 
 func chop():
-	$Chop.stream = chop_sounds[randi_range(0, len(chop_sounds) - 1)]
+	$Chop.stream = chop_sounds.pick_random()
 	$Chop.play()
 
 func build():
-	$Build.stream = build_sounds[randi_range(0, len(build_sounds) - 1)]
+	$Build.stream = build_sounds.pick_random()
 	$Build.play()
 
 func grow():
@@ -57,5 +57,5 @@ func grow():
 		3: $Grow4.play()
 
 func plant():
-	$Plant.stream = plant_sounds[randi_range(0, len(plant_sounds) - 1)]
+	$Plant.stream = plant_sounds.pick_random()
 	$Plant.play()

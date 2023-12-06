@@ -7,5 +7,5 @@ var crystal_crack_sounds = [
 ]
 
 func crystal_crack():
-	$CrystalCrack.stream = crystal_crack_sounds[randi_range(0, len(crystal_crack_sounds) - 1)]
+	$CrystalCrack.stream = crystal_crack_sounds.pick_random()
 	$CrystalCrack.play()

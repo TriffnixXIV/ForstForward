@@ -271,6 +271,8 @@ stream = ExtResource("6_ybxwl")
 [node name="Upgrade" type="AudioStreamPlayer" parent="Sounds"]
 volume_db = -3.0
 
+[node name="Frost" type="AudioStreamPlayer" parent="Sounds"]
+
 [node name="Map" type="TileMap" parent="."]
 position = Vector2(5, 5)
 tile_set = SubResource("TileSet_un1ao")
