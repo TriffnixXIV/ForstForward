@@ -1,7 +1,4 @@
 Mechanics:
-	- add sand and water for more map variety (high prio)
-		- sand does not allow trees to grow
-		- water does not allow trees to grow and costs 4x the movement
 	- villagers:
 		- make them look less far (~5 instead of 30)
 		- when looking for wood, make them travel based on the cell-tree-distance-map, not based on specific target trees
@@ -9,12 +6,28 @@ Mechanics:
 		- when looking for build sites, make them travel based on their home cell until they find a good spot in range
 		- make villagers start building sooner when close to a good spot
 		- make Horst use his blast more liberally
-	- add few distinct generation options for maps
-		- separate records for each option
-		- "free" option to make all crystals random
-		- "normal" normal run, like now (adjusted to have more unique crystal distributions)
-		- "hard" more villagers and/or Horsts at start
-		- "hard 2" hard + introduce hostile features (see below)
+	- add sand and water for more map variety (high prio)
+		- sand does not allow trees to grow
+		- water does not allow trees to grow and cannot be crossed (unless frozen?)
+			- requires new pathing algorithms
+	- treants:
+		- when mortal, add upgrade to make them spawn treantlings on death
+	- treantlings:
+		- add upgrade to make them randomly spawn when a forest grows
+	- druids:
+		- add upgrade to remove dependence on an adjacent forest
+		- add upgrade to allow casting on buildings
+		- add upgrade to increase damage to buildings
+		- rebrand as growth sprite with lifespan (undecided)
+			- would make the human vs. nature more clear (druids are the only forest-side humans)
+			- would make it more magical
+			- growth sprite might be able to take over a villager to become a druid
+				- add inquisitor to suss out druids and destroy their homes, killing them
+	- growth:
+		- add upgrade to make the action also grow crystals
+	- frost:
+		- add upgrade to give houses a chance to crack during high frost amounts
+		- add upgrade to give more frost bonus through paying rain
 	- add more stuff to villagers
 		- more unique villagers with distinct actions
 			- unique buildings?
@@ -29,22 +42,21 @@ Mechanics:
 			- village events?
 				- festival: villagers are drunk for a short while, then they have more actions than before
 				- blood rite: villagers become capable of killing creatures for a short while
-	- frost:
-		- add upgrade to give houses a chance to crack during high frost amounts
-		- add upgrade to give more frost bonus through paying rain
-	- druid:
-		- rebrand as growth sprite with lifespan (undecided)
-			- would make the human vs. nature more clear (druids are the only forest-side humans)
-			- would make it more magical
 	- overgrowing houses instead of de-building them (undecided)
 		overgrown houses count as forest and need less steps to recover than currently
-	- maybe replace weight-based random action generation with deck-like drawable actions (undecided)
-		- not that much of a difference at this point?
 
 Bug fixes & QoL:
-	--
+	- add few distinct generation options for maps
+		- separate records for each option
+		- "flex" option to make all crystals random
+		- "normal" like now (adjusted to have more unique crystal distributions)
+		- "hard" more villagers and/or Horsts at start
+			- "Horst's Village" as hard option of "Horst's Abode" (?)
+		- "hard 2" hard + introduce hostile features (see below)
+	- achievements
 
 UI:
+	- add play button to main menu and level selection
 	- add info when hovering stuff (high prio)
 	- add info tab (high prio)
 	- make a dedicated Discord (mid prio)
