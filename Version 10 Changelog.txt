@@ -27,7 +27,7 @@ Bug fixes & QoL:
 Sounds:
 	- added more sound variety to advancement steps
 	- added sounds for upgrades and crystal cracks
-	- add distinct sounds for some actions
+	- added distinct sounds for some actions
 
 Visuals:
 	- druid circles are drawn below the background again
