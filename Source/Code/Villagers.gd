@@ -37,10 +37,9 @@ func prepare_turn():
 	for villager in villagers:
 		map.actions_lost_to_frost += min(actions, action_loss)
 		villager.prepare_turn(actions - action_loss)
-	
-	map.update_cell_tree_distance_map()
 
 func act():
+	map.update_cell_tree_distance_map()
 	var actions_left = false
 	for villager in villagers:
 		actions_left = villager.act() or actions_left

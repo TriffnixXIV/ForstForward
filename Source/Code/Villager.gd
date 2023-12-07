@@ -18,7 +18,9 @@ var actions = 0
 
 enum State {idle, getting_wood, building}
 var state = State.idle
+
 var target_location
+var target_approach_distance
 
 var target_wood_source
 var target_build_site
@@ -63,14 +65,14 @@ func act():
 	
 	match state:
 		State.getting_wood:
-			if get_distance_to(target_location) > 1:
-				move(target_location, 1)
+			if get_distance_to(target_location) > target_approach_distance:
+				move(target_location, target_approach_distance)
 			else:
 				chop_tree(target_location)
 		
 		State.building:
-			if get_distance_to(target_location) > 1:
-				move(target_location, 1)
+			if get_distance_to(target_location) > target_approach_distance:
+				move(target_location, target_approach_distance)
 			elif map.get_building_progress(target_location) < 10:
 				if map.get_yield(target_location) > 0:
 					if can_blast() and wants_to_blast(target_location):
@@ -101,6 +103,7 @@ func set_state(new_state: State):
 			if wants_to_finish_house():
 				set_state(State.building)
 			elif carried_wood < 10:
+				target_approach_distance = 1
 				update_target_wood_source()
 				target_location = target_wood_source
 				state = State.getting_wood if target_location != null else State.idle
@@ -114,6 +117,7 @@ func set_state(new_state: State):
 					if target_location == null:
 						state = State.idle
 				else:
+					target_approach_distance = 1
 					update_target_building_spot()
 					target_location = target_building_spot
 					if target_location == null:
@@ -154,9 +158,19 @@ func update_target_wood_source():
 	if target_wood_source != null and map.get_yield(target_wood_source) == 0:
 		target_wood_source = search_wood_source_at(target_wood_source, 2)
 	
-	# if you don't have a wood source, look at a larger distance around you
+	# if you don't have a wood source, move along the cell-tree-distance-map
 	if target_wood_source == null:
-		target_wood_source = search_wood_source_at(cell_position, 30, 6)
+		var tree_distance = map.cell_tree_distance_map[cell_position.x][cell_position.y]
+		var closer_ones = []
+		for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+			var cell = cell_position + diff
+			if map.is_valid_tile(cell) and map.cell_tree_distance_map[cell.x][cell.y] < tree_distance:
+				closer_ones.append(cell)
+		
+		if len(closer_ones) > 0:
+			# not necessarily actually wood, but good enough
+			target_wood_source = closer_ones.pick_random()
+			target_approach_distance = 0
 
 func search_wood_source_at(cell: Vector2i, max_distance: int, min_distance: int = 1):
 	var wood_sources = []
@@ -306,17 +320,18 @@ func evaluate_building_spot(cell: Vector2i):
 func move(target_cell: Vector2i, target_distance: int):
 	var path = target_cell - cell_position
 	if abs(path.x) + abs(path.y) > target_distance:
-		if abs(path.x) > 0 and abs(path.x) > abs(path.y):
-			cell_position.x += path.x / abs(path.x)
-		elif abs(path.y) > 0 and abs(path.y) > abs(path.x):
+		if abs(path.x) == 0:
 			cell_position.y += path.y / abs(path.y)
+		elif abs(path.y) == 0:
+			cell_position.x += path.x / abs(path.x)
 		else:
-			match randi_range(0, 1):
-				0: cell_position.x += path.x / abs(path.x)
-				1: cell_position.y += path.y / abs(path.y)
-	
-	emit_signal("moved")
-	update_position()
+			if randi_range(0, abs(path.x) + abs(path.y) - 1) < abs(path.x):
+				cell_position.x += path.x / abs(path.x)
+			else:
+				cell_position.y += path.y / abs(path.y)
+		
+		emit_signal("moved")
+		update_position()
 
 func update_position():
 	position.x = cell_position.x * map.tile_set.tile_size.x
