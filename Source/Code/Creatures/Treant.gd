@@ -1,17 +1,11 @@
-extends Node2D
+extends Creature
 class_name Treant
-
-var map: Map
-var cell_position: Vector2i
 
 var actions = 0
 var lifespan = 0
 var lifespan_left = 0
 var death_spread = 0
 
-var target_location
-
-signal moved
 signal attacked
 signal grown_trees
 signal has_died
@@ -103,25 +97,6 @@ func is_good_death_spot(cell: Vector2i, _extra):
 		if map.is_valid_tile(cell + diff) and not map.is_forest(cell + diff):
 			value += 1
 	return value >= 3
-
-func move(target_distance: int):
-	var path = target_location - cell_position
-	if abs(path.x) + abs(path.y) > target_distance:
-		if abs(path.x) > 0 and abs(path.x) > abs(path.y):
-			cell_position.x += path.x / abs(path.x)
-		elif abs(path.y) > 0 and abs(path.y) > abs(path.x):
-			cell_position.y += path.y / abs(path.y)
-		else:
-			match randi_range(0, 1):
-				0: cell_position.x += path.x / abs(path.x)
-				1: cell_position.y += path.y / abs(path.y)
-	
-	emit_signal("moved")
-	update_position()
-
-func get_distance_to(cell: Vector2i):
-	var path = cell - cell_position
-	return abs(path.x) + abs(path.y)
 
 func update_position():
 	position.x = cell_position.x * map.tile_set.tile_size.x

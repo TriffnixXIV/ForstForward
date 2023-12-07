@@ -1,11 +1,4 @@
 Mechanics:
-	- villagers:
-		- make them look less far (~5 instead of 30)
-		- when looking for wood, make them travel based on the cell-tree-distance-map, not based on specific target trees
-		- update the cell-tree-distance-map every villager step, not only every round
-		- when looking for build sites, make them travel based on their home cell until they find a good spot in range
-		- make villagers start building sooner when close to a good spot
-		- make Horst use his blast more liberally
 	- add sand and water for more map variety (high prio)
 		- sand does not allow trees to grow
 		- water does not allow trees to grow and cannot be crossed (unless frozen?)

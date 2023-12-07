@@ -1,4 +1,4 @@
-[gd_scene load_steps=113 format=3 uid="uid://vsbq62808p6r"]
+[gd_scene load_steps=112 format=3 uid="uid://cjkjj3gvpdf0r"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -32,15 +32,14 @@
 [ext_resource type="Texture2D" uid="uid://dyeqdeiowhliu" path="res://Images/Middle.png" id="30_voj48"]
 [ext_resource type="Texture2D" uid="uid://ix3c2ehb5410" path="res://Images/Highlights/Highlight.png" id="31_3mgxn"]
 [ext_resource type="Texture2D" uid="uid://c6imxygtnlk5g" path="res://Images/MapOverlays/SnowOverlay.png" id="31_ctvyl"]
+[ext_resource type="Script" path="res://Code/Creatures/Villagers.gd" id="31_tsgyy"]
 [ext_resource type="Texture2D" uid="uid://c56838mmyrs1r" path="res://Images/MapOverlays/RainOverlay.png" id="32_dub1y"]
+[ext_resource type="Script" path="res://Code/Creatures/Treants.gd" id="32_qdbrw"]
 [ext_resource type="Script" path="res://Code/CellHighlight.gd" id="33_013ga"]
+[ext_resource type="Script" path="res://Code/Creatures/Treantlings.gd" id="33_in1g7"]
+[ext_resource type="Script" path="res://Code/Creatures/Druids.gd" id="34_fgn1b"]
 [ext_resource type="Script" path="res://Code/ForestEdges.gd" id="35_skp1v"]
 [ext_resource type="Script" path="res://Code/Crystals.gd" id="36_utnoc"]
-[ext_resource type="Script" path="res://Code/Treants.gd" id="37_0al7l"]
-[ext_resource type="Script" path="res://Code/Villagers.gd" id="37_cce84"]
-[ext_resource type="Script" path="res://Code/Treantlings.gd" id="38_l3m2f"]
-[ext_resource type="Script" path="res://Code/Druids.gd" id="39_7ykrn"]
-[ext_resource type="LabelSettings" uid="uid://bterirwd56o63" path="res://Text/CellNumberLabelSettings.tres" id="41_7rtjq"]
 [ext_resource type="Texture2D" uid="uid://1t3o6p2kvsui" path="res://Images/Treant.png" id="42_e0d5f"]
 [ext_resource type="Texture2D" uid="uid://dbib7gx4a4q03" path="res://Images/MapOverlays/MenuOverlay.png" id="44_g65wn"]
 [ext_resource type="Texture2D" uid="uid://cl1yuroqhceca" path="res://Images/Arrows/ArrowLeft.png" id="47_1d738"]
@@ -346,16 +345,16 @@ script = ExtResource("35_skp1v")
 script = ExtResource("36_utnoc")
 
 [node name="Villagers" type="Node2D" parent="Map"]
-script = ExtResource("37_cce84")
+script = ExtResource("31_tsgyy")
 
 [node name="Treants" type="Node2D" parent="Map"]
-script = ExtResource("37_0al7l")
+script = ExtResource("32_qdbrw")
 
 [node name="Treantlings" type="Node2D" parent="Map"]
-script = ExtResource("38_l3m2f")
+script = ExtResource("33_in1g7")
 
 [node name="Druids" type="Node2D" parent="Map"]
-script = ExtResource("39_7ykrn")
+script = ExtResource("34_fgn1b")
 
 [node name="Overlays" type="Node2D" parent="Map"]
 
@@ -387,17 +386,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-
-[node name="Dummy" type="Label" parent="Map/CellNumbers"]
-visible = false
-layout_mode = 0
-offset_right = 20.0
-offset_bottom = 20.0
-size_flags_horizontal = 4
-text = "0"
-label_settings = ExtResource("41_7rtjq")
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="MaskedBackground" type="Sprite2D" parent="."]
 texture = ExtResource("27_7p77l")

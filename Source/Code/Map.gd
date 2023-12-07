@@ -56,6 +56,8 @@ var total_rain_duration: int = 0
 var total_lightning_strikes: int = 0
 
 var cell_labels: Array[Array]
+var cell_label_settings = preload("res://Text/CellNumberLabelSettings.tres")
+
 var cell_tree_distance_map: Array[Array]
 
 var advancement: Advancement
@@ -314,7 +316,7 @@ func initialize_cell_labels():
 			label.size = Vector2i(20, 20)
 			label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			label.label_settings = $CellNumbers/Dummy.label_settings
+			label.label_settings = cell_label_settings
 			label.position.x = x * 20
 			label.position.y = y * 20
 			cell_labels[x][y] = label

@@ -1,15 +1,11 @@
-extends Node2D
+extends Creature
 class_name Druid
-
-var map: Map
-var cell_position: Vector2i
 
 var actions = 0
 
 enum State {idle, moving, planting, tired}
 var state = State.idle
 
-var target_location
 # for finding spots
 var good_spots
 var spot_distance
@@ -22,7 +18,6 @@ var self_growth = 4
 var edge_growth = 2
 var corner_growth = 1
 
-signal moved
 signal grown_trees
 
 func _ready():
@@ -172,26 +167,3 @@ func evaluate_target_location(cell: Vector2i):
 			return min(value, self_growth + 3 * edge_growth)
 		else:
 			return 0
-
-func move(target_distance: int):
-	var path = target_location - cell_position
-	if abs(path.x) + abs(path.y) > target_distance:
-		if abs(path.x) > 0 and abs(path.x) > abs(path.y):
-			cell_position.x += path.x / abs(path.x)
-		elif abs(path.y) > 0 and abs(path.y) > abs(path.x):
-			cell_position.y += path.y / abs(path.y)
-		else:
-			match randi_range(0, 1):
-				0: cell_position.x += path.x / abs(path.x)
-				1: cell_position.y += path.y / abs(path.y)
-	
-	emit_signal("moved")
-	update_position()
-
-func get_distance_to(cell: Vector2i):
-	var path = cell - cell_position
-	return abs(path.x) + abs(path.y)
-
-func update_position():
-	position.x = cell_position.x * map.tile_set.tile_size.x
-	position.y = cell_position.y * map.tile_set.tile_size.y
