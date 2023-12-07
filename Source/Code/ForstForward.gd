@@ -385,7 +385,7 @@ func update_level_change_stuff():
 	else:
 		$MapOverlay/LevelSelection/PrevLevelButton.visible = true
 	
-	if $Map.current_level >= len($Map.levels) - 1:
+	if $Map.current_level >= $Map/Levels.get_child_count() - 1:
 		$MapOverlay/LevelSelection/NextLevelButton.visible = false
 	else:
 		$MapOverlay/LevelSelection/NextLevelButton.visible = true

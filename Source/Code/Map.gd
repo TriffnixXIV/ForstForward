@@ -1,7 +1,6 @@
 extends Level
 class_name Map
 
-@export var levels: Array[PackedScene]
 var current_level: int = 0
 
 var transition_duration: float = 0.25
@@ -132,7 +131,8 @@ func _process(delta):
 		emit_signal("score_changed")
 
 func load_level(level_number: int):
-	var level = levels[level_number].instantiate()
+	var level = $Levels.get_child(level_number)
+	level.generate()
 	level_name = level.level_name
 	level_id = level.level_id
 	
@@ -144,16 +144,23 @@ func load_level(level_number: int):
 	base_growth_crystals = level.base_growth_crystals
 	base_weather_crystals = level.base_weather_crystals
 	
-	level.generate()
+	var bottom_layer = []
+	var top_layer = []
 	for x in width:
 		for y in height:
 			var cell = Vector2i(x, y)
-			if not is_identical_tile(Vector2i(x, y), level.get_cell_source_id(0, cell), level.get_cell_atlas_coords(0, cell)):
-				transition_info.append(
-					[0, cell, level.get_cell_source_id(0, cell), level.get_cell_atlas_coords(0, cell)]
+			if not is_identical_tile(Vector2i(x, y), 0, 0, level.get_cell_atlas_coords(0, cell)):
+				bottom_layer.append(
+					[0, cell, 0, level.get_cell_atlas_coords(0, cell)]
+				)
+			if not is_identical_tile(Vector2i(x, y), 1, 0, level.get_cell_atlas_coords(1, cell)):
+				top_layer.append(
+					[1, cell, level.get_cell_source_id(1, cell), level.get_cell_atlas_coords(1, cell)]
 				)
 	
-	transition_info.shuffle()
+	bottom_layer.shuffle()
+	top_layer.shuffle()
+	transition_info = bottom_layer + top_layer
 	advancement.current_phase = advancement.Phase.transitioning
 
 func set_level(level_number: int):
@@ -174,10 +181,10 @@ func clear_level():
 	
 	for x in width:
 		for y in height:
+			if not is_plains(Vector2i(x, y)):
+				transition_info.append([0, Vector2i(x, y), 0, Vector2i(0, 0)])
 			if not is_forest(Vector2i(x, y)):
-				transition_info.append(
-					[0, Vector2i(x, y), TileType.forest, Vector2i(0, 0)]
-				)
+				transition_info.append([1, Vector2i(x, y), 0, Vector2i(10, 0)])
 	
 	transition_info.shuffle()
 	advancement.current_phase = advancement.Phase.transitioning
@@ -353,20 +360,6 @@ func set_cell_labels(values: Array[Array]):
 
 # cell changes
 
-func get_growable_amount(cell_position: Vector2i):
-	if is_valid_tile(cell_position):
-		return get_building_progress(cell_position) + 10 - get_yield(cell_position)
-	else:
-		return 0
-
-func get_yield(cell_position: Vector2i):
-	if is_forest(cell_position):
-		return 10
-	elif is_growth(cell_position):
-		return get_cell_atlas_coords(0, cell_position).x + 1
-	else:
-		return 0
-
 func increase_yield(cell_position: Vector2i, amount: int):
 	if get_building_progress(cell_position) > 0:
 		var remaining_amount = amount - get_building_progress(cell_position)
@@ -400,18 +393,10 @@ func set_yield(cell_position: Vector2i, amount: int):
 			set_forest(cell_position)
 			forest_edges.update_cell(cell_position)
 		else:
-			set_plains(cell_position)
+			set_empty(cell_position)
 		if previous_yield >= 10 and amount < 10:
 			forest_edges.update_cell(cell_position)
 			crystals.forest_died_at(cell_position)
-
-func get_building_progress(cell_position: Vector2i):
-	if is_house(cell_position):
-		return 10
-	if is_build_site(cell_position):
-		return get_cell_atlas_coords(0, cell_position).x + 1
-	else:
-		return 0
 
 func increase_building_progress(cell_position: Vector2i, amount: int):
 	if get_yield(cell_position) > 0:
@@ -438,7 +423,7 @@ func set_building_progress(cell_position: Vector2i, progress: int):
 			set_house(cell_position)
 			villagers.occupy(cell_position)
 		else:
-			set_plains(cell_position)
+			set_empty(cell_position)
 			villagers.despawn_at(cell_position)
 
 # miscellaneous functions
@@ -446,12 +431,6 @@ func set_building_progress(cell_position: Vector2i, progress: int):
 func get_distance(cell_1: Vector2i, cell_2: Vector2i):
 	var path = cell_1 - cell_2
 	return abs(path.x) + abs(path.y)
-
-func find_closest_cell_of_type(cell_position: Vector2i, types, max_distance: int = 50):
-	return find_closest_matching_cell(cell_position, cell_of_type, types, max_distance)
-
-func cell_of_type(cell_position: Vector2i, types):
-	return get_cell_source_id(0, cell_position) in types
 
 func find_closest_matching_cell(cell_position: Vector2i, match_function, extra_argument = null, max_distance = 50):
 	var closest_matching_cells = find_closest_matching_cells(cell_position, match_function, extra_argument, max_distance)

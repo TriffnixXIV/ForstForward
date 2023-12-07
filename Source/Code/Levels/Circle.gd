@@ -10,6 +10,7 @@ func generate():
 		for y in height:
 			var cell = Vector2i(x, y)
 			set_plains(cell)
+			set_empty(cell)
 			
 			var top_path = cell - top_center
 			var bottom_path = cell - bottom_center

@@ -12,10 +12,16 @@ var height = 0
 @export var base_growth_crystals: int
 @export var base_weather_crystals: int
 
-enum TileType {plains, growth, forest, build_site, house}
-
 var save_filepath_start = "user://save/"
 var save_data = SaveData.new()
+
+var atlas_coords = {
+	"plains":	Vector2i(0, 0),
+	"forest":	Vector2i(10, 0),
+	"sand":		Vector2i(0, 1),
+	"house":	Vector2i(10, 1),
+	"water":	Vector2i(0, 2)
+}
 
 func _ready():
 	while is_valid_tile(Vector2i(width, 0)):
@@ -41,51 +47,82 @@ func save_player_data():
 
 # cell type stuff
 
-func cell_is_type(cell_position, type):
-	match type:
-		TileType.plains:		return is_plains(cell_position)
-		TileType.growth:		return is_growth(cell_position)
-		TileType.forest:		return is_forest(cell_position)
-		TileType.build_site:	return is_build_site(cell_position)
-		TileType.house:			return is_house(cell_position)
-
-func is_valid_tile(cell_position: Vector2i):
-	return get_cell_source_id(0, cell_position) != -1
-
-func is_plains(cell_position: Vector2i):
-	return get_cell_source_id(0, cell_position) == TileType.plains
-
-func is_growth(cell_position: Vector2i):
-	return get_cell_source_id(0, cell_position) == TileType.growth
-
-func is_forest(cell_position: Vector2i):
-	return get_cell_source_id(0, cell_position) == TileType.forest
-
-func is_build_site(cell_position: Vector2i):
-	return get_cell_source_id(0, cell_position) == TileType.build_site
-
-func is_house(cell_position: Vector2i):
-	return get_cell_source_id(0, cell_position) == TileType.house
-
-func is_identical_tile(cell_position: Vector2i, source_id: int, atlas_coords: Vector2i):
-	var part1 = get_cell_source_id(0, cell_position) == source_id
-	var part2 = get_cell_atlas_coords(0, cell_position) == atlas_coords
-	return part1 and part2
-
 func set_plains(cell_position: Vector2i):
-	set_cell(0, cell_position, TileType.plains, Vector2i(0, 0))
+	set_cell(0, cell_position, 0, Vector2i(0, 0))
 
+func set_sand(cell_position: Vector2i):
+	set_cell(0, cell_position, 0, Vector2i(0, 1))
+	
+func set_water(cell_position: Vector2i):
+	set_cell(0, cell_position, 0, Vector2i(0, 2))
+	
 func set_growth(cell_position: Vector2i, amount: int):
-	set_cell(0, cell_position, TileType.growth, Vector2i(amount - 1, 0))
+	set_cell(1, cell_position, 0, Vector2i(amount, 0))
 
 func set_forest(cell_position: Vector2i):
-	set_cell(0, cell_position, TileType.forest, Vector2i(0, 0))
+	set_cell(1, cell_position, 0, Vector2i(10, 0))
 
 func set_build_site(cell_position: Vector2i, progress: int):
-	set_cell(0, cell_position, TileType.build_site, Vector2i(progress - 1, 0))
+	set_cell(1, cell_position, 0, Vector2i(progress, 1))
 
 func set_house(cell_position: Vector2i):
-	set_cell(0, cell_position, TileType.house, Vector2i(0, 0))
+	set_cell(1, cell_position, 0, Vector2i(10, 1))
+
+func set_empty(cell_position: Vector2i):
+	set_cell(1, cell_position)
+
+func is_valid_tile(cell_position: Vector2i, layer: int = 0):
+	return get_cell_source_id(layer, cell_position) != -1
+
+func is_plains(cell_position: Vector2i):
+	return get_cell_atlas_coords(0, cell_position) == atlas_coords["plains"]
+	
+func is_sand(cell_position: Vector2i):
+	return get_cell_atlas_coords(0, cell_position) == atlas_coords["sand"]
+	
+func is_water(cell_position: Vector2i):
+	return get_cell_atlas_coords(0, cell_position) == atlas_coords["water"]
+
+func is_growth(cell_position: Vector2i):
+	var coords = get_cell_atlas_coords(1, cell_position)
+	return coords.y == 0 and coords.x > 0 and coords.x < 10
+
+func is_forest(cell_position: Vector2i):
+	return get_cell_atlas_coords(1, cell_position) == atlas_coords["forest"]
+
+func is_build_site(cell_position: Vector2i):
+	var coords = get_cell_atlas_coords(1, cell_position)
+	return coords.y == 1 and coords.x > 0 and coords.x < 10
+
+func is_house(cell_position: Vector2i):
+	return get_cell_atlas_coords(1, cell_position) == atlas_coords["house"]
+
+func is_identical_tile(cell_position: Vector2i, layer: int, source_id: int, atlas_coords_: Vector2i):
+	var part1 = get_cell_source_id(layer, cell_position) == source_id
+	var part2 = get_cell_atlas_coords(layer, cell_position) == atlas_coords_
+	return part1 and part2
+
+func get_growable_amount(cell_position: Vector2i):
+	if is_valid_tile(cell_position):
+		return get_building_progress(cell_position) + 10 - get_yield(cell_position)
+	else:
+		return 0
+
+func get_yield(cell_position: Vector2i):
+	if is_forest(cell_position):
+		return 10
+	elif is_growth(cell_position):
+		return get_cell_atlas_coords(1, cell_position).x
+	else:
+		return 0
+
+func get_building_progress(cell_position: Vector2i):
+	if is_house(cell_position):
+		return 10
+	if is_build_site(cell_position):
+		return get_cell_atlas_coords(1, cell_position).x
+	else:
+		return 0
 
 func generate():
 	pass

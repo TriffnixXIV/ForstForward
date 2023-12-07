@@ -56,4 +56,6 @@ func update_horizontal(edge_position: Vector2i):
 			vertical_forest_edges[edge_position.y][edge_position.x] = null
 
 func show_edge(cell_1: Vector2i, cell_2: Vector2i):
-	return (map.is_forest(cell_1) or not map.is_valid_tile(cell_1)) != (map.is_forest(cell_2) or not map.is_valid_tile(cell_2))
+	var cell_1_matches = map.is_forest(cell_1) or not map.is_valid_tile(cell_1)
+	var cell_2_matches = map.is_forest(cell_2) or not map.is_valid_tile(cell_2)
+	return cell_1_matches != cell_2_matches

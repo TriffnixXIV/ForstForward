@@ -4,6 +4,7 @@ func generate():
 	_ready()
 	for x in width:
 		for y in height:
+			set_plains(Vector2i(x, y))
 			set_forest(Vector2i(x, y))
 	
 	var cell_centers = []
@@ -16,10 +17,10 @@ func generate():
 			while steps != []:
 				y += steps.pop_back()
 				cell_centers.append(Vector2i(x, y))
-				set_plains(Vector2i(x, y))
+				set_empty(Vector2i(x, y))
 				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(1, -1)]:
-					set_plains(Vector2i(x, y) + diff)
-					set_plains(Vector2i(x, y) - diff)
+					set_empty(Vector2i(x, y) + diff)
+					set_empty(Vector2i(x, y) - diff)
 	
 	cell_centers.shuffle()
 	var count = 6
@@ -40,14 +41,14 @@ func generate():
 		if not left_done and cell.x == 2 and min(cell.y, height - cell.y) > 4:
 			set_house(Vector2i(0, cell.y))
 			set_house(Vector2i(1, cell.y))
-			set_plains(Vector2i(0, cell.y - 1))
-			set_plains(Vector2i(0, cell.y + 1))
+			set_empty(Vector2i(0, cell.y - 1))
+			set_empty(Vector2i(0, cell.y + 1))
 			left_done = true
 		if not right_done and cell.x == width - 3 and min(cell.y, height - cell.y) > 4:
 			set_house(Vector2i(width - 1, cell.y))
 			set_house(Vector2i(width - 2, cell.y))
-			set_plains(Vector2i(width - 1, cell.y - 1))
-			set_plains(Vector2i(width - 1, cell.y + 1))
+			set_empty(Vector2i(width - 1, cell.y - 1))
+			set_empty(Vector2i(width - 1, cell.y + 1))
 			right_done = true
 	
 	var ys = range(height)
@@ -58,18 +59,18 @@ func generate():
 			for y in ys:
 				var valid = true
 				for diff in [-1, 0, 1]:
-					valid = valid and is_plains(Vector2i(x - 1, y + diff))
+					valid = valid and not is_valid_tile(Vector2i(x - 1, y + diff), 1)
 					valid = valid and is_forest(Vector2i(x, y + diff))
-					valid = valid and is_plains(Vector2i(x + 1, y + diff))
+					valid = valid and not is_valid_tile(Vector2i(x + 1, y + diff), 1)
 				for diff in [-2, 2]:
 					valid = valid and is_forest(Vector2i(x, y + diff)) 
 				valid = valid and (
 					is_forest(Vector2i(x - 1, y + 2)) or is_forest(Vector2i(x + 1, y + 2)) or
 					is_forest(Vector2i(x - 1, y - 2)) or is_forest(Vector2i(x + 1, y - 2)))
 				if valid:
-					set_plains(Vector2i(x, y))
-					set_plains(Vector2i(x, y - 1))
-					set_plains(Vector2i(x, y + 1))
+					set_empty(Vector2i(x, y))
+					set_empty(Vector2i(x, y - 1))
+					set_empty(Vector2i(x, y + 1))
 					count -= 1
 					if count == 0:
 						break
