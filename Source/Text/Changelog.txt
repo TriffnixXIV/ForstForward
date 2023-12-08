@@ -1,4 +1,11 @@
 Gameplay:
+	- winning:
+		- now requires all plains to be covered in forest and all houses to be destroyed
+			- sand and water need not be covered
+	- sand and water:
+		- new tile types
+		- trees cannot grow on sand or water
+		- houses can't be built on water
 	- villagers:
 		- their wood distance map now updates every advancement step (instead of once per round)
 		- they now travel along that map instead of looking for specific trees (after a certain distance)

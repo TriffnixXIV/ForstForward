@@ -117,6 +117,7 @@ func _process(delta):
 		advancement.current_phase = advancement.Phase.idle
 		
 		villagers.check_horst_amount()
+		update_highscore()
 		
 		for _i in random_starting_crystals:
 			crystals.find_spot_and_spawn_crystal(randi_range(0, 2))
@@ -188,6 +189,14 @@ func clear_level():
 	
 	transition_info.shuffle()
 	advancement.current_phase = advancement.Phase.transitioning
+
+func update_highscore():
+	highest_possible_score = 0
+	for x in width:
+		for y in height:
+			if is_plains(Vector2i(x, y)):
+				highest_possible_score += 10
+	print(highest_possible_score)
 
 func stop():
 	advancement.stop()
@@ -382,7 +391,7 @@ func decrease_yield(cell_position: Vector2i, amount: int):
 		return 0
 
 func set_yield(cell_position: Vector2i, amount: int):
-	if not is_valid_tile(cell_position):
+	if not is_growable(cell_position):
 		return null
 	
 	var previous_yield = get_yield(cell_position)
@@ -412,7 +421,7 @@ func decrease_building_progress(cell_position: Vector2i, amount: int):
 		set_building_progress(cell_position, get_building_progress(cell_position) - amount)
 
 func set_building_progress(cell_position: Vector2i, progress: int):
-	if not is_valid_tile(cell_position):
+	if not is_buildable(cell_position):
 		return null
 	
 	var previous_progress = get_building_progress(cell_position)

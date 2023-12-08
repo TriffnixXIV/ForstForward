@@ -105,8 +105,11 @@ func is_identical_tile(cell_position: Vector2i, layer: int, source_id: int, atla
 	var part2 = get_cell_atlas_coords(layer, cell_position) == atlas_coords_
 	return part1 and part2
 
+func is_growable(cell_position: Vector2i):
+	return is_valid_tile(cell_position) and is_plains(cell_position)
+
 func get_growable_amount(cell_position: Vector2i):
-	if is_valid_tile(cell_position):
+	if is_growable(cell_position):
 		return get_building_progress(cell_position) + 10 - get_yield(cell_position)
 	else:
 		return 0
@@ -118,6 +121,9 @@ func get_yield(cell_position: Vector2i):
 		return get_cell_atlas_coords(1, cell_position).x
 	else:
 		return 0
+
+func is_buildable(cell_position: Vector2i):
+	return is_valid_tile(cell_position) and not is_water(cell_position)
 
 func get_building_progress(cell_position: Vector2i):
 	if is_house(cell_position):

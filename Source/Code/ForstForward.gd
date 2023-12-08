@@ -4,7 +4,6 @@ class_name Root
 var version = "v10"
 
 var current_round = 1
-var score = 0
 
 var selected_action: Action
 var selection_locked = false
@@ -405,7 +404,7 @@ func reset_highscore_highlighting():
 	$Sidebar/Records/Horst/Slowest/Number.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 
 func update_numbers():
-	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.text = str(len($Map.villagers.villagers))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.text = str(len($Map/Villagers.villagers))
 	$Sidebar/InGameUI/NumberContainer/Numbers/Villagers/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.text = str($Map.get_coldness())
 	$Sidebar/InGameUI/NumberContainer/Numbers/Frost/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8) if $Map.get_coldness() == $Map.min_frost else Color(0.5, 1, 1, 1) if $Map.frost_boost > 0 else Color(0, 0.5, 1, 1)
@@ -419,16 +418,16 @@ func update_numbers():
 	$Sidebar/InGameUI/NumberContainer/Numbers/GrowthUpgrades/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 	$Sidebar/InGameUI/NumberContainer/Numbers/WeatherUpgrades/Label.text = str(upgrade_factory.total_weather_upgrades)
 	$Sidebar/InGameUI/NumberContainer/Numbers/WeatherUpgrades/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
-	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.text = str(len($Map.druids.druids))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.text = str(len($Map/Druids.druids))
 	$Sidebar/InGameUI/NumberContainer/Numbers/Druids/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
-	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.text = str(len($Map.treants.treants))
+	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.text = str(len($Map/Treants.treants))
 	$Sidebar/InGameUI/NumberContainer/Numbers/Treants/Label.label_settings.shadow_color = Color(0, 0, 0, 0.8)
 
 func update_score():
-	score = $Map.get_score()
+	var score = $Map.get_score()
 	if score == 0:
 		lose_game()
-	elif score == $Map.highest_possible_score:
+	elif score == $Map.highest_possible_score and len($Map/Villagers.villagers) <= $Map/Villagers.horst_amount:
 		win_game()
 	$Sidebar/InGameUI/CoreStats/Score.text = str(score) + " trees"
 

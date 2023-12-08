@@ -243,6 +243,9 @@ func find_good_build_locations():
 	return good_spots
 
 func get_required_wood(cell):
+	if not map.is_buildable(cell):
+		return 0
+	
 	var move_actions_needed = get_move_actions_needed_to_reach(cell)
 	var wood_needed = 10 - map.get_building_progress(cell)
 	

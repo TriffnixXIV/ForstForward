@@ -1,7 +1,7 @@
 Mechanics:
-	- add sand and water for more map variety (high prio)
-		- sand does not allow trees to grow
-		- water does not allow trees to grow and cannot be crossed (unless frozen?)
+	- sand and water:
+		- make spread not cross sand or water
+		- make water uncrossable (unless frozen?)
 			- requires new pathing algorithms
 	- treants:
 		- when mortal, add upgrade to make them spawn treantlings on death
@@ -35,6 +35,12 @@ Mechanics:
 			- village events?
 				- festival: villagers are drunk for a short while, then they have more actions than before
 				- blood rite: villagers become capable of killing creatures for a short while
+	- add neutral creatures (undecided)
+		- birds, deer, rabbits, ...
+		- maybe agitatable through some action?
+	- add unique win-lose-conditions for some maps (undecided)
+		- win when all houses are gone
+		- lose when a creature (that does not yet exist) dies
 	- overgrowing houses instead of de-building them (undecided)
 		overgrown houses count as forest and need less steps to recover than currently
 

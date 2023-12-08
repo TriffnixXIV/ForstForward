@@ -1,7 +1,7 @@
 extends Node
 class_name Advancement
 
-var map
+var map: Map
 
 enum Phase {transitioning, idle, starting, druids, growth, villagers}
 var current_phase = Phase.idle
