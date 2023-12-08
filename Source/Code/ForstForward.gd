@@ -194,10 +194,10 @@ func next_upgrades():
 	top_upgrade.set_upgrade(new_upgrades[0])
 	bottom_upgrade.set_upgrade(new_upgrades[1])
 	
-	$Sidebar/InGameUI/TopOption/Label.text = top_upgrade.get_text()
+	$Sidebar/InGameUI/TopOption/Label.text = top_upgrade.text
 	$Sidebar/InGameUI/TopOption/Sparks.set_modulate_alpha(0.5)
 	$Sidebar/InGameUI/TopOption/Sparks.set_crystal(crystal.type)
-	$Sidebar/InGameUI/BottomOption/Label.text = bottom_upgrade.get_text()
+	$Sidebar/InGameUI/BottomOption/Label.text = bottom_upgrade.text
 	$Sidebar/InGameUI/BottomOption/Sparks.set_modulate_alpha(0.5)
 	$Sidebar/InGameUI/BottomOption/Sparks.set_crystal(crystal.type)
 

@@ -85,7 +85,7 @@ func next_growth_step():
 		map.increase_yield(cell, growth_amounts[cell])
 		map.grown_trees += map.get_yield(cell) - previous_yield
 	
-	map.forest_edges.update()
+	map.edges.update()
 	map.remaining_growth_stages -= 1
 	map.total_growth_stages += 1
 

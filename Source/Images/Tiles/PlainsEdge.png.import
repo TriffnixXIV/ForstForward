@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bygmg4g4w5hss"
-path="res://.godot/imported/ForestBorder.png-0ce88ce9835f76c1ace4b94bbc08f7da.ctex"
+uid="uid://dri6j0baofxvm"
+path="res://.godot/imported/PlainsEdge.png-9e2579423e5ccabd34cdc68e22e4bbc2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Tiles/ForestBorder.png"
-dest_files=["res://.godot/imported/ForestBorder.png-0ce88ce9835f76c1ace4b94bbc08f7da.ctex"]
+source_file="res://Images/Tiles/PlainsEdge.png"
+dest_files=["res://.godot/imported/PlainsEdge.png-9e2579423e5ccabd34cdc68e22e4bbc2.ctex"]
 
 [params]
 

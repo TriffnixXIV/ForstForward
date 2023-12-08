@@ -7,7 +7,7 @@ var transition_duration: float = 0.25
 var transition_progress: float = 0.0
 var transition_info = []
 
-var forest_edges: ForestEdges
+var edges: Edges
 var crystals: Crystals
 var villagers: Villagers
 var treants: Treants
@@ -71,7 +71,7 @@ func _ready():
 	
 	sounds = $Sounds
 	advancement = $Advancement
-	forest_edges = $ForestEdges
+	edges = $Edges
 	crystals = $Crystals
 	villagers = $Villagers
 	treants = $Treants
@@ -79,7 +79,7 @@ func _ready():
 	druids = $Druids
 	
 	advancement.map = self
-	forest_edges.map = self
+	edges.map = self
 	crystals.map = self
 	villagers.map = self
 	treants.map = self
@@ -88,7 +88,7 @@ func _ready():
 	
 	highest_possible_score = width * height * 10
 	
-	forest_edges.resize()
+	edges.resize()
 	
 	var array = []
 	cell_tree_distance_map = []
@@ -112,7 +112,7 @@ func _process(delta):
 			
 			if is_house(data[1]):
 				villagers.spawn(data[1])
-		forest_edges.update()
+		edges.update()
 	elif advancement.current_phase == advancement.Phase.transitioning:
 		advancement.current_phase = advancement.Phase.idle
 		
@@ -391,11 +391,11 @@ func set_yield(cell_position: Vector2i, amount: int):
 			set_growth(cell_position, amount)
 		elif amount >= 10:
 			set_forest(cell_position)
-			forest_edges.update_cell(cell_position)
+			edges.update_cell(cell_position)
 		else:
 			set_empty(cell_position)
 		if previous_yield >= 10 and amount < 10:
-			forest_edges.update_cell(cell_position)
+			edges.update_cell(cell_position)
 			crystals.forest_died_at(cell_position)
 
 func increase_building_progress(cell_position: Vector2i, amount: int):
@@ -481,8 +481,8 @@ func count_plantable_spots():
 	return count_spots(can_plant_forest)
 
 func can_plant_forest(cell_position):
-	return is_plains(cell_position) or is_growth(cell_position) or (
-		can_plant_on_buildings and (is_build_site(cell_position) or is_house(cell_position)))
+	return is_plains(cell_position) and ((is_growth(cell_position) or is_empty(cell_position)
+		) or (can_plant_on_buildings and (is_build_site(cell_position) or is_house(cell_position))))
 
 func plant_forest(cell_position: Vector2i):
 	if can_plant_forest(cell_position):
@@ -500,11 +500,9 @@ func count_spreadable_spots():
 
 func can_spread_forest(cell_position: Vector2i):
 	return (is_forest(cell_position)
-		) or (
-			can_spread_on_plains and (is_growth(cell_position) or is_plains(cell_position))
-		) or (
-			can_spread_on_buildings and (is_build_site(cell_position) or is_house(cell_position))
-		)
+		) or ((can_spread_on_plains and is_plains(cell_position)
+			) and ((is_growth(cell_position) or is_empty(cell_position)
+				) or (can_spread_on_buildings and (is_build_site(cell_position) or is_house(cell_position)))))
 
 func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: bool = false, source: String = "spread"):
 	if bypass_condition or can_spread_forest(cell_position):

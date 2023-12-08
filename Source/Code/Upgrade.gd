@@ -20,9 +20,6 @@ func set_upgrade(other: Upgrade):
 	callback = other.callback
 	prototype = other.prototype
 
-func get_text():
-	return text
-
 func apply(map: Map, action_factory: ActionFactory):
 	callback.call(map, action_factory, prototype)
 	

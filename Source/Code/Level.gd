@@ -74,6 +74,9 @@ func set_empty(cell_position: Vector2i):
 func is_valid_tile(cell_position: Vector2i, layer: int = 0):
 	return get_cell_source_id(layer, cell_position) != -1
 
+func is_empty(cell_position: Vector2i, layer: int = 1):
+	return get_cell_source_id(layer, cell_position) == -1
+
 func is_plains(cell_position: Vector2i):
 	return get_cell_atlas_coords(0, cell_position) == atlas_coords["plains"]
 	
