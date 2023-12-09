@@ -7,6 +7,7 @@ var transition_duration: float = 0.25
 var transition_progress: float = 0.0
 var transition_info = []
 
+var pathing: Pathing
 var edges: Edges
 var crystals: Crystals
 var villagers: Villagers
@@ -69,6 +70,7 @@ func _ready():
 	super._ready()
 	reset_upgrades()
 	
+	pathing = $Pathing
 	sounds = $Sounds
 	advancement = $Advancement
 	edges = $Edges
@@ -78,6 +80,7 @@ func _ready():
 	treantlings = $Treantlings
 	druids = $Druids
 	
+	pathing.map = self
 	advancement.map = self
 	edges.map = self
 	crystals.map = self
@@ -127,6 +130,8 @@ func _process(delta):
 			crystals.find_spot_and_spawn_crystal(Crystal.Type.growth)
 		for _i in base_weather_crystals:
 			crystals.find_spot_and_spawn_crystal(Crystal.Type.weather)
+		
+		pathing.update()
 		
 		emit_signal("transition_done")
 		emit_signal("score_changed")

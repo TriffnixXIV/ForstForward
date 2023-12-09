@@ -9,20 +9,11 @@ var target_location
 signal moved
 
 func move(approach_distance: int = 0):
-	var path = target_location - cell_position
-	if abs(path.x) + abs(path.y) > approach_distance:
-		if abs(path.x) == 0:
-			cell_position.y += path.y / abs(path.y)
-		elif abs(path.y) == 0:
-			cell_position.x += path.x / abs(path.x)
-		else:
-			if randi_range(0, abs(path.x) + abs(path.y) - 1) < abs(path.x):
-				cell_position.x += path.x / abs(path.x)
-			else:
-				cell_position.y += path.y / abs(path.y)
-		
-		emit_signal("moved")
-		update_position()
+	var path = map.pathing.get_move(cell_position, target_location, approach_distance)
+	cell_position += path
+	
+	emit_signal("moved")
+	update_position()
 
 func update_position():
 	position.x = cell_position.x * map.tile_set.tile_size.x
