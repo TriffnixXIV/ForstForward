@@ -201,7 +201,6 @@ func update_highscore():
 		for y in height:
 			if is_plains(Vector2i(x, y)):
 				highest_possible_score += 10
-	print(highest_possible_score)
 
 func stop():
 	advancement.stop()

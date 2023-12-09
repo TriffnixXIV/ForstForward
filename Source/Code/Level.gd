@@ -133,5 +133,8 @@ func get_building_progress(cell_position: Vector2i):
 	else:
 		return 0
 
+func is_walkable(cell_position: Vector2i):
+	return is_valid_tile(cell_position) and not is_water(cell_position)
+
 func generate():
 	pass
