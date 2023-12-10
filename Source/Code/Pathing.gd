@@ -6,15 +6,18 @@ var map: Map
 var unwalkable_map
 var cell_target_distance_map
 
+var update_semaphore: Semaphore
+var update_thread: Thread
+var do_updates: bool = true
+
 var expand_steps: int = 0
 var fix_steps: int = 0
 var shown_cell: Vector2i = Vector2i(8, 4)
 
-signal go_on
-
-func _input(event):
-	if event is InputEventKey and event.pressed and OS.get_keycode_string(event.keycode) == "A":
-		emit_signal("go_on")
+func _ready():
+	update_semaphore = Semaphore.new()
+	update_thread = Thread.new()
+	update_thread.start(_update_thread_function)
 
 func initialize() -> void:
 	unwalkable_map = []
@@ -53,24 +56,29 @@ func clear() -> void:
 			map.set_cell_label(Vector2i(x, y), str(cell_target_distance_map[10][10][x][y]))
 
 func update() -> void:
+	update_semaphore.post()
+
+func _update_thread_function():
+	while do_updates:
+		update_semaphore.wait()
+		if not do_updates:
+			break
+		update_map()
+
+func update_map() -> void:
 	print("start")
 	var starting_time = Time.get_unix_time_from_system()
 	if cell_target_distance_map == null:
 		initialize()
 	
-	var walkable_tiles = 0
-	for x in map.width:
-		for y in map.height:
-			if map.is_walkable(Vector2i(x, y)):
-				walkable_tiles += 1
-	
-	var is_water_level = walkable_tiles < map.width * map.height / 2.0
-#	var is_water_level = true
-#	var is_water_level = false
+	var is_water_level = map.is_water_level()
 	if is_water_level:
 		clear()
 	else:
 		reset()
+	
+	expand_steps = 0
+	fix_steps = 0
 	
 	for x in map.width:
 		for y in map.height:
@@ -81,7 +89,7 @@ func update() -> void:
 				cell_target_distance_map[x][y] = unwalkable_map.duplicate(true)
 				for x_2 in map.width:
 					for y_2 in map.height:
-						await fix_cell(Vector2i(x_2, y_2), Vector2i(x, y))
+						fix_cell(Vector2i(x_2, y_2), Vector2i(x, y))
 	
 	print("fix steps: ", fix_steps, " expand steps: ", expand_steps)
 	print("stop: ", Time.get_unix_time_from_system() - starting_time)
@@ -97,7 +105,7 @@ func expand_cell(start: Vector2i, cell: Vector2i) -> void:
 	while remaining_cells != []:
 		distance += 1
 		for target_cell in remaining_cells:
-			if start == shown_cell: expand_steps += 1
+			expand_steps += 1
 			
 			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 				var neighbor = target_cell + diff
@@ -121,7 +129,7 @@ func fix_cell(start: Vector2i, cell: Vector2i) -> void:
 	
 	while remaining_cells != []:
 		for current_cell in remaining_cells:
-			if start == shown_cell: fix_steps += 1
+			fix_steps += 1
 			
 			current_distance = cell_target_distance_map[start.x][start.y][current_cell.x][current_cell.y]
 			if not map.is_walkable(current_cell) and current_distance != -1:
@@ -195,3 +203,8 @@ func get_move(start: Vector2i, target: Vector2i, approach_distance: int = 0) -> 
 			move = good_moves.pick_random()
 	
 	return move
+
+func _exit_tree():
+	do_updates = false
+	update_semaphore.post()
+	update_thread.wait_to_finish()

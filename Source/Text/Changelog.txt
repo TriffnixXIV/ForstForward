@@ -6,6 +6,7 @@ Gameplay:
 		- new tile types
 		- trees cannot grow on sand or water
 		- houses can't be built on water
+		- water cannot be walked on
 	- villagers:
 		- their wood distance map now updates every advancement step (instead of once per round)
 		- they now travel along that map instead of looking for specific trees (after a certain distance)

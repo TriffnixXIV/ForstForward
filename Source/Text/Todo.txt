@@ -1,10 +1,10 @@
 Mechanics:
+	- pathing:
+		- check whether the tree distance map still works
+		- make treants unwilling to partially walk on water
 	- sand and water:
 		- make spread not cross sand or water
-		- make water uncrossable (unless frozen?)
-			- requires new pathing algorithms
-			- make those algorithms actually work
-			- check if creatures actually walk along those
+		- maybe add ice as a state of water during high frost (undecided)
 	- treants:
 		- when mortal, add upgrade to make them spawn treantlings on death
 	- treantlings:
