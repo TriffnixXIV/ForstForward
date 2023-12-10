@@ -8,7 +8,13 @@ var cell_target_distance_map
 
 var expand_steps: int = 0
 var fix_steps: int = 0
-var shown_cell: Vector2i = Vector2i(12, 18)
+var shown_cell: Vector2i = Vector2i(8, 4)
+
+signal go_on
+
+func _input(event):
+	if event is InputEventKey and event.pressed and OS.get_keycode_string(event.keycode) == "A":
+		emit_signal("go_on")
 
 func initialize() -> void:
 	unwalkable_map = []
@@ -75,22 +81,24 @@ func update() -> void:
 				cell_target_distance_map[x][y] = unwalkable_map.duplicate(true)
 				for x_2 in map.width:
 					for y_2 in map.height:
-						fix_cell(Vector2i(x_2, y_2), Vector2i(x, y))
-	
-	show_distance_map(shown_cell)
+						await fix_cell(Vector2i(x_2, y_2), Vector2i(x, y))
 	
 	print("fix steps: ", fix_steps, " expand steps: ", expand_steps)
 	print("stop: ", Time.get_unix_time_from_system() - starting_time)
 
 func expand_cell(start: Vector2i, cell: Vector2i) -> void:
 	var distance = cell_target_distance_map[start.x][start.y][cell.x][cell.y]
+	if distance == -1:
+		return
+	
 	var remaining_cells = [cell]
 	var next_cells = []
+	
 	while remaining_cells != []:
 		distance += 1
-		for i in len(remaining_cells):
+		for target_cell in remaining_cells:
 			if start == shown_cell: expand_steps += 1
-			var target_cell = remaining_cells[i]
+			
 			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 				var neighbor = target_cell + diff
 				if map.is_walkable(neighbor):
@@ -106,37 +114,49 @@ func fix_cell(start: Vector2i, cell: Vector2i) -> void:
 	if not map.is_walkable(start):
 		return
 	
-	if start == shown_cell: fix_steps += 1
 	var current_distance = cell_target_distance_map[start.x][start.y][cell.x][cell.y]
+	var remaining_cells = [cell]
+	var next_cells = []
+	var cells_to_expand = []
 	
-	if not map.is_walkable(cell) and current_distance != -1:
-		cell_target_distance_map[start.x][start.y][cell.x][cell.y] = -1
-		for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-			var new_cell = cell + diff
-			if map.is_walkable(new_cell):
-				fix_cell(start, new_cell)
-	
-	elif map.is_walkable(cell) and current_distance != 0:
-		var closest_neighbor = null
-		var further_neighbors = []
-		for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-			var neighbor = cell + diff
-			if map.is_walkable(neighbor):
-				var other_distance = cell_target_distance_map[start.x][start.y][neighbor.x][neighbor.y]
-				if other_distance != -1:
-					if other_distance < current_distance:
-						closest_neighbor = neighbor
-						current_distance = other_distance + 1
-					else:
-						further_neighbors.append(neighbor)
+	while remaining_cells != []:
+		for current_cell in remaining_cells:
+			if start == shown_cell: fix_steps += 1
+			
+			current_distance = cell_target_distance_map[start.x][start.y][current_cell.x][current_cell.y]
+			if not map.is_walkable(current_cell) and current_distance != -1:
+				cell_target_distance_map[start.x][start.y][current_cell.x][current_cell.y] = -1
+				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+					var neighbor = current_cell + diff
+					if map.is_walkable(neighbor):
+						next_cells.append(neighbor)
+			
+			elif map.is_walkable(current_cell) and current_distance > 0:
+				var closest_neighbor = null
+				var further_neighbors = []
+				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+					var neighbor = current_cell + diff
+					if map.is_walkable(neighbor):
+						var other_distance = cell_target_distance_map[start.x][start.y][neighbor.x][neighbor.y]
+						if other_distance != -1:
+							if other_distance < current_distance:
+								closest_neighbor = neighbor
+								current_distance = other_distance + 1
+							else:
+								further_neighbors.append(neighbor)
+				
+				if closest_neighbor == null:
+					cell_target_distance_map[start.x][start.y][current_cell.x][current_cell.y] = -1
+					for neighbor in further_neighbors:
+						next_cells.append(neighbor)
+				else:
+					cells_to_expand.append(current_cell)
 		
-		if closest_neighbor == null:
-			cell_target_distance_map[start.x][start.y][cell.x][cell.y] = -1
-			for neighbor in further_neighbors:
-				fix_cell(start, neighbor)
-		else:
-			cell_target_distance_map[start.x][start.y][cell.x][cell.y] = current_distance
-			expand_cell(start, cell)
+		remaining_cells = next_cells.duplicate()
+		next_cells = []
+	
+	for cell_to_expand in cells_to_expand:
+		expand_cell(start, cell_to_expand)
 
 func show_distance_map(cell: Vector2i):
 	shown_cell = cell
