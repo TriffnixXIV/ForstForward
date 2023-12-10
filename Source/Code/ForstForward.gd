@@ -50,6 +50,8 @@ func _process(_delta):
 	var map_position = get_cell_from_position(mouse_position)
 	if map_position != current_map_position:
 		current_map_position = map_position
+		$Sidebar/Records/Title.text = str(current_map_position)
+		$Map/Pathing.show_path(current_map_position)
 		$Map/Overlays/CellHighlight.update()
 
 func _input(event):
@@ -81,6 +83,9 @@ func _input(event):
 			elif event is InputEventKey and not event.pressed:
 				match event.keycode:
 					KEY_TAB:	set_character_transparency(false)
+			
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+				$Map/Pathing.show_distance_map(current_map_position)
 			
 			if selected_action != null and not selected_action.is_done():
 				if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:

@@ -336,7 +336,7 @@ func initialize_cell_labels():
 			label.size = Vector2i(20, 20)
 			label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			label.label_settings = cell_label_settings
+			label.label_settings = cell_label_settings.duplicate()
 			label.position.x = x * 20
 			label.position.y = y * 20
 			cell_labels[x][y] = label
@@ -370,6 +370,19 @@ func set_cell_labels(values: Array[Array]):
 	for x in width:
 		for y in height:
 			cell_labels[x][y].text = str(values[x][y])
+
+func reset_cell_label_highlights():
+	if len(cell_labels) != width:
+		initialize_cell_labels()
+	for x in width:
+		for y in height:
+			cell_labels[x][y].label_settings.shadow_color = Color(0, 0, 0, 0)
+
+func highlight_cell_label(cell_position: Vector2i):
+	if len(cell_labels) != width:
+		initialize_cell_labels()
+	if is_valid_tile(cell_position):
+		cell_labels[cell_position.x][cell_position.y].label_settings.shadow_color = Color(1, 0, 0, 1)
 
 # cell changes
 
