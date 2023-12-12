@@ -65,21 +65,28 @@ func convert_to_forest():
 	emit_signal("has_died", self)
 
 func update_target_location():
-	var closest_valid_targets = map.find_closest_matching_cells(cell_position, is_valid_target, null, 20)
+	var target_updated = false
+	var closest_valid_targets = map.find_closest_matching_cells(cell_position, is_valid_target, null, 20, false, 2)
 	var current_value = evaluate_for_buildings(cell_position)
 	
 	if closest_valid_targets == [] and current_value <= 0:
-		target_location = map.find_closest_matching_cell(cell_position, is_good_death_spot, null, 20)
+		target_location = map.find_closest_matching_cell(cell_position, is_good_death_spot, null, 20, false, 2)
 		if cell_position == target_location or target_location == null:
 			convert_to_forest()
+		elif target_location != null:
+			target_updated = true
 	elif current_value <= 0:
 		target_location = null
 	
 	for valid_target in closest_valid_targets:
-		var target_value = evaluate_for_buildings(valid_target) - map.get_distance(valid_target, cell_position) + 1
+		var target_value = evaluate_for_buildings(valid_target) - get_distance_to(valid_target) + 1
 		if target_location == null or target_value > current_value:
 			target_location = valid_target
 			current_value = target_value
+			target_updated = true
+	
+	if target_updated:
+		inverse_path = map.pathing.get_move_sequence(map.last_distance_map, target_location, cell_position, 0, 2)
 
 func is_valid_target(cell: Vector2i, _extra = null):
 	return evaluate_for_buildings(cell) > evaluate_for_buildings(cell_position)
@@ -87,6 +94,8 @@ func is_valid_target(cell: Vector2i, _extra = null):
 func evaluate_for_buildings(cell: Vector2i):
 	var value = 0
 	for diff in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]:
+		if not map.is_walkable(cell + diff):
+			return 0
 		if map.get_building_progress(cell + diff) > 0:
 			value += 1
 	return min(3, value)
@@ -94,10 +103,8 @@ func evaluate_for_buildings(cell: Vector2i):
 func is_good_death_spot(cell: Vector2i, _extra):
 	var value = 0
 	for diff in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]:
-		if map.is_valid_tile(cell + diff) and not map.is_forest(cell + diff):
+		if not map.is_walkable(cell + diff):
+			return 0
+		if not map.is_forest(cell + diff):
 			value += 1
 	return value >= 3
-
-func update_position():
-	position.x = cell_position.x * map.tile_set.tile_size.x
-	position.y = cell_position.y * map.tile_set.tile_size.y

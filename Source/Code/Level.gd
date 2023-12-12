@@ -71,8 +71,16 @@ func set_house(cell_position: Vector2i):
 func set_empty(cell_position: Vector2i):
 	set_cell(1, cell_position)
 
-func is_valid_tile(cell_position: Vector2i, layer: int = 0):
-	return get_cell_source_id(layer, cell_position) != -1
+func is_valid_tile(cell_position: Vector2i, layer: int = 0, size: int = 1):
+	if size == 1:
+		return get_cell_source_id(layer, cell_position) != -1
+	else:
+		for x in size:
+			for y in size:
+				var diff = Vector2i(x, y)
+				if not is_valid_tile(cell_position + diff):
+					return false
+		return true
 
 func is_empty(cell_position: Vector2i, layer: int = 1):
 	return get_cell_source_id(layer, cell_position) == -1
@@ -133,8 +141,16 @@ func get_building_progress(cell_position: Vector2i):
 	else:
 		return 0
 
-func is_walkable(cell_position: Vector2i):
-	return is_valid_tile(cell_position) and not is_water(cell_position)
+func is_walkable(cell_position: Vector2i, size: int = 1):
+	if size == 1:
+		return is_valid_tile(cell_position) and not is_water(cell_position)
+	else:
+		for x in size:
+			for y in size:
+				var diff = Vector2i(x, y)
+				if not is_walkable(cell_position + diff):
+					return false
+		return true
 
 func is_water_level():
 	var walkable_tiles = 0

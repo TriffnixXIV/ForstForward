@@ -69,7 +69,7 @@ func update_target_location():
 		target_location = null
 	
 	for valid_target in closest_valid_targets:
-		var target_value = evaluate_for_buildings(valid_target) - pow(map.get_distance(valid_target, cell_position), 2) + 1
+		var target_value = evaluate_for_buildings(valid_target) - pow(get_distance_to(valid_target), 2) + 1
 		if target_location == null or target_value > current_value:
 			target_location = valid_target
 			current_value = target_value

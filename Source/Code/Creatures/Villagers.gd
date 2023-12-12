@@ -53,12 +53,12 @@ func check_horst_amount():
 				existing_horsts += 1
 		
 		villagers.shuffle()
-		var i = 0
-		while existing_horsts < horst_amount and i < len(villagers):
-			if not villagers[i].is_devil:
-				villagers[i].get_real()
+		for villager in villagers:
+			if existing_horsts >= horst_amount:
+				break
+			if not villager.is_devil:
+				villager.get_real()
 				existing_horsts += 1
-			i += 1
 
 func occupy(cell_position: Vector2i):
 	if not cell_position in home_cell_villager_map:

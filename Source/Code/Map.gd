@@ -6,6 +6,7 @@ var current_level: int = 0
 var transition_duration: float = 0.25
 var transition_progress: float = 0.0
 var transition_info = []
+var pathing_outdated: bool = false
 
 var pathing: Pathing
 var edges: Edges
@@ -59,6 +60,7 @@ var cell_labels: Array[Array]
 var cell_label_settings = preload("res://Text/CellNumberLabelSettings.tres")
 
 var cell_tree_distance_map: Array[Array]
+var last_distance_map: Array[Array]
 
 var advancement: Advancement
 var sounds
@@ -99,6 +101,8 @@ func _ready():
 	array.fill(width + height)
 	for x in width:
 		cell_tree_distance_map.append(array.duplicate())
+	
+	pathing.update()
 
 func _process(delta):
 	if transition_progress < transition_duration and len(transition_info) > 0:
@@ -111,7 +115,10 @@ func _process(delta):
 			
 			villagers.despawn_at(data[1], true)
 			
+			var was_walkable = is_walkable(data[1])
 			set_cell(data[0], data[1], data[2], data[3])
+			if was_walkable != is_walkable(data[1]):
+				pathing_outdated = true
 			
 			if is_house(data[1]):
 				villagers.spawn(data[1])
@@ -131,7 +138,8 @@ func _process(delta):
 		for _i in base_weather_crystals:
 			crystals.find_spot_and_spawn_crystal(Crystal.Type.weather)
 		
-		pathing.update()
+		if pathing_outdated:
+			pathing.update()
 		
 		emit_signal("transition_done")
 		emit_signal("score_changed")
@@ -159,7 +167,7 @@ func load_level(level_number: int):
 				bottom_layer.append(
 					[0, cell, 0, level.get_cell_atlas_coords(0, cell)]
 				)
-			if not is_identical_tile(Vector2i(x, y), 1, 0, level.get_cell_atlas_coords(1, cell)):
+			if not is_identical_tile(Vector2i(x, y), 1, level.get_cell_source_id(1, cell), level.get_cell_atlas_coords(1, cell)):
 				top_layer.append(
 					[1, cell, level.get_cell_source_id(1, cell), level.get_cell_atlas_coords(1, cell)]
 				)
@@ -214,6 +222,7 @@ func reset():
 	advancement.stop()
 	transition_progress = 0.0
 	transition_info = []
+	pathing_outdated = false
 	
 	reset_upgrades()
 	reset_stats()
@@ -252,27 +261,31 @@ func reset_stats():
 
 # miscellaneous advancement stuff
 
-func reset_cell_tree_distance_map():
-	for x in width:
-		for y in height:
-			cell_tree_distance_map[x][y] = width + height
-
 func update_cell_tree_distance_map():
-	reset_cell_tree_distance_map()
-	
+	var remaining_cells = []
 	for x in width:
 		for y in height:
-			for cell in [Vector2i(x, y), Vector2i(width - x - 1, height - y - 1)]:
-				var x_1 = cell.x
-				var y_1 = cell.y
-				if get_yield(cell) > 0:
-					cell_tree_distance_map[x_1][y_1] = 0
-				else:
-					for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-						var x_2 = cell.x + diff.x
-						var y_2 = cell.y + diff.y
-						if x_2 >= 0 and x_2 < width and y_2 >= 0 and y_2 < height:
-							cell_tree_distance_map[x_1][y_1] = min(cell_tree_distance_map[x_1][y_1], cell_tree_distance_map[x_2][y_2] + 1)
+			var cell = Vector2i(x, y)
+			if get_yield(cell) > 0:
+				cell_tree_distance_map[x][y] = 0
+				remaining_cells.append(cell)
+			elif not is_walkable(cell):
+				cell_tree_distance_map[x][y] = -1
+			else:
+				cell_tree_distance_map[x][y] = width + height
+	
+	var next_cells = []
+	while remaining_cells != []:
+		for cell in remaining_cells:
+			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+				var target_cell = cell + diff
+				if is_walkable(target_cell):
+					if cell_tree_distance_map[cell.x][cell.y] + 1 < cell_tree_distance_map[target_cell.x][target_cell.y]:
+						cell_tree_distance_map[target_cell.x][target_cell.y] = cell_tree_distance_map[cell.x][cell.y] + 1
+						next_cells.append(target_cell)
+		
+		remaining_cells = next_cells.duplicate()
+		next_cells = []
 
 func set_cell_tree_distance(cell: Vector2i, distance: int):
 	if cell.x >= 0 and cell.x < width and cell.y >= 0 and cell.y < height:
@@ -342,15 +355,15 @@ func initialize_cell_labels():
 			cell_labels[x][y] = label
 			$CellNumbers.add_child(label)
 
-func get_cell_value_array():
+func get_cell_value_array(fill: int = 0):
 	var values: Array[Array] = []
 	var array = []
 	array.resize(height)
-	array.fill(0)
+	array.fill(fill)
 	for x in width:
 		values.append(array.duplicate())
 	return values
-	
+
 func reset_cell_labels():
 	if len(cell_labels) != width:
 		initialize_cell_labels()
@@ -364,7 +377,7 @@ func set_cell_label(cell_position: Vector2i, text: String):
 			initialize_cell_labels()
 		cell_labels[cell_position.x][cell_position.y].text = text
 
-func set_cell_labels(values: Array[Array]):
+func set_cell_labels(values):
 	if len(cell_labels) != width:
 		initialize_cell_labels()
 	for x in width:
@@ -454,31 +467,57 @@ func set_building_progress(cell_position: Vector2i, progress: int):
 
 # miscellaneous functions
 
-func get_distance(cell_1: Vector2i, cell_2: Vector2i):
-	var path = cell_1 - cell_2
-	return abs(path.x) + abs(path.y)
+func get_distance(cell_1: Vector2i, cell_2: Vector2i, beeline: bool = false):
+	if beeline:
+		var path = cell_1 - cell_2
+		return abs(path.x) + abs(path.y)
+	else:
+		return pathing.cell_target_distance_map[cell_1.x][cell_1.y][cell_2.x][cell_2.y]
 
-func find_closest_matching_cell(cell_position: Vector2i, match_function, extra_argument = null, max_distance = 50):
-	var closest_matching_cells = find_closest_matching_cells(cell_position, match_function, extra_argument, max_distance)
+func find_closest_matching_cell(cell_position: Vector2i, match_function, extra_argument = null, max_distance = 50, beeline: bool = false, size: int = 1):
+	var closest_matching_cells = find_closest_matching_cells(cell_position, match_function, extra_argument, max_distance, beeline, size)
 	if closest_matching_cells != []:
 		return closest_matching_cells[0]
 	else:
 		return null
 
-func find_closest_matching_cells(cell_position: Vector2i, match_function, extra_argument = null, max_distance = 50):
+func find_closest_matching_cells(cell_position: Vector2i, match_function, extra_argument = null, max_distance = 50, beeline: bool = false, size: int = 1):
 	if is_valid_tile(cell_position) and match_function.call(cell_position, extra_argument):
 		return [cell_position]
 	
 	var closest_matching_cells = []
-	var distance = 1
-	while closest_matching_cells == [] and distance < max_distance:
-		for d1 in distance:
-			var d2 = distance - d1
-			for diff in [Vector2i(d1, d2), Vector2i(-d2, d1), Vector2i(-d1, -d2), Vector2i(d2, -d1)]:
-				var target_cell = cell_position + diff
-				if is_valid_tile(target_cell) and match_function.call(target_cell, extra_argument):
-					closest_matching_cells.append(target_cell)
-		distance += 1
+	last_distance_map = get_cell_value_array(width + height)
+	last_distance_map[cell_position.x][cell_position.y] = 0
+	if beeline:
+		var distance = 1
+		while closest_matching_cells == [] and distance < max_distance:
+			for d1 in distance:
+				var d2 = distance - d1
+				for diff in [Vector2i(d1, d2), Vector2i(-d2, d1), Vector2i(-d1, -d2), Vector2i(d2, -d1)]:
+					var target_cell = cell_position + diff
+					if is_valid_tile(target_cell, size):
+						last_distance_map[target_cell.x][target_cell.y] = distance
+						if match_function.call(target_cell, extra_argument):
+							closest_matching_cells.append(target_cell)
+			distance += 1
+	else:
+		var remaining_cells = [cell_position]
+		var distance = 0
+		while closest_matching_cells == [] and distance < max_distance:
+			var cells = remaining_cells.duplicate()
+			remaining_cells = []
+			for cell in cells:
+				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+					var target_cell = cell + diff
+					if is_walkable(target_cell, size) and target_cell not in remaining_cells and target_cell not in closest_matching_cells:
+						var target_distance = get_distance(cell_position, target_cell)
+						if target_distance == distance + 1:
+							last_distance_map[target_cell.x][target_cell.y] = target_distance
+							if match_function.call(target_cell, extra_argument):
+								closest_matching_cells.append(target_cell)
+							else:
+								remaining_cells.append(target_cell)
+			distance += 1
 	
 	closest_matching_cells.shuffle()
 	return closest_matching_cells

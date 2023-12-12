@@ -1,14 +1,15 @@
 Mechanics:
-	- pathing:
-		- check whether the tree distance map still works
-		- make treants unwilling to partially walk on water
 	- sand and water:
 		- make spread not cross sand or water
 		- maybe add ice as a state of water during high frost (undecided)
 	- treants:
 		- when mortal, add upgrade to make them spawn treantlings on death
+		- buff death spread
 	- treantlings:
 		- add upgrade to make them randomly spawn when a forest grows
+	- treants & treantlings:
+		- make lifespan dependant on rounds, not actions (more understandable)
+			- adjust upgrades to only add / reduce lifespan to full rounds, balance accordingly (more impactful)
 	- druids:
 		- add upgrade to remove dependence on an adjacent forest
 		- add upgrade to allow casting on buildings
@@ -23,6 +24,21 @@ Mechanics:
 	- frost:
 		- add upgrade to give houses a chance to crack during high frost amounts
 		- add upgrade to give more frost bonus through paying rain
+	- fire (new):
+		- burns buildings and trees
+		- can be caused by Horst
+		- fire crystals?
+		- can be stopped by rain, with a chance
+	- add few distinct generation options for maps
+		- separate records for each option
+		- "flex" options to customize the run
+			- customizable starting crystals
+			- 3+ actions & upgrade options
+			- random additional water/forest/sand/plains/house generation
+		- "normal" like now (adjusted to have more unique crystal distributions)
+		- "hard" more villagers and/or Horsts at start
+			- "Horst's Village" as hard option of "Horst's Abode" (?)
+		- "hard 2" hard + introduce hostile features (see below)
 	- add more stuff to villagers
 		- more unique villagers with distinct actions
 			- unique buildings?
@@ -47,13 +63,7 @@ Mechanics:
 		overgrown houses count as forest and need less steps to recover than currently
 
 Bug fixes & QoL:
-	- add few distinct generation options for maps
-		- separate records for each option
-		- "flex" option to make all crystals random
-		- "normal" like now (adjusted to have more unique crystal distributions)
-		- "hard" more villagers and/or Horsts at start
-			- "Horst's Village" as hard option of "Horst's Abode" (?)
-		- "hard 2" hard + introduce hostile features (see below)
+	- add click sound to each creature placement when not being the last placement
 	- achievements
 
 UI:

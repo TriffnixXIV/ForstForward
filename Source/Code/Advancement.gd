@@ -26,6 +26,8 @@ func _chopped():	chopped = true
 func _built():		built = true
 
 func start():
+	if map.pathing.currently_updating:
+		await map.pathing.update_done
 	$Timer.start()
 	$Sounds/AdvancementStart.play()
 	current_phase = Phase.starting

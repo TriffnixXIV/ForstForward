@@ -111,10 +111,10 @@ func get_cell_from_position(coords: Vector2i):
 func set_character_transparency(boolean: bool):
 	characters_are_transparent = boolean
 	if characters_are_transparent:
-		for creature in $Map.villagers.villagers + $Map.druids + $Map.treants + $Map.treantlings:
+		for creature in $Map.villagers.villagers + $Map.druids.druids + $Map.treants.treants + $Map.treantlings.treantlings:
 			creature.modulate.a = 0.2
 	else:
-		for creature in $Map.villagers.villagers + $Map.druids + $Map.treants + $Map.treantlings:
+		for creature in $Map.villagers.villagers + $Map.druids.druids + $Map.treants.treants + $Map.treantlings.treantlings:
 			creature.modulate.a = 1
 
 func set_game_state(state: GameState):
@@ -438,7 +438,7 @@ func update_stats():
 	var stats = $MapOverlay/PostGame/Stats
 	var stat_array: Array[String] = [
 		str($Map.villagers.chops) + " tree" + ("s" if $Map.villagers.chops != 1 else "") + " chopped",
-		str($Map.villagers.highest_count) + " highest number of villagers",
+		str($Map.villagers.highest_count) + " peak population",
 		str($Map.villagers.born) + " villager" + ("s" if $Map.villagers.born != 1 else "") + " born",
 		str($Map.villagers.died) + " villager" + ("s" if $Map.villagers.died != 1 else "") + " died",
 		str($Map.treants.kills) + " death" + ("s" if $Map.treants.kills != 1 else "") + " to treants",

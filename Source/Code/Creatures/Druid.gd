@@ -143,7 +143,7 @@ func check_cell(cell: Vector2i):
 			good_spots.append(cell)
 
 func evaluate_target_location(cell: Vector2i):
-	if not map.is_valid_tile(cell) or map.get_building_progress(cell) > 0:
+	if not map.is_walkable(cell) or map.get_building_progress(cell) > 0:
 		return 0
 	else:
 		var has_adjacent_forest = false

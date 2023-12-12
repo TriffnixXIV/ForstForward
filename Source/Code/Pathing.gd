@@ -12,7 +12,10 @@ var do_updates: bool = true
 
 var expand_steps: int = 0
 var fix_steps: int = 0
-var shown_cell: Vector2i = Vector2i(8, 4)
+var shown_cell: Vector2i = Vector2i(4, 4)
+
+var currently_updating: bool = false
+signal update_done
 
 func _ready():
 	update_semaphore = Semaphore.new()
@@ -63,11 +66,19 @@ func _update_thread_function():
 		update_semaphore.wait()
 		if not do_updates:
 			break
+		
+		print("start")
+		var starting_time = Time.get_unix_time_from_system()
+		currently_updating = true
+		
 		update_map()
+		
+		currently_updating = false
+		print("fix steps: ", fix_steps, " expand steps: ", expand_steps)
+		print("stop: ", Time.get_unix_time_from_system() - starting_time)
+		emit_signal("update_done")
 
 func update_map() -> void:
-	print("start")
-	var starting_time = Time.get_unix_time_from_system()
 	if cell_target_distance_map == null:
 		initialize()
 	
@@ -90,9 +101,6 @@ func update_map() -> void:
 				for x_2 in map.width:
 					for y_2 in map.height:
 						fix_cell(Vector2i(x_2, y_2), Vector2i(x, y))
-	
-	print("fix steps: ", fix_steps, " expand steps: ", expand_steps)
-	print("stop: ", Time.get_unix_time_from_system() - starting_time)
 
 func expand_cell(start: Vector2i, cell: Vector2i) -> void:
 	var distance = cell_target_distance_map[start.x][start.y][cell.x][cell.y]
@@ -168,9 +176,7 @@ func fix_cell(start: Vector2i, cell: Vector2i) -> void:
 
 func show_distance_map(cell: Vector2i):
 	shown_cell = cell
-	for x in map.width:
-		for y in map.height:
-			map.set_cell_label(Vector2i(x, y), str(cell_target_distance_map[cell.x][cell.y][x][y]))
+	map.set_cell_labels(cell_target_distance_map[shown_cell.x][shown_cell.y])
 
 func show_path(cell: Vector2i):
 	if map.is_valid_tile(cell) and cell_target_distance_map:
@@ -181,28 +187,42 @@ func show_path(cell: Vector2i):
 			cell += move
 			map.highlight_cell_label(cell)
 
-func get_move(start: Vector2i, target: Vector2i, approach_distance: int = 0) -> Vector2i:
+func get_move(start: Vector2i, target: Vector2i, approach_distance: int = 0, size: int = 1):
+	var distance_map = cell_target_distance_map[target.x][target.y]
+	return get_move_by_distance_map(distance_map, start, target, approach_distance, size)
+
+func get_move_by_distance_map(distance_map, start: Vector2i, target: Vector2i, approach_distance: int = 0, size: int = 1) -> Vector2i:
+	return get_moves(distance_map, start, target, approach_distance, size).pick_random()
+
+func get_moves(distance_map, start: Vector2i, target: Vector2i, approach_distance: int = 0, size: int = 1) -> Array[Vector2i]:
 	var direct_path = target - start
-	var move = Vector2i(0, 0)
+	var moves: Array[Vector2i] = [Vector2i(0, 0)]
 	if abs(direct_path.x) + abs(direct_path.y) > approach_distance:
-		var distance_map = cell_target_distance_map[target.x][target.y]
-		var good_moves = []
 		var current_distance = distance_map[start.x][start.y]
 		for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 			var neighbor = start + diff
-			if map.is_valid_tile(neighbor):
+			if map.is_walkable(neighbor, size):
 				var neighbor_distance = distance_map[neighbor.x][neighbor.y]
 				if neighbor_distance != -1 and neighbor_distance < distance_map[start.x][start.y]:
 					if neighbor_distance < current_distance:
-						good_moves = [diff]
+						moves = [diff]
 						current_distance = neighbor_distance
 					elif neighbor_distance == current_distance:
-						good_moves.append(diff)
-		
-		if len(good_moves) > 0:
-			move = good_moves.pick_random()
+						moves.append(diff)
 	
-	return move
+	return moves
+
+func get_move_sequence(distance_map, start: Vector2i, target: Vector2i, approach_distance: int = 0, size: int = 1):
+	var sequence = []
+	var current_cell = start
+	while true:
+		var move = get_move_by_distance_map(distance_map, current_cell, target, approach_distance, size)
+		if move == Vector2i(0, 0):
+			break
+		current_cell += move
+		sequence.append(move)
+	
+	return sequence
 
 func _exit_tree():
 	do_updates = false

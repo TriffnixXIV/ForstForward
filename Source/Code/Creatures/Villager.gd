@@ -149,7 +149,7 @@ func update_target_wood_source():
 		var closer_ones = []
 		for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 			var cell = cell_position + diff
-			if map.is_valid_tile(cell) and map.cell_tree_distance_map[cell.x][cell.y] < tree_distance:
+			if map.is_walkable(cell) and map.cell_tree_distance_map[cell.x][cell.y] < tree_distance:
 				closer_ones.append(cell)
 		
 		if len(closer_ones) > 0:
@@ -287,8 +287,8 @@ func get_distance_from_home(cell: Vector2i):
 	if home_cell == null:
 		return 0
 	else:
-		var path = cell - home_cell
-		return abs(path.x) + abs(path.y)
+		var direct_path = cell - home_cell
+		return abs(direct_path.x) + abs(direct_path.y)
 
 # devilish stuff
 
@@ -351,5 +351,4 @@ func evaluate_blast_location(target_cell: Vector2i):
 					value -= 1
 	
 #	map.set_cell_label(target_cell, str(value))
-	
 	return value
