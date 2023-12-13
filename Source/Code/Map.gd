@@ -579,12 +579,13 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: 
 			# get all growable cells at that distance
 			remaining_cells = next_cells.duplicate()
 			next_cells = []
-			print(remaining_cells)
 			for cell in remaining_cells:
 				show_growth_effect(cell)
 				var growable_amount = get_growable_amount(cell)
 				if is_valid_tile(cell) and growable_amount > 0:
 					cell_entries.append([cell, growable_amount, 0]) # last number will become the actual growth amount
+				else:
+					tree_amount -= 1 # small cost to prevent too far-reaching spreads with too little trees
 				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 					if is_growable(cell + diff) and cell + diff not in next_cells and pathing.get_distance(cell_position, cell + diff) > pathing.get_distance(cell_position, cell):
 						next_cells.append(cell + diff)
