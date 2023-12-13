@@ -571,35 +571,30 @@ func can_spread_forest(cell_position: Vector2i):
 
 func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: bool = false, source: String = "spread"):
 	if bypass_condition or can_spread_forest(cell_position):
-		var increase = increase_yield(cell_position, 20)
-		match source:
-			"treant":		treants.trees += increase
-			"treantling":	treantlings.trees += increase
-			"spread":		spread_trees += increase
-			"plant":		planted_trees += increase
-		
-		show_growth_effect(cell_position)
-		var distance = 1
 		var cell_entries = []
+		var remaining_cells = []
+		var next_cells = [cell_position]
 		var more_growable = func(a, b): return a[1] > b[1]
-		while tree_amount > 0:
+		while tree_amount > 0 and next_cells != []:
 			# get all growable cells at that distance
-			cell_entries = []
-			for d1 in distance:
-				var d2 = distance - d1
-				for diff in [Vector2i(d1, d2), Vector2i(d2, -d1), Vector2i(-d1, -d2), Vector2i(-d2, d1)]:
-					var cell = cell_position + diff
-					show_growth_effect(cell)
-					var growable_amount = get_growable_amount(cell)
-					if is_valid_tile(cell) and growable_amount > 0:
-						cell_entries.append([cell, growable_amount, 0]) # last number will become the actual growth amount
+			remaining_cells = next_cells.duplicate()
+			next_cells = []
+			print(remaining_cells)
+			for cell in remaining_cells:
+				show_growth_effect(cell)
+				var growable_amount = get_growable_amount(cell)
+				if is_valid_tile(cell) and growable_amount > 0:
+					cell_entries.append([cell, growable_amount, 0]) # last number will become the actual growth amount
+				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+					if is_growable(cell + diff) and cell + diff not in next_cells and pathing.get_distance(cell_position, cell + diff) > pathing.get_distance(cell_position, cell):
+						next_cells.append(cell + diff)
 			
 			# distribute the trees in a min-max way
 			cell_entries.sort_custom(more_growable)
 			for i1 in len(cell_entries):
 				# going backwards with i for later convenience
-				var remaining_cells = len(cell_entries) - i1
-				var i = remaining_cells - 1
+				var remaining = len(cell_entries) - i1
+				var i = remaining - 1
 				var growable_amount = cell_entries[i][1]
 				# if a cell needs less than the fair share of trees to become a forest,
 				# it get's exactly what it needs and not more.
@@ -607,25 +602,25 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: 
 				# as other cells were already checked before.
 				# using multiplication instead of division for both technical reasons and my first intuition being
 				# a different one that lead to that formula.
-				if remaining_cells * growable_amount < tree_amount:
+				if remaining * growable_amount < tree_amount:
 					cell_entries[i][2] = growable_amount
 					tree_amount -= growable_amount
 				else: # all remaining cells need more than the fair share
 					# if the remaining amount of trees can be equally distributed, do that
-					if tree_amount % remaining_cells == 0:
-						var fair_share = int(tree_amount / float(remaining_cells))
-						for i2 in remaining_cells:
+					if tree_amount % remaining == 0:
+						var fair_share = int(tree_amount / float(remaining))
+						for i2 in remaining:
 							cell_entries[i2][2] = fair_share
 					# otherwise divide the next-less amount of equally distributable trees equally,
 					# then distribute the remaining trees randomly
 					else:
 						var growth_parts = []
-						for i2 in remaining_cells:
-							growth_parts.append(floori(tree_amount / float(remaining_cells)))
-						for i2 in tree_amount % remaining_cells:
+						for i2 in remaining:
+							growth_parts.append(floori(tree_amount / float(remaining)))
+						for i2 in tree_amount % remaining:
 							growth_parts[i2] += 1
 						growth_parts.shuffle()
-						for i2 in remaining_cells:
+						for i2 in remaining:
 							cell_entries[i2][2] = growth_parts[i2]
 					tree_amount = 0
 					break
@@ -638,13 +633,6 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: 
 					"treantling":	treantlings.trees += cell_entry[2]
 					"spread":		spread_trees += cell_entry[2]
 					"plant":		planted_trees += cell_entry[2]
-			
-			# -1 tree for each ungrowable cell (forest or invalid tile)
-			# 4 * distance is the total amount of cells at that distance
-			# len(cell_entries) is the amount of growable cells
-			tree_amount -= 4 * distance - len(cell_entries)
-			
-			distance += 1
 		
 		emit_signal("score_changed")
 		return true

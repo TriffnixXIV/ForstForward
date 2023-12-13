@@ -174,6 +174,9 @@ func fix_cell(start: Vector2i, cell: Vector2i) -> void:
 	for cell_to_expand in cells_to_expand:
 		expand_cell(start, cell_to_expand)
 
+func get_distance(cell: Vector2i, other: Vector2i):
+	return cell_target_distance_map[cell.x][cell.y][other.x][other.y]
+
 func show_distance_map(cell: Vector2i):
 	shown_cell = cell
 	map.set_cell_labels(cell_target_distance_map[shown_cell.x][shown_cell.y])

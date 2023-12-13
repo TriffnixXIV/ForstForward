@@ -1,6 +1,5 @@
 Mechanics:
 	- sand and water:
-		- make spread not cross sand or water
 		- maybe add ice as a state of water during high frost (undecided)
 	- treants:
 		- when mortal, add upgrade to make them spawn treantlings on death
@@ -67,6 +66,7 @@ Bug fixes & QoL:
 	- achievements
 
 UI:
+	- show pathing processing progress somewhere
 	- add play button to main menu and level selection
 	- add info when hovering stuff (high prio)
 	- add info tab (high prio)
