@@ -145,11 +145,11 @@ func update_target_wood_source():
 	
 	# if you don't have a wood source, move along the cell-tree-distance-map
 	if target_wood_source == null:
-		var tree_distance = map.cell_tree_distance_map[cell_position.x][cell_position.y]
+		var tree_distance = map.tree_distance_map[cell_position.x][cell_position.y]
 		var closer_ones = []
 		for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 			var cell = cell_position + diff
-			if map.is_walkable(cell) and map.cell_tree_distance_map[cell.x][cell.y] < tree_distance:
+			if map.is_walkable(cell) and map.tree_distance_map[cell.x][cell.y] < tree_distance:
 				closer_ones.append(cell)
 		
 		if len(closer_ones) > 0:
@@ -159,7 +159,7 @@ func update_target_wood_source():
 
 func search_wood_source_at(cell: Vector2i, max_distance: int, min_distance: int = 1):
 	var wood_sources = []
-	var distance = max(min_distance, map.cell_tree_distance_map[cell.x][cell.y])
+	var distance = max(min_distance, map.tree_distance_map[cell.x][cell.y])
 	var distance_threshhold = null
 	var has_found_wood_source = false
 	while distance <= max_distance:

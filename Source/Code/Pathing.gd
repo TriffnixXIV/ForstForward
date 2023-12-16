@@ -177,6 +177,16 @@ func fix_cell(start: Vector2i, cell: Vector2i) -> void:
 func get_distance(cell: Vector2i, other: Vector2i):
 	return cell_target_distance_map[cell.x][cell.y][other.x][other.y]
 
+func get_empty_distance_map() -> Array[Array]:
+	var distance_map: Array[Array] = []
+	var array = []
+	array.resize(map.height)
+	array.fill(map.width + map.height)
+	for _x in map.width:
+		distance_map.append(array.duplicate())
+	
+	return distance_map
+
 func show_distance_map(cell: Vector2i):
 	shown_cell = cell
 	map.set_cell_labels(cell_target_distance_map[shown_cell.x][shown_cell.y])

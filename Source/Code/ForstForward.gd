@@ -1,7 +1,7 @@
 extends Node2D
 class_name Root
 
-var version = "v10"
+var version = "v11 dev"
 
 var current_round = 1
 

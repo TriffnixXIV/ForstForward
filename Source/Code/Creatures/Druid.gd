@@ -6,11 +6,6 @@ var actions = 0
 enum State {idle, moving, planting, tired}
 var state = State.idle
 
-# for finding spots
-var good_spots
-var spot_distance
-var value_threshhold
-
 enum CircleState {active, fading, gone}
 var circle_state = CircleState.gone
 
@@ -107,40 +102,40 @@ func set_circle_state(new_circle_state):
 			$Circle.visible = false
 
 func update_target_location():
-	find_good_spots()
+	var good_spots = find_good_spots()
 	if len(good_spots) > 0:
 		target_location = good_spots[randi_range(0, len(good_spots) - 1)]
 	else:
 		target_location = null
 
 func find_good_spots():
-	good_spots = []
-	spot_distance = 0
+	var good_spots = []
+	var spot_distance = 0
 	
 	var max_value = self_growth + 3 * edge_growth # the highest possible result of the evaluation function
 	var max_distance = map.width + map.height
-	value_threshhold = max_value - pow(max_distance, 2)
+	var value_threshhold = max_value - pow(max_distance, 2)
 	
+	var remaining_cells = [cell_position]
 	while max_value - pow(spot_distance, 2) > value_threshhold:
-		if spot_distance == 0:
-			check_cell(cell_position)
+		for cell in remaining_cells:
+			var cell_value = evaluate_target_location(cell)
+			if cell_value > 0:
+				var score = cell_value - pow(spot_distance, 2)
+				if score > value_threshhold:
+					good_spots = [cell]
+					value_threshhold = score
+				elif score == value_threshhold:
+					good_spots.append(cell)
 		
+		spot_distance += 1
+		remaining_cells = []
 		for d1 in spot_distance:
 			var d2 = spot_distance - d1
 			for diff in [Vector2i(d1, d2), Vector2i(-d2, d1), Vector2i(-d1, -d2), Vector2i(d2, -d1)]:
-				check_cell(cell_position + diff)
-		
-		spot_distance += 1
-
-func check_cell(cell: Vector2i):
-	var cell_value = evaluate_target_location(cell)
-	if cell_value > 0:
-		var score = cell_value - pow(spot_distance, 2)
-		if score > value_threshhold:
-			good_spots = [cell]
-			value_threshhold = score
-		elif score == value_threshhold:
-			good_spots.append(cell)
+				remaining_cells.append(cell_position + diff)
+	
+	return good_spots
 
 func evaluate_target_location(cell: Vector2i):
 	if not map.is_walkable(cell) or map.get_building_progress(cell) > 0:

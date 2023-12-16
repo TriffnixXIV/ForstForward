@@ -59,7 +59,7 @@ var total_lightning_strikes: int = 0
 var cell_labels: Array[Array]
 var cell_label_settings = preload("res://Text/CellNumberLabelSettings.tres")
 
-var cell_tree_distance_map: Array[Array]
+var tree_distance_map: Array[Array]
 var last_distance_map: Array[Array]
 
 var advancement: Advancement
@@ -94,15 +94,8 @@ func _ready():
 	highest_possible_score = width * height * 10
 	
 	edges.resize()
-	
-	var array = []
-	cell_tree_distance_map = []
-	array.resize(height)
-	array.fill(width + height)
-	for x in width:
-		cell_tree_distance_map.append(array.duplicate())
-	
 	pathing.update()
+	tree_distance_map = pathing.get_empty_distance_map()
 
 func _process(delta):
 	if transition_progress < transition_duration and len(transition_info) > 0:
@@ -261,18 +254,18 @@ func reset_stats():
 
 # miscellaneous advancement stuff
 
-func update_cell_tree_distance_map():
+func update_tree_distance_map():
 	var remaining_cells = []
 	for x in width:
 		for y in height:
 			var cell = Vector2i(x, y)
 			if get_yield(cell) > 0:
-				cell_tree_distance_map[x][y] = 0
+				tree_distance_map[x][y] = 0
 				remaining_cells.append(cell)
 			elif not is_walkable(cell):
-				cell_tree_distance_map[x][y] = -1
+				tree_distance_map[x][y] = -1
 			else:
-				cell_tree_distance_map[x][y] = width + height
+				tree_distance_map[x][y] = width + height
 	
 	var next_cells = []
 	while remaining_cells != []:
@@ -280,8 +273,8 @@ func update_cell_tree_distance_map():
 			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 				var target_cell = cell + diff
 				if is_walkable(target_cell):
-					if cell_tree_distance_map[cell.x][cell.y] + 1 < cell_tree_distance_map[target_cell.x][target_cell.y]:
-						cell_tree_distance_map[target_cell.x][target_cell.y] = cell_tree_distance_map[cell.x][cell.y] + 1
+					if tree_distance_map[cell.x][cell.y] + 1 < tree_distance_map[target_cell.x][target_cell.y]:
+						tree_distance_map[target_cell.x][target_cell.y] = tree_distance_map[cell.x][cell.y] + 1
 						next_cells.append(target_cell)
 		
 		remaining_cells = next_cells.duplicate()
@@ -289,8 +282,8 @@ func update_cell_tree_distance_map():
 
 func set_cell_tree_distance(cell: Vector2i, distance: int):
 	if cell.x >= 0 and cell.x < width and cell.y >= 0 and cell.y < height:
-		if distance > cell_tree_distance_map[cell.x][cell.y]:
-			cell_tree_distance_map[cell.x][cell.y] = distance
+		if distance > tree_distance_map[cell.x][cell.y]:
+			tree_distance_map[cell.x][cell.y] = distance
 			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 				set_cell_tree_distance(cell + diff, distance - 1)
 
@@ -486,7 +479,7 @@ func find_closest_matching_cells(cell_position: Vector2i, match_function, extra_
 		return [cell_position]
 	
 	var closest_matching_cells = []
-	last_distance_map = get_cell_value_array(width + height)
+	last_distance_map = pathing.get_empty_distance_map()
 	last_distance_map[cell_position.x][cell_position.y] = 0
 	if beeline:
 		var distance = 1
