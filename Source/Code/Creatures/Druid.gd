@@ -28,16 +28,7 @@ func act():
 	update_state()
 	match state:
 		State.planting:
-			set_circle_state(CircleState.active)
-			var previous_villager_amount = len(map.villagers.villagers)
-			map.druids.trees += map.increase_yield(cell_position, self_growth)
-			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-				map.druids.trees += map.increase_yield(cell_position + diff, edge_growth)
-			for diff in [Vector2i(1, 1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, -1)]:
-				map.druids.trees += map.increase_yield(cell_position + diff, corner_growth)
-			state = State.tired
-			map.druids.kills += previous_villager_amount - len(map.villagers.villagers)
-			emit_signal("grown_trees")
+			plant()
 		State.moving:
 			move(0)
 		State.tired:
@@ -74,6 +65,18 @@ func set_circle_trees(amount: int):
 		corner_growth -= 1
 		self_growth += 4
 
+func plant():
+	set_circle_state(CircleState.active)
+	var previous_villager_amount = len(map.villagers.villagers)
+	map.druids.trees += map.increase_yield(cell_position, self_growth)
+	for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+		map.druids.trees += map.increase_yield(cell_position + diff, edge_growth)
+	for diff in [Vector2i(1, 1), Vector2i(-1, 1), Vector2i(-1, -1), Vector2i(1, -1)]:
+		map.druids.trees += map.increase_yield(cell_position + diff, corner_growth)
+	state = State.tired
+	map.druids.kills += previous_villager_amount - len(map.villagers.villagers)
+	emit_signal("grown_trees")
+
 func update_circle_state():
 	set_circle_state(circle_state)
 
@@ -105,35 +108,45 @@ func update_target_location():
 	var good_spots = find_good_spots()
 	if len(good_spots) > 0:
 		target_location = good_spots[randi_range(0, len(good_spots) - 1)]
+		inverse_path = map.pathing.get_move_sequence(distance_map, target_location, cell_position)
 	else:
 		target_location = null
 
 func find_good_spots():
 	var good_spots = []
-	var spot_distance = 0
+	var distance = 0
 	
 	var max_value = self_growth + 3 * edge_growth # the highest possible result of the evaluation function
 	var max_distance = map.width + map.height
 	var value_threshhold = max_value - pow(max_distance, 2)
 	
 	var remaining_cells = [cell_position]
-	while max_value - pow(spot_distance, 2) > value_threshhold:
+	var next_cells = []
+	distance_map = map.pathing.get_empty_distance_map()
+	distance_map[cell_position.x][cell_position.y] = 0
+	while remaining_cells != [] and max_value - pow(distance, 2) > value_threshhold:
 		for cell in remaining_cells:
 			var cell_value = evaluate_target_location(cell)
 			if cell_value > 0:
-				var score = cell_value - pow(spot_distance, 2)
+				var score = cell_value - pow(distance, 2)
 				if score > value_threshhold:
 					good_spots = [cell]
 					value_threshhold = score
 				elif score == value_threshhold:
 					good_spots.append(cell)
 		
-		spot_distance += 1
-		remaining_cells = []
-		for d1 in spot_distance:
-			var d2 = spot_distance - d1
-			for diff in [Vector2i(d1, d2), Vector2i(-d2, d1), Vector2i(-d1, -d2), Vector2i(d2, -d1)]:
-				remaining_cells.append(cell_position + diff)
+		distance += 1
+		for cell in remaining_cells:
+			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+				var target_cell = cell + diff
+				if map.is_walkable(target_cell):
+					var target_distance = distance_map[target_cell.x][target_cell.y]
+					if target_distance == -1 or target_distance > distance:
+						distance_map[target_cell.x][target_cell.y] = distance
+						next_cells.append(target_cell)
+		
+		remaining_cells = next_cells.duplicate()
+		next_cells = []
 	
 	return good_spots
 

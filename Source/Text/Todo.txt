@@ -67,7 +67,6 @@ Bug fixes & QoL:
 	- achievements
 
 UI:
-	- show pathing processing progress somewhere
 	- add play button to main menu and level selection
 	- add info when hovering stuff (high prio)
 	- add info tab (high prio)

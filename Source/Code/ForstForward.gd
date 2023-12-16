@@ -27,6 +27,7 @@ var game_state = GameState.main_menu
 
 func _ready():
 	# initialize the things
+	$MapOverlay.visible = true
 	$MapOverlay/Version.text = version
 	$Map/Overlays/CellHighlight.root = self
 	$Map/Overlays/CellHighlight.map = $Map
@@ -550,6 +551,10 @@ func _on_map_transition_done():
 	if game_state == GameState.playing:
 		unlock_selection()
 		$Map/Overlays/CellHighlight.update()
+
+func _on_pathing_progress_changed(progress: float):
+	$MapOverlay/PathingProgress.visible = progress > 0.0 and progress < 1.0
+	$MapOverlay/PathingProgress.value = progress
 
 func stop_run():
 	selected_action = null

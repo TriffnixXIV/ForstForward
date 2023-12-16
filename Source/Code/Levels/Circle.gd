@@ -25,6 +25,11 @@ func generate():
 			elif inner_ring_growth > 0:
 				set_growth(cell, inner_ring_growth)
 			
+			var middle_ring_water = min(distance - 8.4, 10.1 - distance) > 0.0
+			var bridge = min(abs(top_path.x) - 1, abs(top_path.y), abs(bottom_path.x) - 1, abs(bottom_path.y)) <= 0
+			if middle_ring_water and not bridge:
+				set_water(cell)
+			
 			var outer_ring_growth = floori(10 * (distance - 12))
 			if outer_ring_growth >= 10:
 				set_forest(cell)

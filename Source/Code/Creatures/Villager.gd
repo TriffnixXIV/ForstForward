@@ -99,6 +99,7 @@ func set_state(new_state: State):
 				set_state(State.building)
 			else:
 				target_approach_distance = 1
+				inverse_path = []
 				update_target_wood_source()
 				target_location = target_wood_source
 				state = State.getting_wood if target_location != null else State.idle
@@ -134,7 +135,7 @@ func update_target_wood_source():
 			return
 	
 	# take the next best wood source around you
-	var wood_here = search_wood_source_at(cell_position, 5, 0)
+	var wood_here = search_wood_source_at(cell_position, 5)
 	if wood_here != null:
 		target_wood_source = wood_here
 		return
@@ -150,38 +151,45 @@ func update_target_wood_source():
 		for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 			var cell = cell_position + diff
 			if map.is_walkable(cell) and map.tree_distance_map[cell.x][cell.y] < tree_distance:
-				closer_ones.append(cell)
+				closer_ones.append(diff)
 		
 		if len(closer_ones) > 0:
 			# not necessarily actually wood, but good enough
-			target_wood_source = closer_ones.pick_random()
+			next_move = closer_ones.pick_random()
 			target_approach_distance = 0
 
-func search_wood_source_at(cell: Vector2i, max_distance: int, min_distance: int = 1):
+func search_wood_source_at(cell: Vector2i, max_distance: int):
 	var wood_sources = []
-	var distance = max(min_distance, map.tree_distance_map[cell.x][cell.y])
+	var distance = 0
+	distance_map = map.pathing.get_empty_distance_map()
+	distance_map[cell.x][cell.y] = 0
 	var distance_threshhold = null
 	var has_found_wood_source = false
-	while distance <= max_distance:
-		if distance == 0:
-			if is_wood_source(cell):
-				distance_threshhold = get_distance_to(cell)
-				wood_sources = [cell]
-		for d1 in distance:
-			var d2 = distance - d1
-			for diff in [Vector2i(d1, d2), Vector2i(-d2, d1), Vector2i(-d1, -d2), Vector2i(d2, -d1)]:
-				var target_cell = cell + diff
-				if is_wood_source(target_cell):
-					if not has_found_wood_source:
-						has_found_wood_source = true
-						map.set_cell_tree_distance(cell, distance)
-					var distance_to_cell = get_distance_to(target_cell)
-					if distance_threshhold == null or distance_to_cell < distance_threshhold:
-						distance_threshhold = distance_to_cell
-						wood_sources = [target_cell]
-					elif distance_to_cell == distance_threshhold:
-						wood_sources.append(target_cell)
+	var remaining_cells = [cell]
+	var next_cells = []
+	while distance <= max_distance and remaining_cells != []:
+		for target_cell in remaining_cells:
+			if is_wood_source(target_cell):
+				if not has_found_wood_source:
+					has_found_wood_source = true
+					map.set_cell_tree_distance(cell, distance)
+				var distance_to_cell = get_distance_to(target_cell)
+				if distance_threshhold == null or distance_to_cell < distance_threshhold:
+					distance_threshhold = distance_to_cell
+					wood_sources = [target_cell]
+				elif distance_to_cell == distance_threshhold:
+					wood_sources.append(target_cell)
+		
 		distance += 1
+		for target_cell in remaining_cells:
+			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+				var neighbor = target_cell + diff
+				if map.is_walkable(neighbor) and distance_map[neighbor.x][neighbor.y] == -1:
+					distance_map[neighbor.x][neighbor.y] = distance
+					next_cells.append(neighbor)
+		
+		remaining_cells = next_cells.duplicate()
+		next_cells = []
 	
 	if len(wood_sources) > 0:
 		return wood_sources.pick_random()
@@ -197,14 +205,18 @@ func wants_to_build():
 
 func update_build_location():
 	if carried_wood == 0:
+		inverse_path = []
 		target_build_location = null
 		return
 	
 	if target_build_location != null and map.get_building_progress(target_build_location) == 10:
+		inverse_path = []
 		target_build_location = null
 	
 	if target_build_location == null:
 		target_build_location = find_build_location()
+		if target_build_location != null:
+			inverse_path = map.pathing.get_move_sequence(distance_map, target_build_location, cell_position)
 
 func find_build_location():
 	var good_spots = find_good_build_locations()
@@ -220,16 +232,13 @@ func find_good_build_locations():
 	var distance = 0
 	
 	var requirement_threshold = carried_wood
-	while requirement_threshold >= 2 * max(0, distance - 1) - 3:
-		var cells_to_check = []
-		if distance == 0:
-			cells_to_check = [cell_position]
-		for d1 in distance:
-			var d2 = distance - d1
-			for diff in [Vector2i(d1, d2), Vector2i(-d2, d1), Vector2i(-d1, -d2), Vector2i(d2, -d1)]:
-				cells_to_check.append(cell_position + diff)
-		
-		for cell in cells_to_check:
+	
+	var remaining_cells = [cell_position]
+	var next_cells = []
+	distance_map = map.pathing.get_empty_distance_map()
+	distance_map[cell_position.x][cell_position.y] = 0
+	while remaining_cells != [] and requirement_threshold >= 2 * max(0, distance - 1) - 3:
+		for cell in remaining_cells:
 			var required_wood = get_required_wood(cell)
 			if required_wood > 0:
 				if requirement_threshold > required_wood:
@@ -239,6 +248,17 @@ func find_good_build_locations():
 					good_spots.append(cell)
 		
 		distance += 1
+		for cell in remaining_cells:
+			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+				var target_cell = cell + diff
+				if map.is_walkable(target_cell):
+					var target_distance = distance_map[target_cell.x][target_cell.y]
+					if target_distance == -1 or target_distance > distance:
+						distance_map[target_cell.x][target_cell.y] = distance
+						next_cells.append(target_cell)
+		
+		remaining_cells = next_cells.duplicate()
+		next_cells = []
 	
 	return good_spots
 

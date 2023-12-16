@@ -273,7 +273,7 @@ func update_tree_distance_map():
 			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 				var target_cell = cell + diff
 				if is_walkable(target_cell):
-					if tree_distance_map[cell.x][cell.y] + 1 < tree_distance_map[target_cell.x][target_cell.y]:
+					if tree_distance_map[target_cell.x][target_cell.y] > tree_distance_map[cell.x][cell.y] + 1:
 						tree_distance_map[target_cell.x][target_cell.y] = tree_distance_map[cell.x][cell.y] + 1
 						next_cells.append(target_cell)
 		
@@ -460,13 +460,6 @@ func set_building_progress(cell_position: Vector2i, progress: int):
 
 # miscellaneous functions
 
-func get_distance(cell_1: Vector2i, cell_2: Vector2i, beeline: bool = false):
-	if beeline:
-		var path = cell_1 - cell_2
-		return abs(path.x) + abs(path.y)
-	else:
-		return pathing.cell_target_distance_map[cell_1.x][cell_1.y][cell_2.x][cell_2.y]
-
 func find_closest_matching_cell(cell_position: Vector2i, match_function, extra_argument = null, max_distance = 50, beeline: bool = false, size: int = 1):
 	var closest_matching_cells = find_closest_matching_cells(cell_position, match_function, extra_argument, max_distance, beeline, size)
 	if closest_matching_cells != []:
@@ -503,9 +496,9 @@ func find_closest_matching_cells(cell_position: Vector2i, match_function, extra_
 				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 					var target_cell = cell + diff
 					if is_walkable(target_cell, size) and target_cell not in remaining_cells and target_cell not in closest_matching_cells:
-						var target_distance = get_distance(cell_position, target_cell)
-						if target_distance == distance + 1:
-							last_distance_map[target_cell.x][target_cell.y] = target_distance
+						var target_distance = last_distance_map[target_cell.x][target_cell.y]
+						if target_distance == -1 or target_distance > distance + 1:
+							last_distance_map[target_cell.x][target_cell.y] = distance + 1
 							if match_function.call(target_cell, extra_argument):
 								closest_matching_cells.append(target_cell)
 							else:
@@ -565,23 +558,22 @@ func can_spread_forest(cell_position: Vector2i):
 func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: bool = false, source: String = "spread"):
 	if bypass_condition or can_spread_forest(cell_position):
 		var cell_entries = []
-		var remaining_cells = []
-		var next_cells = [cell_position]
+		var remaining_cells = [cell_position]
+		var next_cells = []
 		var more_growable = func(a, b): return a[1] > b[1]
-		while tree_amount > 0 and next_cells != []:
-			# get all growable cells at that distance
-			remaining_cells = next_cells.duplicate()
-			next_cells = []
+		
+		var distance = 0
+		var distance_cost = 0
+		var distance_map = pathing.get_empty_distance_map()
+		distance_map[cell_position.x][cell_position.y] = 0
+		while tree_amount > 0 and remaining_cells != []:
 			for cell in remaining_cells:
 				show_growth_effect(cell)
 				var growable_amount = get_growable_amount(cell)
 				if is_valid_tile(cell) and growable_amount > 0:
 					cell_entries.append([cell, growable_amount, 0]) # last number will become the actual growth amount
 				else:
-					tree_amount -= 1 # small cost to prevent too far-reaching spreads with too little trees
-				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-					if is_growable(cell + diff) and cell + diff not in next_cells and pathing.get_distance(cell_position, cell + diff) > pathing.get_distance(cell_position, cell):
-						next_cells.append(cell + diff)
+					distance_cost += 1 # small cost to prevent too far-reaching spreads with too little trees
 			
 			# distribute the trees in a min-max way
 			cell_entries.sort_custom(more_growable)
@@ -627,6 +619,20 @@ func spread_forest(cell_position: Vector2i, tree_amount: int, bypass_condition: 
 					"treantling":	treantlings.trees += cell_entry[2]
 					"spread":		spread_trees += cell_entry[2]
 					"plant":		planted_trees += cell_entry[2]
+			cell_entries = []
+			
+			tree_amount -= distance_cost
+			distance_cost = 0
+			distance += 1
+			for cell in remaining_cells:
+				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+					var neighbor = cell + diff
+					if is_growable(neighbor) and distance_map[neighbor.x][neighbor.y] == -1:
+						distance_map[neighbor.x][neighbor.y] = distance
+						next_cells.append(neighbor)
+			
+			remaining_cells = next_cells.duplicate()
+			next_cells = []
 		
 		emit_signal("score_changed")
 		return true

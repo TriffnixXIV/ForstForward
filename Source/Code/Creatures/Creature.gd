@@ -5,14 +5,27 @@ var map: Map
 
 var cell_position: Vector2i
 var target_location
-var inverse_path
+
+var distance_map
+var next_move
+var path = []
+var inverse_path = []
 
 signal moved
 
 func move(approach_distance: int = 0):
 	var step = Vector2i(0, 0)
-	if inverse_path != null:
+	if next_move != null:
+		step = next_move
+		next_move = null
+	elif path != []:
+		step = path.pop_front()
+		if len(path) <= approach_distance:
+			path = []
+	elif inverse_path != []:
 		step = -inverse_path.pop_back()
+		if len(inverse_path) <= approach_distance:
+			inverse_path = []
 	else:
 		step = map.pathing.get_move(cell_position, target_location, approach_distance)
 	

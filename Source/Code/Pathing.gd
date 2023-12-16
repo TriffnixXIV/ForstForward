@@ -17,6 +17,10 @@ var shown_cell: Vector2i = Vector2i(4, 4)
 var currently_updating: bool = false
 signal update_done
 
+var current_step: int = 0
+var total_steps: int = 0
+signal progress_changed
+
 func _ready():
 	update_semaphore = Semaphore.new()
 	update_thread = Thread.new()
@@ -25,6 +29,7 @@ func _ready():
 func initialize() -> void:
 	unwalkable_map = []
 	cell_target_distance_map = []
+	total_steps = map.width * map.height
 	for x in map.width:
 		unwalkable_map.append([])
 		cell_target_distance_map.append([])
@@ -53,12 +58,10 @@ func clear() -> void:
 	for x in map.width:
 		for y in map.height:
 			cell_target_distance_map[x][y] = unwalkable_map.duplicate(true)
-	
-	for x in map.width:
-		for y in map.height:
-			map.set_cell_label(Vector2i(x, y), str(cell_target_distance_map[10][10][x][y]))
 
 func update() -> void:
+	if currently_updating:
+		currently_updating = false # interrupts the current update
 	update_semaphore.post()
 
 func _update_thread_function():
@@ -67,15 +70,16 @@ func _update_thread_function():
 		if not do_updates:
 			break
 		
-		print("start")
-		var starting_time = Time.get_unix_time_from_system()
+#		print("start")
+#		var starting_time = Time.get_unix_time_from_system()
 		currently_updating = true
+		current_step = 0
 		
 		update_map()
 		
 		currently_updating = false
-		print("fix steps: ", fix_steps, " expand steps: ", expand_steps)
-		print("stop: ", Time.get_unix_time_from_system() - starting_time)
+#		print("fix steps: ", fix_steps, " expand steps: ", expand_steps)
+#		print("stop: ", Time.get_unix_time_from_system() - starting_time)
 		emit_signal("update_done")
 
 func update_map() -> void:
@@ -93,14 +97,21 @@ func update_map() -> void:
 	
 	for x in map.width:
 		for y in map.height:
+			if not currently_updating: return
+			var cell = Vector2i(x, y)
 			if is_water_level:
-				cell_target_distance_map[x][y][x][y] = 0
-				expand_cell(Vector2i(x, y), Vector2i(x, y))
-			elif not map.is_walkable(Vector2i(x, y)):
-				cell_target_distance_map[x][y] = unwalkable_map.duplicate(true)
-				for x_2 in map.width:
-					for y_2 in map.height:
-						fix_cell(Vector2i(x_2, y_2), Vector2i(x, y))
+				if map.is_walkable(cell):
+					cell_target_distance_map[x][y][x][y] = 0
+					expand_cell(cell, cell)
+			else:
+				if not map.is_walkable(cell):
+					cell_target_distance_map[x][y] = unwalkable_map.duplicate(true)
+					for x_2 in map.width:
+						for y_2 in map.height:
+							cell_target_distance_map[x_2][y_2][x][y] = -1
+							fix_cell(Vector2i(x_2, y_2), cell)
+			current_step += 1
+			emit_signal("progress_changed", current_step / float(total_steps))
 
 func expand_cell(start: Vector2i, cell: Vector2i) -> void:
 	var distance = cell_target_distance_map[start.x][start.y][cell.x][cell.y]
@@ -140,8 +151,7 @@ func fix_cell(start: Vector2i, cell: Vector2i) -> void:
 			fix_steps += 1
 			
 			current_distance = cell_target_distance_map[start.x][start.y][current_cell.x][current_cell.y]
-			if not map.is_walkable(current_cell) and current_distance != -1:
-				cell_target_distance_map[start.x][start.y][current_cell.x][current_cell.y] = -1
+			if not map.is_walkable(current_cell):
 				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
 					var neighbor = current_cell + diff
 					if map.is_walkable(neighbor):
@@ -181,7 +191,7 @@ func get_empty_distance_map() -> Array[Array]:
 	var distance_map: Array[Array] = []
 	var array = []
 	array.resize(map.height)
-	array.fill(map.width + map.height)
+	array.fill(-1)
 	for _x in map.width:
 		distance_map.append(array.duplicate())
 	
@@ -238,6 +248,7 @@ func get_move_sequence(distance_map, start: Vector2i, target: Vector2i, approach
 	return sequence
 
 func _exit_tree():
+	currently_updating = false
 	do_updates = false
 	update_semaphore.post()
 	update_thread.wait_to_finish()

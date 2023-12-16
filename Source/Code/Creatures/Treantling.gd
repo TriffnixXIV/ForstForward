@@ -58,6 +58,7 @@ func convert_to_forest():
 	emit_signal("has_died", self)
 
 func update_target_location():
+	var target_updated = false
 	var closest_valid_targets = map.find_closest_matching_cells(cell_position, is_valid_target, null, 20)
 	var current_value = evaluate_for_buildings(cell_position)
 	
@@ -65,6 +66,8 @@ func update_target_location():
 		target_location = map.find_closest_matching_cell(cell_position, is_good_death_spot, null, 20)
 		if cell_position == target_location or target_location == null:
 			convert_to_forest()
+		elif target_location != null:
+			target_updated = true
 	elif current_value <= 0:
 		target_location = null
 	
@@ -73,6 +76,10 @@ func update_target_location():
 		if target_location == null or target_value > current_value:
 			target_location = valid_target
 			current_value = target_value
+			target_updated = true
+	
+	if target_updated:
+		inverse_path = map.pathing.get_move_sequence(map.last_distance_map, target_location, cell_position)
 
 func is_valid_target(cell: Vector2i, _extra):
 	return evaluate_for_buildings(cell) > evaluate_for_buildings(cell_position)

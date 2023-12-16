@@ -117,8 +117,11 @@ func is_growable(cell_position: Vector2i):
 	return is_valid_tile(cell_position) and is_plains(cell_position)
 
 func get_growable_amount(cell_position: Vector2i):
-	if is_growable(cell_position):
-		return get_building_progress(cell_position) + 10 - get_yield(cell_position)
+	if is_valid_tile(cell_position):
+		var growable_amount = get_building_progress(cell_position)
+		if is_growable(cell_position):
+			growable_amount += 10 - get_yield(cell_position)
+		return growable_amount
 	else:
 		return 0
 
@@ -159,7 +162,7 @@ func is_water_level():
 			if is_walkable(Vector2i(x, y)):
 				walkable_tiles += 1
 	
-	return walkable_tiles < width * height / 2.0
+	return walkable_tiles < floori(width * height * 0.9)
 
 func generate():
 	pass
