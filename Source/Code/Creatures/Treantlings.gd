@@ -13,7 +13,7 @@ var trees: int = 0
 var base_actions: int = 8
 var base_strength: int = 1
 var base_lifespan: int = 24
-var base_death_spread: int = 8
+var base_death_spread: int = 24
 
 var actions: int
 var strength: int

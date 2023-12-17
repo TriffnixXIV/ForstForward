@@ -1,0 +1,37 @@
+Gameplay:
+	- winning:
+		- now requires all plains to be covered in forest and all houses to be destroyed
+			- sand and water need not be covered
+	- sand and water:
+		- new tile types
+		- trees cannot grow on sand or water
+		- houses can't be built on water
+		- water cannot be walked on
+	- map changes:
+		- 3 new maps (stars, the net and oasis)
+		- added water to the split and the ring
+	- spread:
+		- the source cell is now also considered for spread amount usage
+			- this way, spreads that don't start on forests will be a bit smaller
+			- treantling and treant death spreads have been buffed accordingly
+				- treantling start death spread: 8 -> 24
+				- trant start death spread: 4x20 -> 4x40
+	- villagers:
+		- their wood distance map now updates every advancement step (instead of once per round)
+		- they now travel along that map instead of looking for specific trees (after a certain distance)
+			- this leads to a dramatic performance improvement when there are lots of villagers
+		- they now start building sooner when close to a good spot
+			- the targeting changes for this lead to a dramatic performance decrease when there are lots of villagers
+		- Horst now uses his blast more liberally
+	- all beings:
+		- now share a base class
+		- they now move along their chosen path a little more randomly, instead of going straight and then roughly diagonally
+
+Bug fixes & QoL:
+	- added that sound that is absolutely everywhere to a few more places
+		- when spawning multiple druids, treantlings or treants, it will now play on every single spawn again
+	- added a web build to the itch.io page, so the game can also be played there
+
+UI:
+	- added links to the main menu
+	- created a dedicated discord (https://discord.gg/CNPbtFGXgh)

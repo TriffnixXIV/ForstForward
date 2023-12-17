@@ -1,4 +1,4 @@
-[gd_scene load_steps=101 format=3 uid="uid://c6x335jeyp5nk"]
+[gd_scene load_steps=111 format=3 uid="uid://c6x335jeyp5nk"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -42,11 +42,15 @@
 [ext_resource type="Texture2D" uid="uid://d2kalc6w76eii" path="res://Images/Separator.png" id="48_ciuft"]
 [ext_resource type="LabelSettings" uid="uid://bcx0dufx4gceb" path="res://Text/StatLabelSettings.tres" id="48_sowv6"]
 [ext_resource type="Texture2D" uid="uid://cniwp3qlod5sy" path="res://Images/Arrows/ArrowLeftHover.png" id="49_blmtu"]
+[ext_resource type="Texture2D" uid="uid://ml2rhvit553v" path="res://Images/LinkContainer/LinkContainer.png" id="50_0jeeq"]
 [ext_resource type="Texture2D" uid="uid://snhsydc6sbec" path="res://Images/OptionButton/ButtonNormal.png" id="50_6voxv"]
-[ext_resource type="Script" path="res://Code/TextButton.gd" id="51_4nt7v"]
+[ext_resource type="Texture2D" uid="uid://buocqyfofnu2n" path="res://Images/Links/DiscordIcon.png" id="50_gpbp2"]
+[ext_resource type="Script" path="res://Code/LinkHoverButton.gd" id="50_pb60d"]
+[ext_resource type="Texture2D" uid="uid://bfcg4juhukldg" path="res://Images/Links/GitHubIcon.png" id="51_011br"]
 [ext_resource type="Texture2D" uid="uid://be2wlg0tx77t0" path="res://Images/OptionButton/ButtonPressed.png" id="51_bldow"]
 [ext_resource type="Texture2D" uid="uid://c78y4f10kqh5d" path="res://Images/OptionButton/ButtonHover.png" id="52_bcv0s"]
 [ext_resource type="Script" path="res://Code/Stats.gd" id="52_fmowh"]
+[ext_resource type="Texture2D" uid="uid://bsrt61s8hilc1" path="res://Images/Links/ItchIcon.png" id="52_sygta"]
 [ext_resource type="Texture2D" uid="uid://jyd1d7c52kov" path="res://Images/OptionButton/ButtonDisabled.png" id="53_g8171"]
 [ext_resource type="Script" path="res://Code/ToLevelSelection.gd" id="54_feji7"]
 [ext_resource type="Texture2D" uid="uid://dbyt1ovuq165m" path="res://Images/OptionButton/ButtonFocused.png" id="54_ndqc2"]
@@ -86,6 +90,22 @@ shadow_color = Color(0, 1, 0, 1)
 font_size = 24
 shadow_color = Color(0, 1, 0, 1)
 
+[sub_resource type="GDScript" id="GDScript_sghk4"]
+script/source = "extends TextureButton
+
+func _on_mouse_entered():
+	$Label.label_settings.shadow_offset = Vector2i(1, 2)
+
+func _on_mouse_exited():
+	$Label.label_settings.shadow_offset = Vector2i(1, 1)
+
+func _on_button_down():
+	$Label.label_settings.shadow_color.a = 0.0
+
+func _on_button_up():
+	$Label.label_settings.shadow_color.a = 1.0
+"
+
 [sub_resource type="LabelSettings" id="LabelSettings_51sx4"]
 font_size = 24
 shadow_color = Color(0, 1, 0, 1)
@@ -112,6 +132,26 @@ shadow_color = Color(0, 1, 0, 1)
 line_spacing = 0.0
 font_size = 8
 font_color = Color(1, 1, 1, 0.376471)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hbatr"]
+font_size = 24
+shadow_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_7px45"]
+font_size = 20
+shadow_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ljg5k"]
+font_size = 20
+shadow_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ce83y"]
+font_size = 20
+shadow_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_xmh72"]
+font_size = 20
+shadow_color = Color(0, 1, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_n5omy"]
 font_size = 24
@@ -696,7 +736,7 @@ theme_override_constants/separation = 1
 [node name="Resume" type="TextureButton" parent="MapOverlay/InGameMenu/List"]
 layout_mode = 2
 size_flags_vertical = 3
-script = ExtResource("51_4nt7v")
+script = SubResource("GDScript_sghk4")
 
 [node name="Label" type="Label" parent="MapOverlay/InGameMenu/List/Resume"]
 layout_mode = 1
@@ -713,7 +753,7 @@ vertical_alignment = 1
 [node name="Reset" type="TextureButton" parent="MapOverlay/InGameMenu/List"]
 layout_mode = 2
 size_flags_vertical = 3
-script = ExtResource("51_4nt7v")
+script = SubResource("GDScript_sghk4")
 
 [node name="Label" type="Label" parent="MapOverlay/InGameMenu/List/Reset"]
 layout_mode = 1
@@ -731,7 +771,7 @@ vertical_alignment = 1
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
-script = ExtResource("51_4nt7v")
+script = SubResource("GDScript_sghk4")
 
 [node name="Label" type="Label" parent="MapOverlay/InGameMenu/List/RunInfo"]
 layout_mode = 1
@@ -748,7 +788,7 @@ vertical_alignment = 1
 [node name="ToLevelSelect" type="TextureButton" parent="MapOverlay/InGameMenu/List"]
 layout_mode = 2
 size_flags_vertical = 3
-script = ExtResource("51_4nt7v")
+script = SubResource("GDScript_sghk4")
 
 [node name="Label" type="Label" parent="MapOverlay/InGameMenu/List/ToLevelSelect"]
 layout_mode = 1
@@ -1036,6 +1076,169 @@ offset_left = 590.0
 offset_top = 5.0
 offset_right = 795.0
 offset_bottom = 445.0
+
+[node name="Links" type="Control" parent="Sidebar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Texture" type="TextureRect" parent="Sidebar/Links"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -102.5
+offset_top = -122.5
+offset_right = 102.5
+offset_bottom = 122.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("50_0jeeq")
+
+[node name="Container" type="Control" parent="Sidebar/Links/Texture"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Sidebar/Links/Texture/Container"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 5.0
+offset_right = 20.0
+offset_bottom = 28.0
+grow_horizontal = 2
+text = "links"
+label_settings = SubResource("LabelSettings_hbatr")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Discord" type="LinkButton" parent="Sidebar/Links/Texture/Container"]
+layout_mode = 1
+offset_top = 55.0
+offset_right = 195.0
+offset_bottom = 95.0
+uri = "https://discord.gg/CNPbtFGXgh"
+script = ExtResource("50_pb60d")
+
+[node name="Icon" type="TextureRect" parent="Sidebar/Links/Texture/Container/Discord"]
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 35.0
+offset_bottom = 35.0
+texture = ExtResource("50_gpbp2")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Sidebar/Links/Texture/Container/Discord"]
+offset_left = 45.0
+offset_right = 134.0
+offset_bottom = 40.0
+text = "discord"
+label_settings = SubResource("LabelSettings_7px45")
+vertical_alignment = 1
+
+[node name="Wiki" type="LinkButton" parent="Sidebar/Links/Texture/Container"]
+layout_mode = 2
+offset_top = 100.0
+offset_right = 195.0
+offset_bottom = 140.0
+uri = "https://github.com/TriffnixXIV/ForstForward/wiki"
+script = ExtResource("50_pb60d")
+
+[node name="Icon" type="TextureRect" parent="Sidebar/Links/Texture/Container/Wiki"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 35.0
+offset_bottom = 35.0
+texture = ExtResource("51_011br")
+expand_mode = 4
+
+[node name="Label" type="Label" parent="Sidebar/Links/Texture/Container/Wiki"]
+offset_left = 45.0
+offset_right = 134.0
+offset_bottom = 40.0
+text = "wiki"
+label_settings = SubResource("LabelSettings_ljg5k")
+vertical_alignment = 1
+
+[node name="Github" type="LinkButton" parent="Sidebar/Links/Texture/Container"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -97.5
+offset_top = 27.5
+offset_right = 97.5
+offset_bottom = 67.5
+grow_horizontal = 2
+grow_vertical = 2
+uri = "https://github.com/TriffnixXIV/ForstForward"
+script = ExtResource("50_pb60d")
+
+[node name="Icon" type="TextureRect" parent="Sidebar/Links/Texture/Container/Github"]
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 35.0
+offset_bottom = 35.0
+texture = ExtResource("51_011br")
+expand_mode = 4
+
+[node name="Label" type="Label" parent="Sidebar/Links/Texture/Container/Github"]
+offset_left = 45.0
+offset_right = 134.0
+offset_bottom = 40.0
+text = "source code"
+label_settings = SubResource("LabelSettings_ce83y")
+vertical_alignment = 1
+
+[node name="Itch" type="LinkButton" parent="Sidebar/Links/Texture/Container"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -97.5
+offset_top = 72.5
+offset_right = 97.5
+offset_bottom = 112.5
+grow_horizontal = 2
+grow_vertical = 2
+uri = "https://lunis-peace.itch.io/forst-forward"
+script = ExtResource("50_pb60d")
+
+[node name="Icon" type="TextureRect" parent="Sidebar/Links/Texture/Container/Itch"]
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 35.0
+offset_bottom = 35.0
+texture = ExtResource("52_sygta")
+expand_mode = 4
+
+[node name="Label" type="Label" parent="Sidebar/Links/Texture/Container/Itch"]
+offset_left = 45.0
+offset_right = 134.0
+offset_bottom = 40.0
+text = "store page"
+label_settings = SubResource("LabelSettings_xmh72")
+vertical_alignment = 1
 
 [node name="Records" type="Control" parent="Sidebar"]
 visible = false
@@ -1411,7 +1614,7 @@ offset_bottom = 15.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-script = ExtResource("51_4nt7v")
+script = SubResource("GDScript_sghk4")
 
 [node name="Label" type="Label" parent="Sidebar/Records/Buttons/Reset"]
 layout_mode = 1
@@ -1430,6 +1633,7 @@ text = "reset records"
 label_settings = SubResource("LabelSettings_dvba3")
 
 [node name="InGameUI" type="Control" parent="Sidebar"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1811,6 +2015,22 @@ stretch_mode = 0
 [connection signal="pressed" from="MapOverlay/InGameMenu/List/ToLevelSelect" to="." method="_on_to_level_selection_pressed"]
 [connection signal="pressed" from="MapOverlay/PostGame/ToLevelSelection" to="." method="_on_to_level_selection_pressed"]
 [connection signal="timeout" from="MapOverlay/PostGame/ToLevelSelection/Timer" to="MapOverlay/PostGame/ToLevelSelection" method="_on_timer_timeout"]
+[connection signal="button_down" from="Sidebar/Links/Texture/Container/Discord" to="Sidebar/Links/Texture/Container/Discord" method="_on_button_down"]
+[connection signal="button_up" from="Sidebar/Links/Texture/Container/Discord" to="Sidebar/Links/Texture/Container/Discord" method="_on_button_up"]
+[connection signal="mouse_entered" from="Sidebar/Links/Texture/Container/Discord" to="Sidebar/Links/Texture/Container/Discord" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Sidebar/Links/Texture/Container/Discord" to="Sidebar/Links/Texture/Container/Discord" method="_on_mouse_exited"]
+[connection signal="button_down" from="Sidebar/Links/Texture/Container/Wiki" to="Sidebar/Links/Texture/Container/Wiki" method="_on_button_down"]
+[connection signal="button_up" from="Sidebar/Links/Texture/Container/Wiki" to="Sidebar/Links/Texture/Container/Wiki" method="_on_button_up"]
+[connection signal="mouse_entered" from="Sidebar/Links/Texture/Container/Wiki" to="Sidebar/Links/Texture/Container/Wiki" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Sidebar/Links/Texture/Container/Wiki" to="Sidebar/Links/Texture/Container/Wiki" method="_on_mouse_exited"]
+[connection signal="button_down" from="Sidebar/Links/Texture/Container/Github" to="Sidebar/Links/Texture/Container/Github" method="_on_button_down"]
+[connection signal="button_up" from="Sidebar/Links/Texture/Container/Github" to="Sidebar/Links/Texture/Container/Github" method="_on_button_up"]
+[connection signal="mouse_entered" from="Sidebar/Links/Texture/Container/Github" to="Sidebar/Links/Texture/Container/Github" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Sidebar/Links/Texture/Container/Github" to="Sidebar/Links/Texture/Container/Github" method="_on_mouse_exited"]
+[connection signal="button_down" from="Sidebar/Links/Texture/Container/Itch" to="Sidebar/Links/Texture/Container/Itch" method="_on_button_down"]
+[connection signal="button_up" from="Sidebar/Links/Texture/Container/Itch" to="Sidebar/Links/Texture/Container/Itch" method="_on_button_up"]
+[connection signal="mouse_entered" from="Sidebar/Links/Texture/Container/Itch" to="Sidebar/Links/Texture/Container/Itch" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Sidebar/Links/Texture/Container/Itch" to="Sidebar/Links/Texture/Container/Itch" method="_on_mouse_exited"]
 [connection signal="pressed" from="Sidebar/Records/Buttons/MuteButton" to="." method="_on_record_mute_button_pressed"]
 [connection signal="button_down" from="Sidebar/Records/Buttons/Reset" to="Sidebar/Records/Buttons/Reset" method="_on_button_down" flags=18]
 [connection signal="button_up" from="Sidebar/Records/Buttons/Reset" to="Sidebar/Records/Buttons/Reset" method="_on_button_up" flags=18]

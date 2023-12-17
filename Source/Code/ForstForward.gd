@@ -1,7 +1,7 @@
 extends Node2D
 class_name Root
 
-var version = "v11 dev"
+var version = "v11"
 
 var current_round = 1
 
@@ -134,6 +134,7 @@ func set_game_state(state: GameState):
 	$MapOverlay/LevelSelection.visible = false
 	$MapOverlay/InGameMenu.visible = false
 	$MapOverlay/PostGame.visible = false
+	$Sidebar/Links.visible = false
 	$Sidebar/Records.visible = false
 	$Sidebar/InGameUI.visible = false
 	
@@ -144,6 +145,7 @@ func set_game_state(state: GameState):
 			play_success_sound()
 			$MapOverlay/Ornaments.visible = true
 			$MapOverlay/MainMenu.visible = true
+			$Sidebar/Links.visible = true
 			$Map.clear_level()
 		GameState.level_selection:
 			play_success_sound()
@@ -247,10 +249,6 @@ func enact_bottom_option():
 func apply_upgrade(upgrade: Upgrade):
 	upgrade.apply($Map, action_factory)
 	$Sounds.upgrade()
-	match randi_range(0, 2):
-		0: pass
-		1: pass
-		2: pass
 	next_turn_step()
 
 func enact_action(action: Action):
@@ -273,11 +271,11 @@ func _on_action_advance_success():
 	
 	if game_state == GameState.playing:
 		if selected_action.type != Action.Type.lightning_strike:
+			play_success_sound() if not selected_action.is_done() else null
 			match selected_action.type:
 				Action.Type.spawn_treant:		$Map/Advancement/Sounds.chop()
 				Action.Type.spawn_treantling:	$Map/Advancement/Sounds.chop()
 				Action.Type.spawn_druid:		$Map/Advancement/Sounds.grow()
-				_: play_success_sound() if not selected_action.is_done() else null
 		
 		if selected_action.is_done():
 			advance()

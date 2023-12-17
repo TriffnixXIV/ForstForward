@@ -13,7 +13,7 @@ var trees: int = 0
 var base_actions: int = 6
 var base_has_lifespan: bool = false
 var base_lifespan: int = 40
-var base_death_spread: int = 20
+var base_death_spread: int = 40
 
 var actions: int
 var has_lifespan: bool
