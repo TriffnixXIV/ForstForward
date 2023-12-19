@@ -36,10 +36,3 @@ func move(approach_distance: int = 0):
 func update_position():
 	position.x = cell_position.x * map.tile_set.tile_size.x
 	position.y = cell_position.y * map.tile_set.tile_size.y
-
-func get_distance_to(cell: Vector2i, beeline: bool = false):
-	if beeline:
-		var direct_path = cell - cell_position
-		return abs(direct_path.x) + abs(direct_path.y)
-	else:
-		return map.pathing.cell_target_distance_map[cell.x][cell.y][cell_position.x][cell_position.y]

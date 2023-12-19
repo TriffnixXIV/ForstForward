@@ -1,3 +1,15 @@
+11.1
+Gameplay:
+	- villagers:
+		- basically, all details of their pathing and targeting changed
+		- now path way more efficiently by referencing distance maps to get their actions
+		- they don't care about their home anymore (subject to change)
+		- they don't care specifically about completing incomplete build sites anymore (in comparison to starting a new one)
+	- rain
+		- the rain growth boost now starts at 1 (instead of 0)
+			- this way, rain actually does something by itself without upgrades
+
+11.0
 Gameplay:
 	- winning:
 		- now requires all plains to be covered in forest and all houses to be destroyed

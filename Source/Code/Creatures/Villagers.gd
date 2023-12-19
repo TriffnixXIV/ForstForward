@@ -39,7 +39,6 @@ func prepare_turn():
 		villager.prepare_turn(actions - action_loss)
 
 func act():
-	map.update_tree_distance_map()
 	var actions_left = false
 	for villager in villagers:
 		actions_left = villager.act() or actions_left

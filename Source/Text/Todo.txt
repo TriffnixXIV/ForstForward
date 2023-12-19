@@ -4,6 +4,7 @@ Mechanics:
 	- treants:
 		- when mortal, add upgrade to make them spawn treantlings on death
 	- treantlings:
+		- fix movement quirk (ignoring new buildings after targeting a round before)
 		- add upgrade to make them randomly spawn when a forest grows
 	- treants & treantlings:
 		- make lifespan dependant on rounds, not actions (more understandable)
@@ -75,4 +76,11 @@ UI:
 		- common stats top
 
 Code:
-	- make build location finding more efficient
+	- make villagers work merely based on the wood distance map, their home distance map and a building distance map
+		- don't make them do math, let the math be done for them
+		- update the distance maps for wood and buildings with every relevant change
+		- calculate the home distance map on house completion
+			- allows all the cell distance map generation to be removed, as they are then generated there
+				- currently, the home cell distance map is one of two use cases, allowing for this
+	- make distance calculations work based on the specific distance maps
+		- treants and treantlings can work with that, too

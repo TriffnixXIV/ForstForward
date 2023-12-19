@@ -1,12 +1,12 @@
 extends Node2D
 class_name Root
 
-var version = "v11"
+var version: String = "v11.1"
 
-var current_round = 1
+var current_round: int = 1
 
 var selected_action: Action
-var selection_locked = false
+var selection_locked: bool = false
 
 var action_factory: ActionFactory = ActionFactory.new()
 var top_action: Action = Action.new()
@@ -17,9 +17,9 @@ var crystal: Crystal
 var upgrade_factory: UpgradeFactory = UpgradeFactory.new()
 var top_upgrade: Upgrade = Upgrade.new()
 var bottom_upgrade: Upgrade = Upgrade.new()
-var upgrading = false
+var upgrading: bool = false
 
-var characters_are_transparent
+var characters_are_transparent: bool = false
 var current_map_position
 
 enum GameState {main_menu, level_selection, playing, in_game_menu, post_game}

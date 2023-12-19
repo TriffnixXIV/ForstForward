@@ -6,7 +6,6 @@ var current_level: int = 0
 var transition_duration: float = 0.25
 var transition_progress: float = 0.0
 var transition_info = []
-var pathing_outdated: bool = false
 
 var pathing: Pathing
 var edges: Edges
@@ -27,7 +26,7 @@ var base_can_spread_on_plains = false
 var base_can_spread_on_buildings = false
 var base_can_plant_on_buildings = false
 var base_rain_decay_rate = 1
-var base_rain_growth_boost = 0
+var base_rain_growth_boost = 1
 var base_rain_frost_boost = 0
 var base_min_frost = 0
 
@@ -59,7 +58,6 @@ var total_lightning_strikes: int = 0
 var cell_labels: Array[Array]
 var cell_label_settings = preload("res://Text/CellNumberLabelSettings.tres")
 
-var tree_distance_map: Array[Array]
 var last_distance_map: Array[Array]
 
 var advancement: Advancement
@@ -94,8 +92,7 @@ func _ready():
 	highest_possible_score = width * height * 10
 	
 	edges.resize()
-	pathing.update()
-	tree_distance_map = pathing.get_empty_distance_map()
+	pathing.initialize()
 
 func _process(delta):
 	if transition_progress < transition_duration and len(transition_info) > 0:
@@ -108,13 +105,12 @@ func _process(delta):
 			
 			villagers.despawn_at(data[1], true)
 			
-			var was_walkable = is_walkable(data[1])
 			set_cell(data[0], data[1], data[2], data[3])
-			if was_walkable != is_walkable(data[1]):
-				pathing_outdated = true
 			
 			if is_house(data[1]):
 				villagers.spawn(data[1])
+				pathing.add_distance_map(data[1])
+		
 		edges.update()
 	elif advancement.current_phase == advancement.Phase.transitioning:
 		advancement.current_phase = advancement.Phase.idle
@@ -131,8 +127,8 @@ func _process(delta):
 		for _i in base_weather_crystals:
 			crystals.find_spot_and_spawn_crystal(Crystal.Type.weather)
 		
-		if pathing_outdated:
-			pathing.update()
+		pathing.update_tree_distance_map()
+		pathing.update_build_site_distance_map()
 		
 		emit_signal("transition_done")
 		emit_signal("score_changed")
@@ -215,7 +211,7 @@ func reset():
 	advancement.stop()
 	transition_progress = 0.0
 	transition_info = []
-	pathing_outdated = false
+	pathing.reset()
 	
 	reset_upgrades()
 	reset_stats()
@@ -253,39 +249,6 @@ func reset_stats():
 	total_rain_duration = 0
 
 # miscellaneous advancement stuff
-
-func update_tree_distance_map():
-	var remaining_cells = []
-	for x in width:
-		for y in height:
-			var cell = Vector2i(x, y)
-			if get_yield(cell) > 0:
-				tree_distance_map[x][y] = 0
-				remaining_cells.append(cell)
-			elif not is_walkable(cell):
-				tree_distance_map[x][y] = -1
-			else:
-				tree_distance_map[x][y] = width + height
-	
-	var next_cells = []
-	while remaining_cells != []:
-		for cell in remaining_cells:
-			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-				var target_cell = cell + diff
-				if is_walkable(target_cell):
-					if tree_distance_map[target_cell.x][target_cell.y] > tree_distance_map[cell.x][cell.y] + 1:
-						tree_distance_map[target_cell.x][target_cell.y] = tree_distance_map[cell.x][cell.y] + 1
-						next_cells.append(target_cell)
-		
-		remaining_cells = next_cells.duplicate()
-		next_cells = []
-
-func set_cell_tree_distance(cell: Vector2i, distance: int):
-	if cell.x >= 0 and cell.x < width and cell.y >= 0 and cell.y < height:
-		if distance > tree_distance_map[cell.x][cell.y]:
-			tree_distance_map[cell.x][cell.y] = distance
-			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
-				set_cell_tree_distance(cell + diff, distance - 1)
 
 func get_growth_stages():
 	var growth_stages = min_growth + growth_boost
@@ -426,9 +389,13 @@ func set_yield(cell_position: Vector2i, amount: int):
 			edges.update_cell(cell_position)
 		else:
 			set_empty(cell_position)
+			pathing.remove_tree(cell_position)
+		
 		if previous_yield >= 10 and amount < 10:
 			edges.update_cell(cell_position)
 			crystals.forest_died_at(cell_position)
+		elif previous_yield == 0 and amount > 0:
+			pathing.add_tree(cell_position)
 
 func increase_building_progress(cell_position: Vector2i, amount: int):
 	if get_yield(cell_position) > 0:
@@ -451,12 +418,19 @@ func set_building_progress(cell_position: Vector2i, progress: int):
 	if previous_progress != progress:
 		if progress > 0 and progress < 10:
 			set_build_site(cell_position, progress)
+			if previous_progress >= 10 or previous_progress <= 0:
+				pathing.add_build_site(cell_position)
 		elif progress >= 10:
 			set_house(cell_position)
 			villagers.occupy(cell_position)
+			pathing.add_distance_map(cell_position)
 		else:
 			set_empty(cell_position)
 			villagers.despawn_at(cell_position)
+			pathing.update_build_site(cell_position)
+		
+		if (previous_progress < 10) != (progress < 10):
+			pathing.update_house(cell_position)
 
 # miscellaneous functions
 

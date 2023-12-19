@@ -3,12 +3,10 @@ class_name Pathing
 
 var map: Map
 
-var unwalkable_map
 var cell_target_distance_map
 
-var update_semaphore: Semaphore
-var update_thread: Thread
-var do_updates: bool = true
+var tree_distance_map: Array[Array]
+var build_site_distance_map: Array[Array]
 
 var expand_steps: int = 0
 var fix_steps: int = 0
@@ -17,101 +15,22 @@ var shown_cell: Vector2i = Vector2i(4, 4)
 var currently_updating: bool = false
 signal update_done
 
-var current_step: int = 0
-var total_steps: int = 0
-signal progress_changed
-
-func _ready():
-	update_semaphore = Semaphore.new()
-	update_thread = Thread.new()
-	update_thread.start(_update_thread_function)
-
 func initialize() -> void:
-	unwalkable_map = []
 	cell_target_distance_map = []
-	total_steps = map.width * map.height
 	for x in map.width:
-		unwalkable_map.append([])
 		cell_target_distance_map.append([])
 		for y in map.height:
-			unwalkable_map[x].append(-1)
-			cell_target_distance_map[x].append([])
-			initialize_cell(Vector2i(x, y))
-	reset()
-
-func initialize_cell(cell: Vector2i):
-	for x in map.width:
-		cell_target_distance_map[cell.x][cell.y].append([])
-		for y in map.height:
-			var base_distance = abs(cell.x - x) + abs(cell.y - y)
-			cell_target_distance_map[cell.x][cell.y][x].append(base_distance)
+			cell_target_distance_map[x].append(null)
 
 func reset() -> void:
 	for x in map.width:
 		for y in map.height:
-			for x_2 in map.width:
-				for y_2 in map.height:
-					cell_target_distance_map[x][y][x_2][y_2] = abs(x - x_2) + abs(y - y_2)
+			cell_target_distance_map[x][y] = null
 
-func clear() -> void:
-	[].duplicate()
-	for x in map.width:
-		for y in map.height:
-			cell_target_distance_map[x][y] = unwalkable_map.duplicate(true)
-
-func update() -> void:
-	if currently_updating:
-		currently_updating = false # interrupts the current update
-	update_semaphore.post()
-
-func _update_thread_function():
-	while do_updates:
-		update_semaphore.wait()
-		if not do_updates:
-			break
-		
-#		print("start")
-#		var starting_time = Time.get_unix_time_from_system()
-		currently_updating = true
-		current_step = 0
-		
-		update_map()
-		
-		currently_updating = false
-#		print("fix steps: ", fix_steps, " expand steps: ", expand_steps)
-#		print("stop: ", Time.get_unix_time_from_system() - starting_time)
-		emit_signal("update_done")
-
-func update_map() -> void:
-	if cell_target_distance_map == null:
-		initialize()
-	
-	var is_water_level = map.is_water_level()
-	if is_water_level:
-		clear()
-	else:
-		reset()
-	
-	expand_steps = 0
-	fix_steps = 0
-	
-	for x in map.width:
-		for y in map.height:
-			if not currently_updating: return
-			var cell = Vector2i(x, y)
-			if is_water_level:
-				if map.is_walkable(cell):
-					cell_target_distance_map[x][y][x][y] = 0
-					expand_cell(cell, cell)
-			else:
-				if not map.is_walkable(cell):
-					cell_target_distance_map[x][y] = unwalkable_map.duplicate(true)
-					for x_2 in map.width:
-						for y_2 in map.height:
-							cell_target_distance_map[x_2][y_2][x][y] = -1
-							fix_cell(Vector2i(x_2, y_2), cell)
-			current_step += 1
-			emit_signal("progress_changed", current_step / float(total_steps))
+func add_distance_map(start: Vector2i):
+	cell_target_distance_map[start.x][start.y] = get_empty_distance_map()
+	cell_target_distance_map[start.x][start.y][start.x][start.y] = 0
+	expand_cell(start, start)
 
 func expand_cell(start: Vector2i, cell: Vector2i) -> void:
 	var distance = cell_target_distance_map[start.x][start.y][cell.x][cell.y]
@@ -137,6 +56,7 @@ func expand_cell(start: Vector2i, cell: Vector2i) -> void:
 		remaining_cells = next_cells.duplicate()
 		next_cells = []
 
+# currently out of use, would be relevant for placing water during a run
 func fix_cell(start: Vector2i, cell: Vector2i) -> void:
 	if not map.is_walkable(start):
 		return
@@ -173,8 +93,7 @@ func fix_cell(start: Vector2i, cell: Vector2i) -> void:
 				
 				if closest_neighbor == null:
 					cell_target_distance_map[start.x][start.y][current_cell.x][current_cell.y] = -1
-					for neighbor in further_neighbors:
-						next_cells.append(neighbor)
+					next_cells += further_neighbors
 				else:
 					cells_to_expand.append(current_cell)
 		
@@ -187,11 +106,11 @@ func fix_cell(start: Vector2i, cell: Vector2i) -> void:
 func get_distance(cell: Vector2i, other: Vector2i):
 	return cell_target_distance_map[cell.x][cell.y][other.x][other.y]
 
-func get_empty_distance_map() -> Array[Array]:
+func get_empty_distance_map(initial_distance: int = -1) -> Array[Array]:
 	var distance_map: Array[Array] = []
 	var array = []
 	array.resize(map.height)
-	array.fill(-1)
+	array.fill(initial_distance)
 	for _x in map.width:
 		distance_map.append(array.duplicate())
 	
@@ -247,8 +166,163 @@ func get_move_sequence(distance_map, start: Vector2i, target: Vector2i, approach
 	
 	return sequence
 
-func _exit_tree():
-	currently_updating = false
-	do_updates = false
-	update_semaphore.post()
-	update_thread.wait_to_finish()
+func no_build_site(cell: Vector2i):
+	return build_site_distance_map[cell.x][cell.y] == map.width * map.height
+
+func update_build_site_distance_map():
+	if build_site_distance_map == []:
+		build_site_distance_map = get_empty_distance_map()
+	
+	var remaining_cells: Array[Vector2i] = []
+	for x in map.width:
+		for y in map.height:
+			var cell = Vector2i(x, y)
+			if map.is_build_site(cell):
+				build_site_distance_map[x][y] = 1
+				remaining_cells.append(cell)
+			elif not map.is_walkable(cell):
+				build_site_distance_map[x][y] = -1
+			else:
+				build_site_distance_map[x][y] = map.width * map.height
+	
+	for x in map.width:
+		for y in map.height:
+			var cell = Vector2i(x, y)
+			if map.is_house(cell):
+				for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+					var neighbor = cell + diff
+					if map.is_walkable(neighbor) and not map.is_house(neighbor) and not map.is_build_site(neighbor):
+						build_site_distance_map[neighbor.x][neighbor.y] = 1
+						remaining_cells.append(neighbor)
+	
+	expand_build_sites(remaining_cells)
+
+func update_house(house_position: Vector2i):
+	update_build_site(house_position)
+	for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+		update_build_site(house_position + diff)
+
+func update_build_site(build_site_position: Vector2i):
+	if not map.is_walkable(build_site_position):
+		return
+	if map.is_house(build_site_position):
+		remove_build_site(build_site_position)
+		return
+	
+	for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+		if map.is_house(build_site_position + diff):
+			add_build_site(build_site_position)
+			return
+	remove_build_site(build_site_position)
+
+func add_build_site(build_site_position: Vector2i):
+	build_site_distance_map[build_site_position.x][build_site_position.y] = 1
+	expand_build_sites([build_site_position])
+
+func remove_build_site(build_site_position: Vector2i):
+	var remaining_cells = [build_site_position]
+	var next_cells = []
+	var cells_to_expand: Array[Vector2i] = []
+	while remaining_cells != []:
+		for cell in remaining_cells:
+			var neighbors = []
+			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+				var neighbor = cell + diff
+				if map.is_walkable(neighbor):
+					if build_site_distance_map[neighbor.x][neighbor.y] == build_site_distance_map[cell.x][cell.y] - 2:
+						cells_to_expand.append(cell)
+						break
+					elif build_site_distance_map[neighbor.x][neighbor.y] == 1:
+						cells_to_expand.append(neighbor)
+					elif build_site_distance_map[neighbor.x][neighbor.y] >= build_site_distance_map[cell.x][cell.y] and (
+						build_site_distance_map[neighbor.x][neighbor.y] < map.width * map.height):
+						neighbors.append(neighbor)
+			
+			if cell not in cells_to_expand:
+				build_site_distance_map[cell.x][cell.y] = map.width * map.height
+				next_cells += neighbors
+		
+		remaining_cells = next_cells.duplicate()
+		next_cells = []
+	
+	expand_build_sites(cells_to_expand)
+
+func expand_build_sites(cells: Array[Vector2i]):
+	var remaining_cells = cells.duplicate()
+	var next_cells = []
+	while remaining_cells != []:
+		for cell in remaining_cells:
+			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+				var target_cell = cell + diff
+				if map.is_walkable(target_cell):
+					if build_site_distance_map[target_cell.x][target_cell.y] > build_site_distance_map[cell.x][cell.y] + 2:
+						build_site_distance_map[target_cell.x][target_cell.y] = build_site_distance_map[cell.x][cell.y] + 2
+						next_cells.append(target_cell)
+		
+		remaining_cells = next_cells.duplicate()
+		next_cells = []
+
+func update_tree_distance_map():
+	if tree_distance_map == []:
+		tree_distance_map = get_empty_distance_map()
+	
+	var remaining_cells: Array[Vector2i] = []
+	for x in map.width:
+		for y in map.height:
+			var cell = Vector2i(x, y)
+			if map.get_yield(cell) > 0:
+				tree_distance_map[x][y] = 0
+				remaining_cells.append(cell)
+			elif not map.is_walkable(cell):
+				tree_distance_map[x][y] = -1
+			else:
+				tree_distance_map[x][y] = map.width * map.height
+	
+	expand_trees(remaining_cells)
+
+func add_tree(tree_position: Vector2i):
+	tree_distance_map[tree_position.x][tree_position.y] = 0
+	expand_trees([tree_position])
+
+func remove_tree(tree_position: Vector2i):
+	var remaining_cells = [tree_position]
+	var next_cells = []
+	var cells_to_expand: Array[Vector2i] = []
+	while remaining_cells != []:
+		for cell in remaining_cells:
+			var neighbors = []
+			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+				var neighbor = cell + diff
+				if map.is_walkable(neighbor):
+					if tree_distance_map[neighbor.x][neighbor.y] == tree_distance_map[cell.x][cell.y] - 1:
+						cells_to_expand.append(cell)
+						break
+					elif tree_distance_map[neighbor.x][neighbor.y] == 0:
+						cells_to_expand.append(neighbor)
+					elif tree_distance_map[neighbor.x][neighbor.y] >= tree_distance_map[cell.x][cell.y] and (
+						tree_distance_map[neighbor.x][neighbor.y] < map.width * map.height):
+						neighbors.append(neighbor)
+			
+			if cell not in cells_to_expand:
+				tree_distance_map[cell.x][cell.y] = map.width * map.height
+				next_cells += neighbors
+		
+		remaining_cells = next_cells.duplicate()
+		next_cells = []
+	
+	expand_trees(cells_to_expand)
+
+func expand_trees(cells: Array[Vector2i]):
+	var remaining_cells = cells.duplicate()
+	var next_cells = []
+	while remaining_cells != []:
+		for cell in remaining_cells:
+			for diff in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]:
+				var target_cell = cell + diff
+				if map.is_walkable(target_cell):
+					if tree_distance_map[target_cell.x][target_cell.y] > tree_distance_map[cell.x][cell.y] + 1:
+						tree_distance_map[target_cell.x][target_cell.y] = tree_distance_map[cell.x][cell.y] + 1
+						next_cells.append(target_cell)
+		
+		remaining_cells = next_cells.duplicate()
+		next_cells = []

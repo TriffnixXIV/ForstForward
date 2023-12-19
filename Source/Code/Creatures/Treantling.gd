@@ -22,7 +22,7 @@ func act():
 		update_target_location()
 	
 	if target_location != null:
-		if get_distance_to(target_location) > 0:
+		if target_location != cell_position:
 			move(0)
 	
 	stomp()
@@ -72,7 +72,8 @@ func update_target_location():
 		target_location = null
 	
 	for valid_target in closest_valid_targets:
-		var target_value = evaluate_for_buildings(valid_target) - pow(get_distance_to(valid_target), 2) + 1
+		var distance = map.last_distance_map[valid_target.x][valid_target.y]
+		var target_value = evaluate_for_buildings(valid_target) - pow(distance, 2) + 1
 		if target_location == null or target_value > current_value:
 			target_location = valid_target
 			current_value = target_value

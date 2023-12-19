@@ -1,4 +1,4 @@
-[gd_scene load_steps=111 format=3 uid="uid://c6x335jeyp5nk"]
+[gd_scene load_steps=109 format=3 uid="uid://c6x335jeyp5nk"]
 
 [ext_resource type="Script" path="res://Code/ForstForward.gd" id="1_7u1db"]
 [ext_resource type="AudioStream" uid="uid://ckpknp4ogcbuo" path="res://Sounds/Ding.wav" id="2_dfqyl"]
@@ -32,8 +32,6 @@
 [ext_resource type="Script" path="res://Code/CellHighlight.gd" id="33_013ga"]
 [ext_resource type="Script" path="res://Code/Creatures/Treantlings.gd" id="33_in1g7"]
 [ext_resource type="Script" path="res://Code/Creatures/Druids.gd" id="34_fgn1b"]
-[ext_resource type="Texture2D" uid="uid://iicci03lh7or" path="res://Images/PathingProgress/PathingProgressBar_Under.png" id="34_rhw3t"]
-[ext_resource type="Texture2D" uid="uid://r7xjjconwc6e" path="res://Images/PathingProgress/PathingProgressBar_Progress.png" id="35_gns7i"]
 [ext_resource type="Script" path="res://Code/Crystals.gd" id="36_utnoc"]
 [ext_resource type="Texture2D" uid="uid://1t3o6p2kvsui" path="res://Images/Treant.png" id="42_e0d5f"]
 [ext_resource type="Texture2D" uid="uid://dbib7gx4a4q03" path="res://Images/MapOverlays/MenuOverlay.png" id="44_g65wn"]
@@ -502,25 +500,6 @@ layout_mode = 0
 offset_right = 580.0
 offset_bottom = 440.0
 texture = ExtResource("44_g65wn")
-
-[node name="PathingProgress" type="TextureProgressBar" parent="MapOverlay"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 255.0
-offset_top = -215.0
-offset_right = 285.0
-offset_bottom = -185.0
-grow_horizontal = 2
-grow_vertical = 2
-max_value = 1.0
-step = 0.01
-fill_mode = 4
-texture_under = ExtResource("34_rhw3t")
-texture_progress = ExtResource("35_gns7i")
 
 [node name="MainMenu" type="Control" parent="MapOverlay"]
 visible = false
@@ -1136,6 +1115,7 @@ uri = "https://discord.gg/CNPbtFGXgh"
 script = ExtResource("50_pb60d")
 
 [node name="Icon" type="TextureRect" parent="Sidebar/Links/Texture/Container/Discord"]
+layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 35.0
@@ -1144,6 +1124,7 @@ texture = ExtResource("50_gpbp2")
 expand_mode = 2
 
 [node name="Label" type="Label" parent="Sidebar/Links/Texture/Container/Discord"]
+layout_mode = 0
 offset_left = 45.0
 offset_right = 134.0
 offset_bottom = 40.0
@@ -1169,6 +1150,7 @@ texture = ExtResource("51_011br")
 expand_mode = 4
 
 [node name="Label" type="Label" parent="Sidebar/Links/Texture/Container/Wiki"]
+layout_mode = 0
 offset_left = 45.0
 offset_right = 134.0
 offset_bottom = 40.0
@@ -1193,6 +1175,7 @@ uri = "https://github.com/TriffnixXIV/ForstForward"
 script = ExtResource("50_pb60d")
 
 [node name="Icon" type="TextureRect" parent="Sidebar/Links/Texture/Container/Github"]
+layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 35.0
@@ -1201,6 +1184,7 @@ texture = ExtResource("51_011br")
 expand_mode = 4
 
 [node name="Label" type="Label" parent="Sidebar/Links/Texture/Container/Github"]
+layout_mode = 0
 offset_left = 45.0
 offset_right = 134.0
 offset_bottom = 40.0
@@ -1225,6 +1209,7 @@ uri = "https://lunis-peace.itch.io/forst-forward"
 script = ExtResource("50_pb60d")
 
 [node name="Icon" type="TextureRect" parent="Sidebar/Links/Texture/Container/Itch"]
+layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 35.0
@@ -1233,6 +1218,7 @@ texture = ExtResource("52_sygta")
 expand_mode = 4
 
 [node name="Label" type="Label" parent="Sidebar/Links/Texture/Container/Itch"]
+layout_mode = 0
 offset_left = 45.0
 offset_right = 134.0
 offset_bottom = 40.0
@@ -1983,7 +1969,6 @@ stretch_mode = 0
 
 [connection signal="score_changed" from="Map" to="." method="_on_map_score_changed"]
 [connection signal="transition_done" from="Map" to="." method="_on_map_transition_done"]
-[connection signal="progress_changed" from="Map/Pathing" to="." method="_on_pathing_progress_changed"]
 [connection signal="advancement_done" from="Map/Advancement" to="." method="_on_advancement_done"]
 [connection signal="advancement_step_done" from="Map/Advancement" to="." method="_on_advancement_step_done"]
 [connection signal="timeout" from="Map/Advancement/Timer" to="Map/Advancement" method="_on_timer_timeout"]
