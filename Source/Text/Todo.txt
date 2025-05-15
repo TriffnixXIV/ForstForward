@@ -1,5 +1,5 @@
 Mechanics:
-	- sand and water:
+	- water:
 		- maybe add ice as a state of water during high frost (undecided)
 	- treants:
 		- when mortal, add upgrade to make them spawn treantlings on death
@@ -18,6 +18,10 @@ Mechanics:
 			- would make it more magical
 			- growth sprite might be able to take over a villager to become a druid
 				- add inquisitor to suss out druids and destroy their homes, killing them
+	- frost & storm sprite (new):
+		- adjacent to growth sprite / druid: weather stuff
+		- storm sprite adds lightning to all choices
+		- frost sprite freezes nearby villagers
 	- growth:
 		- add upgrade to make the action also grow crystals
 	- frost:

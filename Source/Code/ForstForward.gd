@@ -1,7 +1,8 @@
 extends Node2D
 class_name Root
 
-var version: String = "v11.1"
+var version: String = "v11.2"
+var title_image: bool = false
 
 var current_round: int = 1
 
@@ -45,6 +46,12 @@ func _ready():
 	bottom_action.connect("advance_failure", _on_action_advance_failure)
 	
 	set_game_state(game_state)
+	
+	if title_image:
+		$MapOverlay.visible = true
+		$MapOverlay/MainMenu.visible = true
+		$MapOverlay/MainMenu/Exit.visible = false
+		$MapOverlay/MainMenu/Instructions.visible = false
 
 func _process(_delta):
 	var mouse_position = get_viewport().get_mouse_position()
@@ -54,11 +61,16 @@ func _process(_delta):
 		$Map/Overlays/CellHighlight.update()
 
 func _input(event):
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F1:
+		take_screenshot()
+		return
+	
 	match game_state:
 		GameState.main_menu:
-			if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-				quit()
-			elif (event is InputEventKey or (event is InputEventMouseButton and not event.button_index == MOUSE_BUTTON_LEFT)) and event.pressed:
+			if event is InputEventKey and event.pressed:
+				match event.keycode:
+					KEY_ESCAPE:	quit()
+			if (event is InputEventKey or (event is InputEventMouseButton and not event.button_index == MOUSE_BUTTON_LEFT)) and event.pressed:
 				set_game_state(GameState.level_selection)
 		
 		GameState.level_selection:
@@ -619,6 +631,13 @@ func _on_reset_button_pressed():
 
 func _on_run_info_pressed():
 	play_failure_sound()
+
+func take_screenshot():
+	var img = get_viewport().get_texture().get_image()
+	$FileDialog.current_file = "%s-%s-forst-forward.png" % [Time.get_date_string_from_system(), Time.get_time_string_from_system().replace(":", "-")]
+	$FileDialog.show()
+	await $FileDialog.file_selected
+	return img.save_png($FileDialog.current_path)
 
 func _on_exit_pressed():
 	quit()

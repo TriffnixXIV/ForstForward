@@ -72,8 +72,8 @@
 [ext_resource type="PackedScene" uid="uid://b81j3drpu4b3g" path="res://Scenes/ButtonSparks.tscn" id="77_axurg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_w1idl"]
-line_spacing = -36.0
-font_size = 48
+line_spacing = -48.0
+font_size = 64
 outline_color = Color(0, 1, 0, 1)
 shadow_color = Color(0, 1, 0, 1)
 
@@ -502,7 +502,6 @@ offset_bottom = 440.0
 texture = ExtResource("44_g65wn")
 
 [node name="MainMenu" type="Control" parent="MapOverlay"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1111,7 +1110,7 @@ layout_mode = 1
 offset_top = 55.0
 offset_right = 195.0
 offset_bottom = 95.0
-uri = "https://discord.gg/CNPbtFGXgh"
+uri = "https://discord.gg/DS9T3bT8a9"
 script = ExtResource("50_pb60d")
 
 [node name="Icon" type="TextureRect" parent="Sidebar/Links/Texture/Container/Discord"]
@@ -1966,6 +1965,13 @@ toggle_mode = true
 texture_normal = ExtResource("62_y5gb0")
 texture_pressed = ExtResource("63_hkoqk")
 stretch_mode = 0
+
+[node name="FileDialog" type="FileDialog" parent="."]
+position = Vector2i(125, 0)
+size = Vector2i(450, 450)
+mode = 3
+access = 2
+filters = PackedStringArray("*.png ; PNG Images")
 
 [connection signal="score_changed" from="Map" to="." method="_on_map_score_changed"]
 [connection signal="transition_done" from="Map" to="." method="_on_map_transition_done"]

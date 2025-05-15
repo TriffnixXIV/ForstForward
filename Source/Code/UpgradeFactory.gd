@@ -264,12 +264,11 @@ func get_available_upgrades(type: Crystal.Type):
 			# lightning
 			prototype = action_factory.action_prototypes[Action.Type.lightning_strike]
 			if not prototype.unlocked:
-				if total_weather_upgrades >= 3:
-					text = "unlock lightning"
-					callback = func(_m: Map, _af: ActionFactory, ap: ActionPrototype):
-						ap.unlocked = true
-					
-					available_upgrades.append(Upgrade.new(text, callback, prototype))
+				text = "unlock lightning"
+				callback = func(_m: Map, _af: ActionFactory, ap: ActionPrototype):
+					ap.unlocked = true
+				
+				available_upgrades.append(Upgrade.new(text, callback, prototype))
 			else:
 				clicks = prototype.clicks
 				text = "lightning base amount\n" + get_change_text(clicks, 1)
